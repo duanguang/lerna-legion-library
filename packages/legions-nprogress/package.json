@@ -9,17 +9,8 @@
   "author": "duanguang <duanguang@hoolinks.com>",
   "homepage": "",
   "license": "MIT",
-  "main": "dist/legions-nprogress.esm.js",
-  "module": "dist/legions-nprogress.esm.js",
+  "main": "dist/legions-nprogress.umd.js",
   "typings": "types/index.d.ts",
-  "peerDependencies": {
-    "brain-store": ">0.1.8",
-    "brain-store-utils": ">0.1.8",
-    "mobx": ">3.0.0"
-  },
-  "dependencies": {
-    "warning": "^3.0.0"
-  },
   "devDependencies": {
     "@commitlint/cli": "^7.3.2",
     "@commitlint/config-conventional": "^7.3.1",

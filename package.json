@@ -1,7 +1,20 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "changelog": "lerna-changelog"
+  },
   "devDependencies": {
-    "lerna": "^3.22.1"
+    "lerna": "^3.22.1",
+    "lerna-changelog": "^1.0.1"
+  },
+  "changelog": {
+    "labels": {
+      "feat": ":rocket: New Feature",
+      "bug": ":bug: Bug Fix",
+      "doc": ":memo: Documentation",
+      "internal": ":house: Internal",
+      "breaking": ":boom: Breaking Change"
+    }
   }
 }
