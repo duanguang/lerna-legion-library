@@ -41,8 +41,8 @@
   "files": [
     "dist",
     "types/index.d.ts",
-    "types/load.d.ts",
-    "types/nprogress.d.ts"
+    "types/nprogress.d.ts",
+    "style"
   ],
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
