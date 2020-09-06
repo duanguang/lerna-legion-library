@@ -1,9 +1,10 @@
 {
   "name": "legions-nprogress",
   "version": "0.",
-  "description": "> TODO: description",
+  "description": "页面顶部进度条组件",
   "keywords": [
-    "nprogress"
+    "nprogress",
+    "nprogress-component"
   ],
   "author": "duanguang <duanguang@hoolinks.com>",
   "homepage": "",
