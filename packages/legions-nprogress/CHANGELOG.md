@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/duanguang/lerna-legion-library/compare/legions-nprogress@0.0.4...legions-nprogress@0.0.5) (2020-09-06)
+
+
+### Bug Fixes
+
+* 修复style文件被遗漏发布 ([fdb987c](https://github.com/duanguang/lerna-legion-library/commit/fdb987c9f28400e20f88fddd9cb5d2a3c402db47))
+
+
+
+
+
 ## [0.0.4](https://github.com/duanguang/lerna-legion-library/compare/legions-nprogress@0.0.3...legions-nprogress@0.0.4) (2020-09-06)
 
 
