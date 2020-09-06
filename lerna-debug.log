@@ -1,16 +1,5 @@
-0 silly argv { _: [ 'bootstrap' ],
-0 silly argv   scope: 'egg-decorator',
-0 silly argv   lernaVersion: '3.22.1',
-0 silly argv   '$0': 'lerna' }
-1 notice cli v3.22.1
-2 verbose rootPath /Users/duanguang/Documents/Front-End/legions/egg-core
-3 error Error: Invalid package name "@babel-preset-latest": name can only contain URL-friendly characters
-3 error     at invalidPackageName (/Users/duanguang/.nvm/versions/node/v10.13.0/lib/node_modules/lerna/node_modules/npm-package-arg/npa.js:86:15)
-3 error     at Result.setName (/Users/duanguang/.nvm/versions/node/v10.13.0/lib/node_modules/lerna/node_modules/npm-package-arg/npa.js:121:11)
-3 error     at new Result (/Users/duanguang/.nvm/versions/node/v10.13.0/lib/node_modules/lerna/node_modules/npm-package-arg/npa.js:111:23)
-3 error     at Function.resolve (/Users/duanguang/.nvm/versions/node/v10.13.0/lib/node_modules/lerna/node_modules/npm-package-arg/npa.js:58:15)
-3 error     at Object.keys.forEach.depName (/Users/duanguang/.nvm/versions/node/v10.13.0/lib/node_modules/lerna/node_modules/@lerna/package-graph/index.js:61:30)
-3 error     at Array.forEach (<anonymous>)
-3 error     at PackageGraph.forEach (/Users/duanguang/.nvm/versions/node/v10.13.0/lib/node_modules/lerna/node_modules/@lerna/package-graph/index.js:55:38)
-3 error     at Map.forEach (<anonymous>)
-3 error     at new PackageGraph (/Users/duanguang/.nvm/versions/node/v10.13.0/lib/node_modules/lerna/node_modules/@lerna/package-graph/index.js:44:10)
+48 error Error: Command failed: git tag legions-nprogress@0.0.4 -m legions-nprogress@0.0.4
+48 error fatal: tag 'legions-nprogress@0.0.4' already exists
+48 error
+48 error     at makeError (/Users/duanguang/Documents/Front-End/legions/lerna-legion-library/node_modules/execa/index.js:174:9)
+48 error     at Promise.all.then.arr (/Users/duanguang/Documents/Front-End/legions/lerna-legion-library/node_modules/execa/index.js:278:16)
