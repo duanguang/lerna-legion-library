@@ -10,7 +10,7 @@
   },
   "message": "chore(release): publish",
   "changelog": {
-    "repo": "https://github.com/duanguang/lerna-legion-library.git",
+    "repo": "duanguang/lerna-legion-library",
     "labels": {
       "tag: new feature": ":rocket: New Feature",
       "tag: breaking change": ":boom: Breaking Change",

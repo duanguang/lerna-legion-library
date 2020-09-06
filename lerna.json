@@ -4,6 +4,8 @@
   ],
   "command": {
     "publish": {
+      "allowBranch": "master",
+      "conventionalCommits": true,
       "ignoreChanges": [
         "ignored-file",
         "*.md"
