@@ -1,10 +1,9 @@
 {
   "name": "legions-nprogress",
-  "version": "0.1.0",
+  "version": "0.",
   "description": "> TODO: description",
   "keywords": [
-    "egg",
-    "decorator"
+    "nprogress"
   ],
   "author": "duanguang <duanguang@hoolinks.com>",
   "homepage": "",

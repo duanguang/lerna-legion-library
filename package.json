@@ -1,23 +1,8 @@
 {
   "name": "root",
   "private": true,
-  "scripts": {
-    "changelog": "lerna-changelog"
-  },
+  "scripts": {},
   "devDependencies": {
-    "lerna": "^3.22.1",
-    "lerna-changelonode -vg": "^1.0.1"
-  },
-  "message": "chore(release): publish",
-  "changelog": {
-    "repo": "duanguang/lerna-legion-library",
-    "labels": {
-      "tag: new feature": ":rocket: New Feature",
-      "tag: breaking change": ":boom: Breaking Change",
-      "tag: bug fix": ":bug: Bug Fix",
-      "tag: enhancement": ":nail_care: Enhancement",
-      "tag: documentation": ":memo: Documentation",
-      "tag: internal": ":house: Internal"
-    }
+    "lerna": "^3.22.1"
   }
 }
