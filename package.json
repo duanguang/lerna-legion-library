@@ -6,15 +6,17 @@
   },
   "devDependencies": {
     "lerna": "^3.22.1",
-    "lerna-changelog": "^1.0.1"
+    "lerna-changelonode -vg": "^1.0.1"
   },
   "changelog": {
+    "repo": "https://github.com/duanguang/lerna-legion-library.git",
     "labels": {
-      "feat": ":rocket: New Feature",
-      "bug": ":bug: Bug Fix",
-      "doc": ":memo: Documentation",
-      "internal": ":house: Internal",
-      "breaking": ":boom: Breaking Change"
+      "tag: new feature": ":rocket: New Feature",
+      "tag: breaking change": ":boom: Breaking Change",
+      "tag: bug fix": ":bug: Bug Fix",
+      "tag: enhancement": ":nail_care: Enhancement",
+      "tag: documentation": ":memo: Documentation",
+      "tag: internal": ":house: Internal"
     }
   }
 }

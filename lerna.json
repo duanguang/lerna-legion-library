@@ -7,7 +7,8 @@
       "ignoreChanges": [
         "ignored-file",
         "*.md"
-      ]
+      ],
+      "message": "chore(release): publish %v"
     },
     "bootstrap": {
       "ignore": "component-*",
@@ -19,10 +20,12 @@
   "changelog": {
     "repo": "ayqy/hoho-lerna",
     "labels": {
-      "enhancement": ":rocket: Enhancement",
-      "bug": ":bug: Bug Fix",
-      "doc": "Refine Doc",
-      "feat": "New Feature"
+      "tag: new feature": ":rocket: New Feature",
+      "tag: breaking change": ":boom: Breaking Change",
+      "tag: bug fix": ":bug: Bug Fix",
+      "tag: enhancement": ":nail_care: Enhancement",
+      "tag: documentation": ":memo: Documentation",
+      "tag: internal": ":house: Internal"
     },
     "cacheDir": ".changelog"
   }
