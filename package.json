@@ -8,6 +8,7 @@
     "lerna": "^3.22.1",
     "lerna-changelonode -vg": "^1.0.1"
   },
+  "message": "chore(release): publish",
   "changelog": {
     "repo": "https://github.com/duanguang/lerna-legion-library.git",
     "labels": {
