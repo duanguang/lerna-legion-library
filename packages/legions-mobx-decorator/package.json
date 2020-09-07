@@ -73,5 +73,6 @@
     "build": "npm run build:main",
     "build:main": "node build/build.main.js",
     "release": "bash build/release.sh"
-  }
+  },
+  "gitHead": "1e80f0ebb53edb8e9ecaa46efa41e0442e9d1716"
 }
