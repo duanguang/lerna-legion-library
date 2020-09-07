@@ -1,13 +1,14 @@
 {
   "name": "legions-mobx-decorator",
-  "version": "0.0.4-alpha.0",
-  "description": "> TODO: description",
+  "version": "0.0.1",
+  "description": "> 基于mobx数据流的React 库修饰器集合",
   "keywords": [
-    "egg",
-    "decorator"
+    "mobx-decorator",
+    "decorator",
+    "legions-mobx-decorator"
   ],
-  "author": "duanguang <duanguang@hoolinks.com>",
-  "homepage": "",
+  "author": "duanguang <18520583569@163.com>",
+  "homepage": "https://github.com/duanguang/lerna-legion-library.git",
   "license": "MIT",
   "main": "dist/legions-mobx-decorator.esm.js",
   "module": "dist/legions-mobx-decorator.esm.js",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13",
+    "legions-nprogress": "^0.0.5",
     "warning": "^3.0.0"
   },
   "devDependencies": {
@@ -64,8 +66,7 @@
   "files": [
     "dist",
     "types/index.d.ts",
-    "types/load.d.ts",
-    "types/nprogress.d.ts"
+    "types/load.d.ts"
   ],
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",

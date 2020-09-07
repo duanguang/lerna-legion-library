@@ -13,7 +13,7 @@ import { createHashHistory } from 'history';
 const invariant = require('invariant')
 import { message,Modal } from 'antd';
 import React from 'react';
-import NProgress from './nprogress';
+import { NProgress } from 'legions-nprogress';
 interface IOptions {
   state: string //需要监听的状态属性名称
   store?: string,

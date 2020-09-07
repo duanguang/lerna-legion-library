@@ -1902,6 +1902,11 @@ jsonparse@^1.2.0:
   resolved "https://registry.npm.taobao.org/jsonparse/download/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
+legions-nprogress@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/legions-nprogress/-/legions-nprogress-0.0.5.tgz#04f5002238606febc61488e41ebdb4b5488754a4"
+  integrity sha512-3GIDr/s2YN5x6poGJQgN+m2UOSES8y9rnLc+yxjI5TqnMDoiQuQBX2iFk/LthBEqAYUkaNY5wMy3yCwcenULYQ==
+
 load-json-file@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/load-json-file/download/load-json-file-4.0.0.tgz#2f5f45ab91e33216234fd53adab668eb4ec0993b"
