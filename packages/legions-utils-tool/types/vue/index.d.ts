@@ -1,2 +1,3 @@
 import observablePromise from './observable-promise';
-export { observablePromise };
+import { PromiseAction } from './promise-action';
+export { observablePromise, PromiseAction };
