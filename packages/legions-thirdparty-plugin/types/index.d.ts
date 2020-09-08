@@ -8,4 +8,4 @@ export declare class LegionsThirdpartyPlugin {
     get plugins(): IlegionsThirdpartyPlugin;
 }
 export declare const legionsThirdpartyPlugin: LegionsThirdpartyPlugin;
-export {};
+export { focusBind } from './focus-outside';
