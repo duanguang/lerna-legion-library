@@ -8,6 +8,9 @@ var legionsThirdpartyPlugin = (function (exports) {
 
   var PLUGINS = {
       excel: 'legionsThirdpartyExcelPlugin',
+      html2canvas: 'legionsThirdpartyHtml2canvasPlugin',
+      jsBarcode: 'legionsThirdpartyJsbarcodePlugin',
+      clipboard: 'legionsThirdpartyClipboardPlugin',
   };
   var LEGIONS_THIRDPARTY_PLUGIN = {
       //@ts-ignore
@@ -16,6 +19,8 @@ var legionsThirdpartyPlugin = (function (exports) {
       html2canvas: null,
       //@ts-ignore
       jsBarcode: null,
+      //@ts-ignore
+      clipboard: null,
   };
   function onLoadScript(plugin) {
       var id = "legions-" + plugin.name;
@@ -41,10 +46,15 @@ var legionsThirdpartyPlugin = (function (exports) {
       function LegionsThirdpartyPlugin() {
       }
       LegionsThirdpartyPlugin.prototype.use = function (plugin) {
-          if (Array.isArray(plugin)) {
-              plugin.map(function (item) {
-                  onLoadScript(item);
-              });
+          if (typeof plugin === 'object') {
+              if (Array.isArray(plugin)) {
+                  plugin.map(function (item) {
+                      onLoadScript(item);
+                  });
+              }
+              else {
+                  onLoadScript(plugin);
+              }
           }
       };
       Object.defineProperty(LegionsThirdpartyPlugin.prototype, "plugins", {

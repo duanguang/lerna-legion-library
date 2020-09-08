@@ -1,6 +1,6 @@
 import { IlegionsThirdpartyPlugin } from '../types/api';
 interface IPlugin {
-    name: 'excel';
+    name: 'excel' | 'html2canvas' | 'jsBarcode' | 'clipboard';
     url?: string;
 }
 export declare class LegionsThirdpartyPlugin {

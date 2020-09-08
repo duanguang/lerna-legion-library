@@ -1,6 +1,10 @@
 import { IlegionsThirdpartyPlugin } from '../types/api';
 const PLUGINS = {
   excel: 'legionsThirdpartyExcelPlugin',
+  html2canvas: 'legionsThirdpartyHtml2canvasPlugin',
+  jsBarcode: 'legionsThirdpartyJsbarcodePlugin',
+  clipboard: 'legionsThirdpartyClipboardPlugin',
+  dexie: 'legionsThirdpartyDexiePlugin',
 };
 const LEGIONS_THIRDPARTY_PLUGIN: IlegionsThirdpartyPlugin = {
   //@ts-ignore
@@ -9,6 +13,10 @@ const LEGIONS_THIRDPARTY_PLUGIN: IlegionsThirdpartyPlugin = {
   html2canvas: null,
   //@ts-ignore
   jsBarcode: null,
+  //@ts-ignore
+  clipboard: null,
+  //@ts-ignore
+  dexie: null,
 };
 function onLoadScript(plugin: IPlugin) {
   let id = `legions-${plugin.name}`;
@@ -34,15 +42,19 @@ function onLoadScript(plugin: IPlugin) {
 }
 
 interface IPlugin {
-  name: 'excel';
+  name: 'excel' | 'html2canvas' | 'jsBarcode' | 'clipboard';
   url?: string;
 }
 export class LegionsThirdpartyPlugin {
   use(plugin: IPlugin[] | IPlugin) {
-    if (Array.isArray(plugin)) {
-      plugin.map(item => {
-        onLoadScript(item);
-      });
+    if (typeof plugin === 'object') {
+      if (Array.isArray(plugin)) {
+        plugin.map(item => {
+          onLoadScript(item);
+        });
+      } else {
+        onLoadScript(plugin);
+      }
     }
   }
   get plugins() {

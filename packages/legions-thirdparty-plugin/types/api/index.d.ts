@@ -1,5 +1,6 @@
-export declare type TableColumnConfig<T> = ColumnProps<T>;
+declare type TableColumnConfig<T> = ColumnProps<T>;
 import { JsBarcodeSpace } from './jsbarcode';
+import { IDexieUtils } from './dexie';
 interface ColumnProps<T> {
   title?: string;
   key?: string;
@@ -139,4 +140,12 @@ export interface IlegionsThirdpartyPlugin {
     };
   };
   jsBarcode: IJsBarcode['IJsBarcode1'] | IJsBarcode['IJsBarcode2'];
+  clipboard: {
+    Clipboard: (
+      trigger: string | HTMLElement | HTMLCollection | NodeList,
+      options: any
+    ) => any;
+    copyText: (text: string) => Promise<any>;
+  };
+  dexie: IDexieUtils;
 }
