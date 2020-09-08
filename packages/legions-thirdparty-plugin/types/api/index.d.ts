@@ -2,6 +2,7 @@ declare type TableColumnConfig<T> = ColumnProps<T>;
 import { JsBarcodeSpace } from './jsbarcode';
 import { IDexieUtils } from './dexie';
 import { IExportTableCsv } from './exportCsv';
+import { html2canvasOptions } from './html2canvas';
 interface ColumnProps<T> {
   title?: string;
   key?: string;
@@ -140,6 +141,10 @@ export interface IlegionsThirdpartyPlugin {
         height: number
       ) => HTMLImageElement | undefined;
     };
+    html2canvas: (
+      element: HTMLElement,
+      options?: Partial<html2canvasOptions>
+    ) => Promise<HTMLCanvasElement>;
   };
   jsBarcode: IJsBarcode['IJsBarcode1'] | IJsBarcode['IJsBarcode2'];
   clipboard: {

@@ -1,3 +1,4 @@
+import html2canvas from 'html2canvas';
 /**
  * covert canvas to image
  * and save the image file
@@ -14,3 +15,4 @@ export declare const Canvas2Image: {
     convertToGIF: (canvas: any, width: number, height: number) => HTMLImageElement | undefined;
     convertToBMP: (canvas: any, width: number, height: number) => HTMLImageElement | undefined;
 };
+export { html2canvas };

@@ -312,3 +312,5 @@ export const Canvas2Image = (function () {
     },
   };
 })();
+
+export { html2canvas };
