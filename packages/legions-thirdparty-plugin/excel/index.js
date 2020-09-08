@@ -31430,6 +31430,206 @@
 	{ make_xlsx_lib(exports); }
 	});
 
+	function has (browser) {
+	    var ua = navigator.userAgent;
+	    if (browser === 'ie') {
+	        var isIE = ua.indexOf('compatible') > -1 && ua.indexOf('MSIE') > -1;
+	        if (isIE) {
+	            var reIE = new RegExp('MSIE (\\d+\\.\\d+);');
+	            reIE.test(ua);
+	            return parseFloat(RegExp['$1']);
+	        } else {
+	            return false;
+	        }
+	    } else {
+	        return ua.indexOf(browser) > -1;
+	    }
+	}
+
+	var csv = {
+	    _isIE11: function _isIE11 () {
+	        var iev = 0;
+	        var ieold = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+	        var trident = !!navigator.userAgent.match(/Trident\/7.0/);
+	        var rv = navigator.userAgent.indexOf('rv:11.0');
+
+	        if (ieold) {
+	            iev = Number(RegExp.$1);
+	        }
+	        if (navigator.appVersion.indexOf('MSIE 10') !== -1) {
+	            iev = 10;
+	        }
+	        if (trident && rv !== -1) {
+	            iev = 11;
+	        }
+
+	        return iev === 11;
+	    },
+
+	    _isEdge: function _isEdge () {
+	        return /Edge/.test(navigator.userAgent);
+	    },
+
+	    _getDownloadUrl: function _getDownloadUrl (text) {
+	        var BOM = '\uFEFF';
+	        // Add BOM to text for open in excel correctly
+	        if (window.Blob && window.URL && window.URL.createObjectURL) {
+	            var csvData = new Blob([BOM + text], { type: 'text/csv' });
+	            return URL.createObjectURL(csvData);
+	        } else {
+	            return 'data:attachment/csv;charset=utf-8,' + BOM + encodeURIComponent(text);
+	        }
+	    },
+
+	    download: function download (filename, text) {
+	        if (has('ie') && has('ie') < 10) {
+	            // has module unable identify ie11 and Edge
+	            var oWin = window.top.open('about:blank', '_blank');
+	            oWin.document.charset = 'utf-8';
+	            oWin.document.write(text);
+	            oWin.document.close();
+	            oWin.document.execCommand('SaveAs', filename);
+	            oWin.close();
+	        } else if (has('ie') === 10 || this._isIE11() || this._isEdge()) {
+	            var BOM = '\uFEFF';
+	            var csvData = new Blob([BOM + text], { type: 'text/csv' });
+	            navigator.msSaveBlob(csvData, filename);
+	        } else {
+	            var link = document.createElement('a');
+	            link.download = filename;
+	            link.href = this._getDownloadUrl(text);
+	            document.body.appendChild(link);
+	            link.click();
+	            document.body.removeChild(link);
+	        }
+	    }
+	};
+
+	/*
+	  inspired by https://www.npmjs.com/package/react-csv-downloader
+	  now removed from Github
+	*/
+
+	var newLine = '\r\n';
+	var appendLine = function (content, row, ref) {
+	  var separator = ref.separator;
+	  var quoted = ref.quoted;
+
+	  var line = row.map(function (data) {
+	    if (!quoted) { return data; }
+	    // quote data
+	    data = typeof data === 'string' ? data.replace(/"/g, '"') : data;
+	    return typeof data === 'string' ? ("\"" + data + "\"\t") : data;
+	    // return `"${data}\t"`;  // add \t 解决数字字符过长显示成科学计算法
+	  });
+	  content.push(line.join(separator));
+	};
+
+	var defaults = {
+	  separator: ',',
+	  quoted: false,
+	};
+
+	function csv$1(columns, datas, options, noHeader) {
+	  if ( noHeader === void 0 ) noHeader = false;
+
+	  options = Object.assign({}, defaults, options);
+	  var columnOrder;
+	  var content = [];
+	  var column = [];
+
+	  if (columns) {
+	    columnOrder = columns.map(function (v) {
+	      if (typeof v === 'string') { return v; }
+	      if (!noHeader) {
+	        column.push(typeof v.title !== 'undefined' ? v.title : v.dataIndex);
+	      }
+	      return v.dataIndex;
+	    });
+	    if (column.length > 0) { appendLine(content, column, options); }
+	  } else {
+	    columnOrder = [];
+	    datas.forEach(function (v) {
+	      if (!Array.isArray(v)) {
+	        columnOrder = columnOrder.concat(Object.keys(v));
+	      }
+	    });
+	    if (columnOrder.length > 0) {
+	      columnOrder = columnOrder.filter(
+	        function (value, index, self) { return self.indexOf(value) === index; }
+	      );
+	      if (!noHeader) { appendLine(content, columnOrder, options); }
+	    }
+	  }
+
+	  if (Array.isArray(datas)) {
+	    datas.forEach(function (row) {
+	      if (!Array.isArray(row)) {
+	        row = columnOrder.map(function (k) { return typeof row[k] !== 'undefined' ? row[k] : ''; }
+	        );
+	      }
+	      appendLine(
+	        content,
+	        row,
+	        Object.assign(options, { separator: ',', quoted: true })
+	      ); // 修复内容区遇到逗号，会换行
+	    });
+	  }
+	  return content.join(newLine);
+	}
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 */
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var NODE_ENV = process.env.NODE_ENV;
+
+	var invariant = function (condition, format, a, b, c, d, e, f) {
+	  if (NODE_ENV !== 'production') {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	          'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        format.replace(/%s/g, function () {
+	          return args[argIndex++];
+	        })
+	      );
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	var invariant_1 = invariant;
+
 	function auto_width(ws, data) {
 	    /*set worksheet max width per col*/
 	    var colWidth = data.map(function (row) {
@@ -31570,8 +31770,47 @@
 	    var results = xlsx.utils.sheet_to_json(worksheet);
 	    return { header: header, results: results };
 	};
+	/**
+	 * 将数据导出为 .csv 文件，不适应复杂表格的excel 文件生成 说明
+	支持IE9~IE11、Edge、Chrome、Safari、Firefox 全系列浏览器。
+	IE9、Safari 需要手动修改后缀名为 .csv。
+	IE9暂时只支持英文，中文会显示为乱码。
+	 *说明：columns 和 data 需同时声明，声明后将导出指定的数据，建议列数据有自定义render时，可以根据需求自定义导出内容
+	 * @export
+	 * @param {IExportCsv} params
+	 */
+	function exportCsv(params) {
+	    if (params.filename) {
+	        if (params.filename.indexOf('.csv') === -1) {
+	            params.filename += '.csv';
+	        }
+	    }
+	    else {
+	        params.filename = 'table.csv';
+	    }
+	    invariant_1(params.columns instanceof Array, "\u8BF7\u8BBE\u7F6E\u9700\u8981\u5BFC\u51FA\u7684\u5217\u4FE1\u606F");
+	    invariant_1(params.data instanceof Array, "\u8BF7\u8BBE\u7F6E\u9700\u8981\u5BFC\u51FA\u7684\u4FE1\u606F");
+	    var columns = [];
+	    var datas = [];
+	    if (params.columns && params.data) {
+	        //@ts-ignore
+	        columns = params.columns;
+	        //@ts-ignore
+	        datas = params.data;
+	    }
+	    var noHeader = false;
+	    //@ts-ignore
+	    if ('noHeader' in params)
+	        { noHeader = params.noHeader; }
+	    var data = csv$1(columns, datas, params, noHeader);
+	    if (params.callback)
+	        { params.callback(data); }
+	    else
+	        { csv.download(params.filename, data); }
+	}
 
 	exports.exportArrayToExcel = exportArrayToExcel;
+	exports.exportCsv = exportCsv;
 	exports.exportJsonToExcel = exportJsonToExcel;
 	exports.export_array_to_excel = export_array_to_excel;
 	exports.export_json_to_excel = export_json_to_excel;

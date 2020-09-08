@@ -1,6 +1,7 @@
 declare type TableColumnConfig<T> = ColumnProps<T>;
 import { JsBarcodeSpace } from './jsbarcode';
 import { IDexieUtils } from './dexie';
+import { IExportTableCsv } from './exportCsv';
 interface ColumnProps<T> {
   title?: string;
   key?: string;
@@ -103,6 +104,7 @@ export interface IlegionsThirdpartyPlugin {
       header: never[];
       results: unknown[];
     };
+    exportCsv: (params: IExportTableCsv) => void;
   };
   html2canvas: {
     Canvas2Image: {

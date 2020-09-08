@@ -1,3 +1,4 @@
+import { IExportTableCsv } from '../../types/api/exportCsv';
 export declare type TableColumnConfig<T> = ColumnProps<T>;
 interface ColumnProps<T> {
     title?: string;
@@ -65,4 +66,14 @@ declare const read: (data: any, type: 'buffer' | 'base64' | 'string' | 'binary' 
     header: never[];
     results: unknown[];
 };
-export { export_table_to_excel, export_array_to_excel, export_json_to_excel, exportJsonToExcel, exportArrayToExcel, read, };
+/**
+ * 将数据导出为 .csv 文件，不适应复杂表格的excel 文件生成 说明
+支持IE9~IE11、Edge、Chrome、Safari、Firefox 全系列浏览器。
+IE9、Safari 需要手动修改后缀名为 .csv。
+IE9暂时只支持英文，中文会显示为乱码。
+ *说明：columns 和 data 需同时声明，声明后将导出指定的数据，建议列数据有自定义render时，可以根据需求自定义导出内容
+ * @export
+ * @param {IExportCsv} params
+ */
+declare function exportCsv(params: IExportTableCsv): void;
+export { export_table_to_excel, export_array_to_excel, export_json_to_excel, exportJsonToExcel, exportArrayToExcel, read, exportCsv, };

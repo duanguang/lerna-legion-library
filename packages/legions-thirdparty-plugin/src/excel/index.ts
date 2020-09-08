@@ -1,4 +1,8 @@
 import XLSX from 'xlsx';
+import ExportCsv from '../excel/export-csv';
+import Csv from '../excel/csv';
+import invariant from '../utils/invariant';
+import { IExportTableCsv } from '../../types/api/exportCsv';
 export declare type TableColumnConfig<T> = ColumnProps<T>;
 interface ColumnProps<T> {
   title?: string;
@@ -85,7 +89,7 @@ function get_header_row(sheet) {
   }
   return headers;
 }
- const export_table_to_excel = (id: string, filename: string) => {
+const export_table_to_excel = (id: string, filename: string) => {
   //@ts-ignore
   const table = document.querySelector(`.${id}`).querySelector('table');
   const wb = XLSX.utils.table_to_book(table);
@@ -131,7 +135,7 @@ interface IExportCsv {
    */
   data: any[];
 }
- const exportJsonToExcel = ({
+const exportJsonToExcel = ({
   data,
   columns,
   autoWidth,
@@ -160,7 +164,7 @@ interface IExportCsv {
     autoWidth,
   });
 };
- const exportArrayToExcel = ({
+const exportArrayToExcel = ({
   data,
   columns,
   autoWidth,
@@ -184,7 +188,7 @@ interface IExportCsv {
     autoWidth,
   });
 };
- const export_json_to_excel = ({
+const export_json_to_excel = ({
   data,
   key,
   title,
@@ -223,7 +227,7 @@ const export_array_to_excel = ({
   XLSX.writeFile(wb, filename + '.xlsx');
 };
 
- const read = (
+const read = (
   data,
   type: 'buffer' | 'base64' | 'string' | 'binary' | 'array' | 'file'
 ) => {
@@ -234,6 +238,43 @@ const export_array_to_excel = ({
   const results = XLSX.utils.sheet_to_json(worksheet);
   return { header, results };
 };
+/**
+ * 将数据导出为 .csv 文件，不适应复杂表格的excel 文件生成 说明
+支持IE9~IE11、Edge、Chrome、Safari、Firefox 全系列浏览器。
+IE9、Safari 需要手动修改后缀名为 .csv。
+IE9暂时只支持英文，中文会显示为乱码。
+ *说明：columns 和 data 需同时声明，声明后将导出指定的数据，建议列数据有自定义render时，可以根据需求自定义导出内容
+ * @export
+ * @param {IExportCsv} params
+ */
+function exportCsv(params: IExportTableCsv) {
+  if (params.filename) {
+    if (params.filename.indexOf('.csv') === -1) {
+      params.filename += '.csv';
+    }
+  } else {
+    params.filename = 'table.csv';
+  }
+  invariant(params.columns instanceof Array, `请设置需要导出的列信息`);
+  invariant(params.data instanceof Array, `请设置需要导出的信息`);
+  let columns = [];
+  let datas = [];
+
+  if (params.columns && params.data) {
+    //@ts-ignore
+    columns = params.columns;
+    //@ts-ignore
+    datas = params.data;
+  }
+
+  let noHeader = false;
+  //@ts-ignore
+  if ('noHeader' in params) noHeader = params.noHeader;
+
+  const data = Csv(columns, datas, params, noHeader);
+  if (params.callback) params.callback(data);
+  else ExportCsv.download(params.filename, data);
+}
 export {
   export_table_to_excel,
   export_array_to_excel,
@@ -241,4 +282,5 @@ export {
   exportJsonToExcel,
   exportArrayToExcel,
   read,
+  exportCsv,
 };
