@@ -1,5 +1,16 @@
+import { CreateMapPolyfill } from '../utils/polyfill';
 const els = [];
-const elMap = new Map();
+var usePolyfill =
+  typeof process === 'object' &&
+  process.env &&
+  process.env['REFLECT_METADATA_USE_MAP_POLYFILL'] === 'true';
+var _Map =
+  !usePolyfill &&
+  typeof Map === 'function' &&
+  typeof Map.prototype.entries === 'function'
+    ? Map
+    : CreateMapPolyfill();
+const elMap = new _Map();
 let defaultClass = 'focus-outside';
 
 function isNotFocusable(el) {

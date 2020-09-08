@@ -28,22 +28,30 @@ function onLoadScript(plugin: IPlugin) {
     let script = document.createElement('script');
     script.id = id;
     const version = Date.parse(new Date().toString());
-    script.src = `${plugin.url}v=${version}`;
+    script.src = `${plugin.url}?v=${version}`;
     document.body.appendChild(script);
     // @ts-ignore
     script.onload = script.onreadystatechange = function () {
       // tslint:disable-next-line: no-invalid-this
       //@ts-ignore
       if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
-        LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = window[PLUGINS[plugin.name]];
+        if (plugin.name === 'jsBarcode') {
+          LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
+            window[PLUGINS[plugin.name]]['JsBarcode'];
+        } else if (plugin.name === 'dexie') {
+          LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
+            window[PLUGINS[plugin.name]]['DexieUtils'];
+        } else {
+          LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = window[PLUGINS[plugin.name]];
+        }
       }
     };
   }
 }
 
 interface IPlugin {
-  name: 'excel' | 'html2canvas' | 'jsBarcode' | 'clipboard';
-  url?: string;
+  name: 'excel' | 'html2canvas' | 'jsBarcode' | 'clipboard' | 'dexie';
+  url: string;
 }
 export class LegionsThirdpartyPlugin {
   use(plugin: IPlugin[] | IPlugin) {
@@ -54,6 +62,41 @@ export class LegionsThirdpartyPlugin {
         });
       } else {
         onLoadScript(plugin);
+      }
+    }
+  }
+  subscribe(name: IPlugin['name'] | IPlugin['name'][], callback: () => void) {
+    if (typeof name === 'string') {
+      if (!LEGIONS_THIRDPARTY_PLUGIN[name]) {
+        const timeid = setInterval(() => {
+          if (LEGIONS_THIRDPARTY_PLUGIN[name]) {
+            callback();
+            clearInterval(timeid);
+          }
+        }, 150);
+      } else {
+        callback();
+      }
+    } else if (Object.prototype.toString.call(name) === '[object Array]') {
+      let list: { name: IPlugin['name']; value: any }[] = [];
+      name.map(item => {
+        list.push({ name: item, value: LEGIONS_THIRDPARTY_PLUGIN[item] });
+      });
+      if (list.every(item => item.value)) {
+        callback();
+      } else {
+        list = [];
+        const timeid = setInterval(() => {
+          name.map(item => {
+            list.push({ name: item, value: LEGIONS_THIRDPARTY_PLUGIN[item] });
+          });
+          if (list.every(item => item.value)) {
+            callback();
+            clearInterval(timeid);
+          } else {
+            list = [];
+          }
+        }, 150);
       }
     }
   }
