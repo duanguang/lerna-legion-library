@@ -1,5 +1,5 @@
 /**
- * legions-thirdparty-plugin v0.0.2
+ * legions-thirdparty-plugin v0.0.3
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -272,18 +272,37 @@
       clipboard: 'legionsThirdpartyClipboardPlugin',
       dexie: 'legionsThirdpartyDexiePlugin',
   };
-  var LEGIONS_THIRDPARTY_PLUGIN = {
-      //@ts-ignore
-      excel: null,
-      //@ts-ignore
-      html2canvas: null,
-      //@ts-ignore
-      jsBarcode: null,
-      //@ts-ignore
-      clipboard: null,
-      //@ts-ignore
-      dexie: null,
+  function createObj() {
+      return {
+          //@ts-ignore
+          excel: null,
+          //@ts-ignore
+          html2canvas: null,
+          //@ts-ignore
+          jsBarcode: null,
+          //@ts-ignore
+          clipboard: null,
+          //@ts-ignore
+          dexie: null,
+      };
+  }
+  var LEGIONS_THIRDPARTY_PLUGIN = createObj();
+  var PROXY_LEGIONS_THIRPARTY_PLUGIN = createObj();
+  var proxyGetters = function (proxytarget, orginSource) {
+      Object.keys(orginSource).forEach(function (key) {
+          Object.defineProperty(proxytarget, key, {
+              configurable: false,
+              get: function () {
+                  //@ts-ignore
+                  if (!orginSource[key] && "development" !== 'production') {
+                      console.error(key + ":Property has no value yet,it is possible that the Plugin is not ready, Please install at the entrance(legionsThirdpartyPlugin.use({name:'" + key + "',url:''}))");
+                  }
+                  return orginSource[key];
+              },
+          });
+      });
   };
+  proxyGetters(PROXY_LEGIONS_THIRPARTY_PLUGIN, LEGIONS_THIRDPARTY_PLUGIN);
   function onLoadScript(plugin) {
       var id = "legions-" + plugin.name;
       if (!window[PLUGINS[plugin.name]] &&
@@ -312,6 +331,18 @@
                   }
               }
           };
+      }
+      else {
+          var globalValue = window[PLUGINS[plugin.name]] || window.parent[PLUGINS[plugin.name]];
+          if (plugin.name === 'jsBarcode') {
+              LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue['JsBarcode'];
+          }
+          else if (plugin.name === 'dexie') {
+              LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue['DexieUtils'];
+          }
+          else {
+              LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue;
+          }
       }
   }
   var LegionsThirdpartyPlugin = /** @class */ (function () {
@@ -370,7 +401,7 @@
       };
       Object.defineProperty(LegionsThirdpartyPlugin.prototype, "plugins", {
           get: function () {
-              return LEGIONS_THIRDPARTY_PLUGIN;
+              return PROXY_LEGIONS_THIRPARTY_PLUGIN;
           },
           enumerable: false,
           configurable: true

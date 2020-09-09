@@ -6,18 +6,43 @@ const PLUGINS = {
   clipboard: 'legionsThirdpartyClipboardPlugin',
   dexie: 'legionsThirdpartyDexiePlugin',
 };
-const LEGIONS_THIRDPARTY_PLUGIN: IlegionsThirdpartyPlugin = {
-  //@ts-ignore
-  excel: null,
-  //@ts-ignore
-  html2canvas: null,
-  //@ts-ignore
-  jsBarcode: null,
-  //@ts-ignore
-  clipboard: null,
-  //@ts-ignore
-  dexie: null,
+function createObj(): IlegionsThirdpartyPlugin {
+  return {
+    //@ts-ignore
+    excel: null,
+    //@ts-ignore
+    html2canvas: null,
+    //@ts-ignore
+    jsBarcode: null,
+    //@ts-ignore
+    clipboard: null,
+    //@ts-ignore
+    dexie: null,
+  };
+}
+const LEGIONS_THIRDPARTY_PLUGIN: IlegionsThirdpartyPlugin = createObj();
+const PROXY_LEGIONS_THIRPARTY_PLUGIN: IlegionsThirdpartyPlugin = createObj();
+const proxyGetters = function (
+  proxytarget: IlegionsThirdpartyPlugin,
+  orginSource: IlegionsThirdpartyPlugin
+) {
+  Object.keys(orginSource).forEach(key => {
+    Object.defineProperty(proxytarget, key, {
+      configurable: false,
+      get: () => {
+        //@ts-ignore
+        if (!orginSource[key] && process.env.NODE_ENV !== 'production') {
+          console.error(
+            `${key}:Property has no value yet,it is possible that the Plugin is not ready, Please install at the entrance(legionsThirdpartyPlugin.use({name:'${key}',url:''}))`
+          );
+        }
+        return orginSource[key];
+      },
+    });
+  });
 };
+
+proxyGetters(PROXY_LEGIONS_THIRPARTY_PLUGIN, LEGIONS_THIRDPARTY_PLUGIN);
 function onLoadScript(plugin: IPlugin) {
   let id = `legions-${plugin.name}`;
   if (
@@ -46,6 +71,16 @@ function onLoadScript(plugin: IPlugin) {
         }
       }
     };
+  } else {
+    const globalValue =
+      window[PLUGINS[plugin.name]] || window.parent[PLUGINS[plugin.name]];
+    if (plugin.name === 'jsBarcode') {
+      LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue['JsBarcode'];
+    } else if (plugin.name === 'dexie') {
+      LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue['DexieUtils'];
+    } else {
+      LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue;
+    }
   }
 }
 
@@ -101,7 +136,7 @@ export class LegionsThirdpartyPlugin {
     }
   }
   get plugins() {
-    return LEGIONS_THIRDPARTY_PLUGIN;
+    return PROXY_LEGIONS_THIRPARTY_PLUGIN;
   }
 }
 export const legionsThirdpartyPlugin = new LegionsThirdpartyPlugin();
