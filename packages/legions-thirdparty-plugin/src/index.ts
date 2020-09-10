@@ -141,3 +141,4 @@ export class LegionsThirdpartyPlugin {
 }
 export const legionsThirdpartyPlugin = new LegionsThirdpartyPlugin();
 export { focusBind } from './focus-outside';
+const p = new Promise(resolve => {});

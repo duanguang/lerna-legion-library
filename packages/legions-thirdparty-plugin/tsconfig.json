@@ -2,15 +2,17 @@
     "compilerOptions": {
         "declaration": true,
         "declarationDir": "./types",
-        "module": "es2015",
+        /* "module": "es2015", */
         "outDir": "./dist",
         "target": "es5",
         "moduleResolution": "node",
         "baseUrl": "./src",
         "lib": [
             "dom",
+            "es5",
             "dom.iterable",
-            "esnext"
+            /* "esnext", */
+            "ES2015.Promise"
         ],
         "allowJs": true,
         "isolatedModules": true,
