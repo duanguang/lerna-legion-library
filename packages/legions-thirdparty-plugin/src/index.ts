@@ -48,9 +48,16 @@ const proxyGetters = function (
 proxyGetters(PROXY_LEGIONS_THIRPARTY_PLUGIN, LEGIONS_THIRDPARTY_PLUGIN);
 function onLoadScript(plugin: IPlugin) {
   let id = `legions-${plugin.name}`;
+  let parenLegionstValue = null;
+  try {
+    // @ts-ignore
+    parenLegionstValue = window.parent[PLUGINS[plugin.name]];
+  } catch (e) {
+    parenLegionstValue = null;
+  }
   if (
     !window[PLUGINS[plugin.name]] &&
-    !window.parent[PLUGINS[plugin.name]] &&
+    !parenLegionstValue &&
     !document.getElementById(id)
   ) {
     let script = document.createElement('script');
@@ -75,8 +82,7 @@ function onLoadScript(plugin: IPlugin) {
       }
     };
   } else {
-    const globalValue =
-      window[PLUGINS[plugin.name]] || window.parent[PLUGINS[plugin.name]];
+    const globalValue = window[PLUGINS[plugin.name]] || parenLegionstValue;
     if (plugin.name === 'jsBarcode') {
       LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue['JsBarcode'];
     } else if (plugin.name === 'dexie') {
