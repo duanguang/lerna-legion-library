@@ -1,6 +1,6 @@
 import { IlegionsThirdpartyPlugin } from '../types/api';
 interface IPlugin {
-    name: 'excel' | 'html2canvas' | 'jsBarcode' | 'clipboard' | 'dexie';
+    name: 'excel' | 'html2canvas' | 'jsBarcode' | 'clipboard' | 'dexie' | 'focusOutside';
     url: string;
 }
 export declare class LegionsThirdpartyPlugin {
@@ -9,4 +9,4 @@ export declare class LegionsThirdpartyPlugin {
     get plugins(): IlegionsThirdpartyPlugin;
 }
 export declare const legionsThirdpartyPlugin: LegionsThirdpartyPlugin;
-export { focusBind } from './focus-outside';
+export {};

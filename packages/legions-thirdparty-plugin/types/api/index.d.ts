@@ -155,4 +155,8 @@ export interface IlegionsThirdpartyPlugin {
     copyText: (text: string) => Promise<any>;
   };
   dexie: IDexieUtils;
+  focusOutside: {
+    focusBind: (el: any, callback: any, className?: string) => void;
+    focusUnbind: (target: any) => void;
+  };
 }

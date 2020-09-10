@@ -5,6 +5,7 @@ const PLUGINS = {
   jsBarcode: 'legionsThirdpartyJsbarcodePlugin',
   clipboard: 'legionsThirdpartyClipboardPlugin',
   dexie: 'legionsThirdpartyDexiePlugin',
+  focusOutside: 'legionsThirdpartyFocusOutsidePlugin',
 };
 function createObj(): IlegionsThirdpartyPlugin {
   return {
@@ -18,6 +19,8 @@ function createObj(): IlegionsThirdpartyPlugin {
     clipboard: null,
     //@ts-ignore
     dexie: null,
+    //@ts-ignore
+    focusOutside: null,
   };
 }
 const LEGIONS_THIRDPARTY_PLUGIN: IlegionsThirdpartyPlugin = createObj();
@@ -85,7 +88,13 @@ function onLoadScript(plugin: IPlugin) {
 }
 
 interface IPlugin {
-  name: 'excel' | 'html2canvas' | 'jsBarcode' | 'clipboard' | 'dexie';
+  name:
+    | 'excel'
+    | 'html2canvas'
+    | 'jsBarcode'
+    | 'clipboard'
+    | 'dexie'
+    | 'focusOutside';
   url: string;
 }
 export class LegionsThirdpartyPlugin {
@@ -140,5 +149,3 @@ export class LegionsThirdpartyPlugin {
   }
 }
 export const legionsThirdpartyPlugin = new LegionsThirdpartyPlugin();
-export { focusBind } from './focus-outside';
-const p = new Promise(resolve => {});

@@ -1,38 +1,35 @@
-/* import { CreateMapPolyfill } from '../utils/polyfill'; */
-const els = [];
-/* var usePolyfill =
-  typeof process === 'object' &&
-  process.env &&
-  process.env['REFLECT_METADATA_USE_MAP_POLYFILL'] === 'true';
-var _Map =
-  !usePolyfill &&
-  typeof Map === 'function' &&
-  typeof Map.prototype.entries === 'function'
-    ? Map
-    : CreateMapPolyfill(); */
+/* 此库引自社区开源
+ * @Author: txs1992
+ * @url: https://github.com/txs1992/focus-outside
+ * @Date: 2019-07-25 19:32:40
+ * @Last Modified by: duanguang
+ * @Last Modified time: 2020-09-10 14:30:51
+ */
+/* import Map from './map-shim'; */
+const els: any[] = [];
 const elMap = new Map();
 let defaultClass = 'focus-outside';
 
-function isNotFocusable(el) {
-  return isNaN(parseInt(el.getAttribute('tabindex')));
+function isNotFocusable(el: Element) {
+  return isNaN(parseInt(el.getAttribute('tabindex') as string));
 }
 
-function setFocusable(el) {
-  el.setAttribute('tabindex', -1);
+function setFocusable(el: Element) {
+  el.setAttribute('tabindex', '-1');
 }
 
-function getNode(target) {
+function getNode(target: EventTarget) {
   return els.find(el => el.contains(target) || el === target);
 }
 
-function addClass(el, name) {
+function addClass(el: Element, name: string) {
   const classList = el.className.split(' ');
   if (classList.indexOf(name) > -1) return;
   classList.push(name);
   el.className = classList.join(' ');
 }
 
-function removeClass(el, name) {
+function removeClass(el: Element, name: string) {
   const classList = el.className.split(' ');
   const index = classList.indexOf(name);
   if (index < 0) return;
@@ -43,6 +40,7 @@ function removeClass(el, name) {
 function focusinHandler({ target }) {
   const node = getNode(target);
   if (!node) return;
+  //@ts-ignore
   const { el, nodeList } = findNodeMap(elMap.entries(), node) || {};
   if (!el) return;
   clearTimeout(nodeList.timerId);
@@ -51,12 +49,13 @@ function focusinHandler({ target }) {
 function focusoutHandler({ target }) {
   const node = getNode(target);
   if (!node) return;
+  //@ts-ignore
   const { el, key, nodeList } = findNodeMap(elMap.entries(), node) || {};
   if (!el) return;
   nodeList.timerId = setTimeout(key, 10);
 }
 
-function findNodeMap(entries, node) {
+function findNodeMap(entries: any[], node: Element) {
   let result = {};
   elMap.forEach((value, keys) => {
     //console.log(keys,value)
@@ -80,7 +79,11 @@ function findNodeMap(entries, node) {
   } */
 }
 
-export function focusBind(el, callback, className) {
+export function focusBind(
+  el: any,
+  callback: any,
+  className: string = 'focus-outside'
+) {
   if (className) defaultClass = className;
   if (els.indexOf(el) < 0) els.push(el);
   if (elMap.has(callback)) {
@@ -103,7 +106,8 @@ export function focusBind(el, callback, className) {
   el.addEventListener('focusout', focusoutHandler);
 }
 
-export function focusUnbind(target) {
+export function focusUnbind(target: any) {
+  //@ts-ignore
   const { el, key, nodeList } = findNodeMap(elMap.entries(), target) || {};
   if (!el) return;
 

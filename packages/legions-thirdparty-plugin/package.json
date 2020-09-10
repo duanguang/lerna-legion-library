@@ -52,6 +52,7 @@
     "dist",
     "types",
     "clipboard",
+    "focus-outside",
     "jsbarcode"
   ],
   "browserslist": [
