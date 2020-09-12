@@ -1,0 +1,1 @@
+export { pagingQueryProcessing } from './pagingQueryProcessing';

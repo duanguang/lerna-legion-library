@@ -9,6 +9,7 @@ import {
     ObservableMap,
     autorun,
 } from 'mobx';
+import * as debounce from 'lodash.debounce'
 interface IPageQuery<S = {}> {
 
     keyWords: string,
@@ -83,6 +84,7 @@ const SearchPageQuery = debounce((fn: () => void) => {
  * @param {...any[]} restOfName
  * @returns {IPageQueryResult<T>}
  */
+//@ts-ignore
 export function pagingQueryProcessing<T = {}>(options: IPageQueryObject | IPageQueryRestOfName,...restOfName: any[]): IPageQueryResult<T> {
     const stores = getInjector()
     // @ts-ignore

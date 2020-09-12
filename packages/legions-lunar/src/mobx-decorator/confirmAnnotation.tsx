@@ -1,5 +1,5 @@
 import React from 'react';
-import { OpenDeleteConfirm,OpenConfirm,OpenModal } from "../modal";
+import { OpenDeleteConfirm,OpenConfirm,OpenModal } from "../antd-toolkit";
 
 type IConfirmOpions<T> = Parameters<typeof OpenDeleteConfirm>[0] & {
     logger?: (option: { error?: Error,that: T }) => void;
