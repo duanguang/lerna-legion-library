@@ -2,7 +2,7 @@
     "compilerOptions": {
         "declaration": true,
         "declarationDir": "./types",
-        "module": "esnext",
+        /* "module": "esnext", */
         /*  "noImplicitAny": true, */
         "outDir": "./dist",
         "target": "es5",
@@ -10,6 +10,7 @@
         "baseUrl": "./src",
         "lib": [
             "dom",
+            "es5",
             "dom.iterable",
             "esnext"
         ],

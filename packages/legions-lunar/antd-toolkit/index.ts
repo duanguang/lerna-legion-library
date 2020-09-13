@@ -1,5 +1,5 @@
 /**
- * legions-mobx-decorator v0.0.3
+ * legions-lunar v0.0.3
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -52,4 +52,14 @@ var OpenConfirm = function OpenConfirm(options) {
   });
 };
 
-export { OpenConfirm, OpenDeleteConfirm, OpenModal };
+/** 下拉框开启labelInValue时的特殊表单验证规则 */
+var LabeledValueValidator = function (value, error, callBack) {
+    if (value && !value.key) {
+        callBack(error);
+    }
+    else {
+        callBack();
+    }
+};
+
+export { LabeledValueValidator, OpenConfirm, OpenDeleteConfirm, OpenModal };

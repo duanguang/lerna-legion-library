@@ -1,5 +1,5 @@
 /**
- * legions-mobx-decorator v0.0.3
+ * legions-lunar v0.0.3
  * (c) 2020 duanguang
  * @license MIT
  */

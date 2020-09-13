@@ -1,15 +1,17 @@
 /**
- * legions-mobx-decorator v0.0.3
+ * legions-lunar v0.0.3
  * (c) 2020 duanguang
  * @license MIT
  */
-import { reaction } from 'mobx';
+import { reaction, autorun } from 'mobx';
 import { ObservablePromiseModel } from 'brain-store-utils';
 import { NProgress } from 'legions-nprogress';
 import { getInjector } from 'brain-store';
 import { message, Modal } from 'antd';
 import React from 'react';
-import { OpenDeleteConfirm, OpenConfirm, OpenModal } from '../antd-toolkit/index.ts';
+import { MD5 } from 'object-hash';
+import { map, partial } from 'lodash';
+import { any, func } from 'prop-types';
 
 var invariant = require('invariant');
 /**
@@ -72,6 +74,20 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) { if (Object.prototype.hasOwnProperty.call(b, p)) { d[p] = b[p]; } } };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
 
 var __assign = function() {
     __assign = Object.assign || function __assign(t) {
@@ -85,6 +101,31 @@ var __assign = function() {
     };
     return __assign.apply(this, arguments);
 };
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) { return o; }
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) { ar.push(r.value); }
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) { m.call(i); }
+        }
+        finally { if (e) { throw e.error; } }
+    }
+    return ar;
+}
+
+function __spread() {
+    var arguments$1 = arguments;
+
+    for (var ar = [], i = 0; i < arguments.length; i++)
+        { ar = ar.concat(__read(arguments$1[i])); }
+    return ar;
+}
 
 var invariant$1 = require('invariant');
 /**
@@ -156,6 +197,53 @@ function submittingAutoMessage(options) {
     };
 }
 
+var OpenModal = function OpenModal(options) {
+  //信息提示样式
+  options.type = options.type || 'success';
+  var ref = Modal[options.type]({
+    title: options.title || '',
+    content: options.content || '',
+    onOk: function onOk() {
+      options.onOk && options.onOk();
+      ref.destroy();
+    }
+  });
+};
+var OpenDeleteConfirm = function OpenDeleteConfirm(options) {
+  var ref = Modal.confirm({
+    title: options && options.title || '删除',
+    content: options && options.content || '您确认删除选中数据吗？',
+    okText: options && options.okText || '确认',
+    okType: options && options.okType || 'danger',
+    cancelText: options && options.cancelText || '取消',
+    onOk: function onOk() {
+      options.onOk && options.onOk();
+      ref.destroy();
+    },
+    onCancel: function onCancel() {
+      options.onCancel && options.onCancel();
+      ref.destroy();
+    }
+  });
+};
+var OpenConfirm = function OpenConfirm(options) {
+  var ref = Modal.confirm({
+    title: options.title || 'confirm',
+    content: options.content,
+    okText: options.okText || '确认',
+    okType: options.okType || 'danger',
+    cancelText: options.cancelText || '取消',
+    onOk: function onOk() {
+      options.onOk && options.onOk();
+      ref.destroy();
+    },
+    onCancel: function onCancel() {
+      options.onCancel && options.onCancel();
+      ref.destroy();
+    }
+  });
+};
+
 /** 对话框修饰器 */
 function confirmAnnotation(options) {
     return function (target, key, descriptor) {
@@ -219,4 +307,266 @@ function confirmAnnotation(options) {
     };
 }
 
-export { confirmAnnotation, loadProgress, submittingAutoMessage };
+function shortHash(val) {
+  return MD5(val, {
+    algorithm: 'md5',
+    encoding: 'base64'
+  });
+}
+
+function warning(condition, format) {
+  var __DEV__ = process.env.NODE_ENV === 'dev';
+
+  if (__DEV__) {
+    if (!condition) {
+      if (typeof console !== 'undefined') {
+        console.error(format);
+        throw new Error(format);
+      }
+
+      try {
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(format);
+      } catch (x) {
+        // @ts-ignore
+        console.error(x);
+      }
+    }
+  }
+}
+var warned = {};
+function warningOnce(condition, format) {
+  if (!warned[format]) {
+    warning(condition, format);
+    warned[format] = !condition;
+  }
+}
+
+/**
+ *
+ * 订阅数据，在数据变化时，可以处理一些副作用，当你不需要监听时，请及时调用取消调用进行销毁
+ * @param {...Array<any>} funcs 数组内第一个参数一定为函数类型
+ * @returns {Array<Function>}
+ * @memberof StoreBase
+ */
+
+function schedule() {
+  var arguments$1 = arguments;
+  var funcs = [];
+
+  for (var _i = 0; _i < arguments.length; _i++) {
+    funcs[_i] = arguments$1[_i];
+  }
+
+  var subscription = map(map(funcs, function (args) {
+    return partial.apply(void 0, __spread(args));
+  }), autorun);
+  return {
+    unsubscribe: subscription[0]
+  };
+}
+
+var mountedContainerInstance = null;
+var mountedWrapperInstances = [];
+var PageWrapper = /** @class */ (function () {
+    function PageWrapper(instance, mapPropsToPageState, uuid) {
+        this.instance = instance;
+        this.mapPropsToPageState = mapPropsToPageState;
+        this.uuid = uuid;
+    }
+    return PageWrapper;
+}());
+function getDisplayName(WrappedComponent) {
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+}
+function emitChange(uuid) {
+    var newState = { loading: false, submitting: false, progress: false };
+    mountedWrapperInstances.forEach(function (wrapper) {
+        if (wrapper.uuid === uuid) {
+            // @ts-ignore
+            var temp = wrapper.mapPropsToPageState(wrapper.instance.props);
+            newState.loading = newState.loading || temp.loading;
+            newState.submitting = newState.submitting || temp.submitting;
+            newState.progress = newState.progress || temp.progress;
+            /* let state = mountedContainerInstance.state; */
+            // @ts-ignore
+            var state = wrapper.instance.state;
+            for (var key in newState) {
+                if (newState[key] !== state[key]) {
+                    /* mountedContainerInstance.setState(newState); */
+                    // @ts-ignore
+                    wrapper.instance.setState(newState);
+                    break;
+                }
+            }
+        }
+    });
+}
+var PageContainer = /** @class */ (function (_super) {
+    __extends(PageContainer, _super);
+    function PageContainer(props, context) {
+        var _this = _super.call(this, props, context) || this;
+        _this.state = {
+            loading: false,
+            submitting: false,
+            progress: false
+        };
+        return _this;
+    }
+    PageContainer.prototype.getChildContext = function () {
+        return {
+            page: {
+                loading: this.state.loading,
+                submitting: this.state.submitting,
+                progress: this.state.progress
+            },
+            emit: emitChange
+        };
+    };
+    PageContainer.prototype.componentWillMount = function () {
+        if (mountedContainerInstance) {
+            throw new Error("page container must single.");
+        }
+        //@ts-ignore
+        mountedContainerInstance = this;
+    };
+    PageContainer.prototype.componentWillUnmount = function () {
+        mountedContainerInstance = null;
+    };
+    PageContainer.prototype.render = function () {
+        return React.createElement("div", null, this.props.children);
+    };
+    PageContainer.childContextTypes = {
+        page: any,
+        emit: func
+    };
+    return PageContainer;
+}(React.Component));
+function page(options) {
+    return function (WrappedComponent) {
+        /* @observer */
+        var page = /** @class */ (function (_super) {
+            __extends(page, _super);
+            function page() {
+                var _this = _super.call(this) || this;
+                _this.timeId = new Date().getTime();
+                _this.uid = "page" + shortHash(_this.timeId);
+                //@ts-ignore
+                _this.subscription = null;
+                //@ts-ignore
+                _this.subscriptionWatch = null;
+                //@ts-ignore
+                _this.ref = null;
+                _this.dispatch = function () {
+                    if (_this.context.page && options && options.mapPropsToPageState) {
+                        emitChange(_this.uid);
+                    }
+                };
+                _this.watch = function (props) {
+                    var store = [];
+                    if (options) {
+                        if (options.store && typeof options.store === 'string') {
+                            store = [];
+                            warningOnce(props[options.store], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
+                            //@ts-ignore
+                            store.push(props[options.store]);
+                        }
+                        else if (options.store && Array.isArray(options.store)) {
+                            store = [];
+                            options.store.map(function (item) {
+                                warningOnce(props[item], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
+                                //@ts-ignore
+                                store.push(props[item]);
+                            });
+                        }
+                        else {
+                            store = [];
+                            warningOnce(props['store'], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
+                            //@ts-ignore
+                            store.push(props['store']);
+                        }
+                    }
+                    (options && options.sideEffect) && options.sideEffect.apply(options, __spread([_this.ref], store));
+                };
+                _this.state = {
+                    loading: false,
+                    submitting: false,
+                    progress: false
+                };
+                return _this;
+            }
+            page.prototype.componentWillMount = function () {
+                if (this.context.page && options && options.mapPropsToPageState) {
+                    //@ts-ignore
+                    mountedWrapperInstances.push(new PageWrapper(this, options.mapPropsToPageState, this.uid));
+                    /* emitChange(); */
+                    this.subscription = schedule([this.dispatch.bind(this)]);
+                }
+            };
+            page.prototype.componentDidMount = function () {
+                if (options && options.sideEffect) {
+                    this.subscriptionWatch = schedule([this.watch.bind(this), this.props]);
+                }
+            };
+            page.prototype.componentWillReact = function () {
+            };
+            page.prototype.componentWillUnmount = function () {
+                var _this = this;
+                if (this.context.page && options && options.mapPropsToPageState) {
+                    //@ts-ignore
+                    var index = mountedWrapperInstances.findIndex(function (item) { return item.instance == _this; });
+                    mountedWrapperInstances.splice(index, 1);
+                    emitChange(this.uid);
+                }
+                if (this.subscription) {
+                    this.subscription.unsubscribe();
+                    //@ts-ignore
+                    this.subscription = null;
+                }
+                if (this.subscriptionWatch) {
+                    this.subscriptionWatch.unsubscribe();
+                    //@ts-ignore
+                    this.subscriptionWatch = null;
+                }
+            };
+            page.prototype.render = function () {
+                var _this = this;
+                var props = __assign(__assign({}, this.props), { 
+                    /* page: this.context.page, */
+                    page: this.state });
+                /* return React.createElement(component, props); */
+                // @ts-ignore
+                return React.createElement(WrappedComponent, __assign({}, props, { ref: function (ref) { return _this.ref = ref; } }));
+                /* return <WrappedComponent {...props} ref={ref=>runInAction(()=>this.ref=ref) }></WrappedComponent>; */
+            };
+            page.displayName = 'page(' + getDisplayName(WrappedComponent) + ')';
+            page.contextTypes = { page: any, emit: func };
+            return page;
+        }(React.Component));
+        return page;
+    };
+}
+/**
+ *  当操作结果还未返回时，再次触发按钮将不执行函数体代码
+ * 结合page修饰器进行
+ *
+ * @export
+ * @param {*} target
+ * @param {string} propertyKey
+ * @param {PropertyDescriptor} descriptor
+ * @returns
+ */
+function noSubmitting(target, propertyKey, descriptor) {
+    var oldValue = descriptor.value;
+    descriptor.value = function () {
+        //@ts-ignore
+        if (this.props.page && this.props.page.submitting) {
+            return;
+        }
+        oldValue.apply(this, arguments);
+    };
+    return descriptor;
+}
+
+export { PageContainer, confirmAnnotation, loadProgress, noSubmitting, page, submittingAutoMessage };

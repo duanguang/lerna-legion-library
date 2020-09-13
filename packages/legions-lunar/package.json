@@ -77,7 +77,16 @@
     "dist",
     "types",
     "mobx-decorator",
-    "antd-toolkit"
+    "antd-toolkit",
+    "warning",
+    "schedule",
+    "object-hash"
+  ],
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 9",
+    "not op_mini all"
   ],
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
