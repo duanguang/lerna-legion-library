@@ -54,7 +54,7 @@ const MobxDecoratorConfig = {
 const AntdToolKitConfig = {
   esmantdToolkit: {
     input: resolves('src/antd-toolkit/index.ts'),
-    file: resolves('antd-toolkit/index.ts'),
+    file: resolves('antd-toolkit/index.js'),
     format: 'es',
   },
 };
@@ -71,11 +71,6 @@ const warningConfig = {
     file: resolves('warning/index.js'),
     format: 'es',
   },
-  /* esmwarningts: {
-    input: resolves('src/warning/index.ts'),
-    file: resolves('warning/index.ts'),
-    format: 'es',
-  }, */
 };
 const scheduleConfig = {
   esmschedule: {
@@ -83,11 +78,6 @@ const scheduleConfig = {
     file: resolves('schedule/index.js'),
     format: 'es',
   },
-  /* esmschedulets: {
-    input: resolves('src/schedule/index.ts'),
-    file: resolves('schedule/index.ts'),
-    format: 'es',
-  }, */
 };
 const VModelConfig = {
   esmvmodel: {
@@ -103,7 +93,7 @@ const configs = Object.assign(
     file: resolves('dist/egg-decoratorers.common.js'),
     format: 'cjs',
   }, */
-    /*  esm: {
+    esm: {
       input: resolves('src/index.ts'),
       file: resolves('dist/legions-lunar.esm.js'),
       format: 'es',
@@ -112,14 +102,14 @@ const configs = Object.assign(
       input: resolves('src/index.ts'),
       file: resolves('dist/legions-lunar.umd.js'),
       format: 'umd',
-    }, */
+    },
   },
-  MobxDecoratorConfig
-  /* AntdToolKitConfig,
+  MobxDecoratorConfig,
+  AntdToolKitConfig,
   ObjectHashConfig,
   warningConfig,
   scheduleConfig,
-  VModelConfig */
+  VModelConfig
 );
 function genConfig(opts) {
   const config = {
@@ -147,12 +137,13 @@ function genConfig(opts) {
           __VERSION__: version,
         }),
         /* resolve(), */
-        resolve({
-          jsnext: true,
-          main: true,
-          browser: true,
-        }),
-        commonjs(),
+        opts.input.indexOf('model') < 0 &&
+          resolve({
+            jsnext: true,
+            main: true,
+            browser: true,
+          }),
+        opts.input.indexOf('model') < 0 && commonjs(),
         typescript({
           typescript: require('typescript'),
           include: ['*.ts+(|x)', '**/*.ts+(|x)'],
@@ -168,17 +159,18 @@ function genConfig(opts) {
         }),
 
         /*  buble(), */
-        babel({
-          runtimeHelpers: true,
-          // 只转换源代码，不运行外部依赖
-          exclude: 'node_modules/**',
-          // babel 默认不支持 ts 需要手动添加
-          extensions: [...DEFAULT_EXTENSIONS, '.ts'],
-          plugins: [
-            '@babel/plugin-transform-runtime',
-            ['@babel/plugin-proposal-decorators', { legacy: true }],
-          ],
-        }),
+        opts.input.indexOf('model') < 0 &&
+          babel({
+            runtimeHelpers: true,
+            // 只转换源代码，不运行外部依赖
+            exclude: 'node_modules/**',
+            // babel 默认不支持 ts 需要手动添加
+            extensions: [...DEFAULT_EXTENSIONS, '.ts'],
+            plugins: [
+              '@babel/plugin-transform-runtime',
+              ['@babel/plugin-proposal-decorators', { legacy: true }],
+            ],
+          }),
         opts.compress === true && uglify.uglify(),
         /*  buble(), */
       ],

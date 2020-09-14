@@ -6,7 +6,10 @@
 import { MD5 } from 'object-hash';
 
 function shortHash(val) {
-    return MD5(val, { algorithm: 'md5', encoding: 'base64' });
+  return MD5(val, {
+    algorithm: 'md5',
+    encoding: 'base64'
+  });
 }
 
 export { shortHash };

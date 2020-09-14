@@ -51,13 +51,20 @@ function __spread() {
  * @returns {Array<Function>}
  * @memberof StoreBase
  */
+
 function schedule() {
-    var funcs = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        funcs[_i] = arguments[_i];
-    }
-    var subscription = map(map(funcs, function (args) { return partial.apply(void 0, __spread(args)); }), autorun);
-    return { unsubscribe: subscription[0] };
+  var funcs = [];
+
+  for (var _i = 0; _i < arguments.length; _i++) {
+    funcs[_i] = arguments[_i];
+  }
+
+  var subscription = map(map(funcs, function (args) {
+    return partial.apply(void 0, __spread(args));
+  }), autorun);
+  return {
+    unsubscribe: subscription[0]
+  };
 }
 
 export { schedule };

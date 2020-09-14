@@ -37,7 +37,7 @@ const createTransformer = (_options = [defaultOptions]) => {
         typescript_1.isImportDeclaration(node) &&
         isTargetLib(node.moduleSpecifier.text)
       ) {
-        console.log(bindingsMap, node.moduleSpecifier.text, 'fileName1111');
+        /*  console.log(bindingsMap, node.moduleSpecifier.text, 'fileName1111'); */
         node.moduleSpecifier = typescript_1.createStringLiteral(
           bindingsMap[node.moduleSpecifier.text]
         );

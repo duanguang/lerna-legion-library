@@ -17,7 +17,10 @@
   "typings": "types/index.d.ts",
   "exports": {
     "./mobx-decorator": "./mobx-decorator/index.js",
-    "./antd-toolkit": "./antd-toolkit/index.ts"
+    "./antd-toolkit": "./antd-toolkit/index.js",
+    "./model": "./model/index.js",
+    "./warning": "./warning/index.js",
+    "./schedule": "./schedule/index.js"
   },
   "peerDependencies": {
     "brain-store": ">0.1.8",
@@ -80,7 +83,8 @@
     "antd-toolkit",
     "warning",
     "schedule",
-    "object-hash"
+    "object-hash",
+    "model"
   ],
   "browserslist": [
     ">0.2%",
