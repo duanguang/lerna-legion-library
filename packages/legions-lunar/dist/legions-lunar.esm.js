@@ -1,12 +1,12 @@
 /**
- * legions-lunar v0.0.3
+ * legions-lunar v0.0.4
  * (c) 2020 duanguang
  * @license MIT
  */
 import { observablePromise } from 'brain-store-utils';
 import { getInjector } from 'brain-store';
 import { reaction } from 'mobx';
-import * as debounce from 'lodash.debounce';
+import debounce from 'lodash.debounce';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.

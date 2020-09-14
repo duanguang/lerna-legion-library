@@ -9,7 +9,7 @@ import {
     ObservableMap,
     autorun,
 } from 'mobx';
-import * as debounce from 'lodash.debounce'
+import debounce from 'lodash.debounce';
 interface IPageQuery<S = {}> {
 
     keyWords: string,

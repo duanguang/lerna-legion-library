@@ -1,5 +1,5 @@
 /**
- * legions-lunar v0.0.3
+ * legions-lunar v0.0.4
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -9,28 +9,9 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.legionsMobxDecorator = {}, global.brainStoreUtils, global.brainStore, global.mobx, global.debounce));
 }(this, (function (exports, brainStoreUtils, brainStore, mobx, debounce) { 'use strict';
 
-    function _interopNamespace(e) {
-        if (e && e.__esModule) { return e; } else {
-            var n = Object.create(null);
-            if (e) {
-                Object.keys(e).forEach(function (k) {
-                    if (k !== 'default') {
-                        var d = Object.getOwnPropertyDescriptor(e, k);
-                        Object.defineProperty(n, k, d.get ? d : {
-                            enumerable: true,
-                            get: function () {
-                                return e[k];
-                            }
-                        });
-                    }
-                });
-            }
-            n['default'] = e;
-            return Object.freeze(n);
-        }
-    }
+    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-    var debounce__namespace = /*#__PURE__*/_interopNamespace(debounce);
+    var debounce__default = /*#__PURE__*/_interopDefaultLegacy(debounce);
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -70,7 +51,7 @@
         return ar;
     }
 
-    var SearchPageQuery = debounce__namespace(function (fn) {
+    var SearchPageQuery = debounce__default['default'](function (fn) {
         setTimeout(function () {
             fn && fn();
         }, 100);
