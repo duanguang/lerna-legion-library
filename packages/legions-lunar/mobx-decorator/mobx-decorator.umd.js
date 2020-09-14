@@ -4,10 +4,10 @@
  * @license MIT
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('mobx'), require('brain-store-utils'), require('legions-nprogress'), require('brain-store'), require('antd'), require('react'), require('object-hash'), require('lodash'), require('prop-types')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'mobx', 'brain-store-utils', 'legions-nprogress', 'brain-store', 'antd', 'react', 'object-hash', 'lodash', 'prop-types'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.legionsMobxDecorator = {}, global.mobx, global.brainStoreUtils, global.legionsNprogress, global.brainStore, global.antd, global.React, global.rawObjectHash, global.lodash, global.PropTypes));
-}(this, (function (exports, mobx, brainStoreUtils, legionsNprogress, brainStore, antd, React, rawObjectHash, lodash, PropTypes) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('mobx'), require('brain-store-utils'), require('legions-nprogress'), require('brain-store'), require('antd'), require('react'), require('legions-lunar/antd-toolkit'), require('object-hash'), require('legions-lunar/warning'), require('legions-lunar/schedule'), require('prop-types')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'mobx', 'brain-store-utils', 'legions-nprogress', 'brain-store', 'antd', 'react', 'legions-lunar/antd-toolkit', 'object-hash', 'legions-lunar/warning', 'legions-lunar/schedule', 'prop-types'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.legionsMobxDecorator = {}, global.mobx, global.brainStoreUtils, global.legionsNprogress, global.brainStore, global.antd, global.React, global.antdToolkit, global.rawObjectHash, global.warning, global.schedule, global.PropTypes));
+}(this, (function (exports, mobx, brainStoreUtils, legionsNprogress, brainStore, antd, React, antdToolkit, rawObjectHash, warning, schedule, PropTypes) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -79,7 +79,7 @@
     var extendStatics = function(d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) { if (Object.prototype.hasOwnProperty.call(b, p)) { d[p] = b[p]; } } };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
 
@@ -91,11 +91,9 @@
 
     var __assign = function() {
         __assign = Object.assign || function __assign(t) {
-            var arguments$1 = arguments;
-
             for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments$1[i];
-                for (var p in s) { if (Object.prototype.hasOwnProperty.call(s, p)) { t[p] = s[p]; } }
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
             }
             return t;
         };
@@ -104,26 +102,24 @@
 
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) { return o; }
+        if (!m) return o;
         var i = m.call(o), r, ar = [], e;
         try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) { ar.push(r.value); }
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
         }
         catch (error) { e = { error: error }; }
         finally {
             try {
-                if (r && !r.done && (m = i["return"])) { m.call(i); }
+                if (r && !r.done && (m = i["return"])) m.call(i);
             }
-            finally { if (e) { throw e.error; } }
+            finally { if (e) throw e.error; }
         }
         return ar;
     }
 
     function __spread() {
-        var arguments$1 = arguments;
-
         for (var ar = [], i = 0; i < arguments.length; i++)
-            { ar = ar.concat(__read(arguments$1[i])); }
+            ar = ar.concat(__read(arguments[i]));
         return ar;
     }
 
@@ -197,64 +193,15 @@
         };
     }
 
-    var OpenModal = function OpenModal(options) {
-      //信息提示样式
-      options.type = options.type || 'success';
-      var ref = antd.Modal[options.type]({
-        title: options.title || '',
-        content: options.content || '',
-        onOk: function onOk() {
-          options.onOk && options.onOk();
-          ref.destroy();
-        }
-      });
-    };
-    var OpenDeleteConfirm = function OpenDeleteConfirm(options) {
-      var ref = antd.Modal.confirm({
-        title: options && options.title || '删除',
-        content: options && options.content || '您确认删除选中数据吗？',
-        okText: options && options.okText || '确认',
-        okType: options && options.okType || 'danger',
-        cancelText: options && options.cancelText || '取消',
-        onOk: function onOk() {
-          options.onOk && options.onOk();
-          ref.destroy();
-        },
-        onCancel: function onCancel() {
-          options.onCancel && options.onCancel();
-          ref.destroy();
-        }
-      });
-    };
-    var OpenConfirm = function OpenConfirm(options) {
-      var ref = antd.Modal.confirm({
-        title: options.title || 'confirm',
-        content: options.content,
-        okText: options.okText || '确认',
-        okType: options.okType || 'danger',
-        cancelText: options.cancelText || '取消',
-        onOk: function onOk() {
-          options.onOk && options.onOk();
-          ref.destroy();
-        },
-        onCancel: function onCancel() {
-          options.onCancel && options.onCancel();
-          ref.destroy();
-        }
-      });
-    };
-
     /** 对话框修饰器 */
     function confirmAnnotation(options) {
         return function (target, key, descriptor) {
             var oldValue = descriptor.value;
             descriptor.value = function () {
-                var arguments$1 = arguments;
-
                 var _this = this;
                 var rest = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
-                    rest[_i] = arguments$1[_i];
+                    rest[_i] = arguments[_i];
                 }
                 var that = this;
                 try {
@@ -286,15 +233,15 @@
                     }
                     if (options.confirmType === 'delete') {
                         // @ts-ignore
-                        OpenDeleteConfirm(options);
+                        antdToolkit.OpenDeleteConfirm(options);
                     }
                     else if (options.confirmType === 'confirm') {
                         //@ts-ignore
-                        OpenConfirm(options);
+                        antdToolkit.OpenConfirm(options);
                     }
                     else if (options.confirmType === 'message') {
                         //@ts-ignore
-                        OpenModal(options);
+                        antdToolkit.OpenModal(options);
                     }
                 }
                 catch (error) {
@@ -312,59 +259,6 @@
         algorithm: 'md5',
         encoding: 'base64'
       });
-    }
-
-    function warning(condition, format) {
-      var __DEV__ = process.env.NODE_ENV === 'dev';
-
-      if (__DEV__) {
-        if (!condition) {
-          if (typeof console !== 'undefined') {
-            console.error(format);
-            throw new Error(format);
-          }
-
-          try {
-            // This error was thrown as a convenience so that you can use this stack
-            // to find the callsite that caused this warning to fire.
-            throw new Error(format);
-          } catch (x) {
-            // @ts-ignore
-            console.error(x);
-          }
-        }
-      }
-    }
-    var warned = {};
-    function warningOnce(condition, format) {
-      if (!warned[format]) {
-        warning(condition, format);
-        warned[format] = !condition;
-      }
-    }
-
-    /**
-     *
-     * 订阅数据，在数据变化时，可以处理一些副作用，当你不需要监听时，请及时调用取消调用进行销毁
-     * @param {...Array<any>} funcs 数组内第一个参数一定为函数类型
-     * @returns {Array<Function>}
-     * @memberof StoreBase
-     */
-
-    function schedule() {
-      var arguments$1 = arguments;
-      var funcs = [];
-
-      for (var _i = 0; _i < arguments.length; _i++) {
-        funcs[_i] = arguments$1[_i];
-      }
-
-      var subscription = lodash.map(lodash.map(funcs, function (args) {
-        return lodash.partial.apply(void 0, __spread(args));
-      }), mobx.autorun);
-      return {
-        unsubscribe: subscription[0]
-      };
     }
 
     var mountedContainerInstance = null;
@@ -468,21 +362,21 @@
                         if (options) {
                             if (options.store && typeof options.store === 'string') {
                                 store = [];
-                                warningOnce(props[options.store], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
+                                warning.warningOnce(props[options.store], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
                                 //@ts-ignore
                                 store.push(props[options.store]);
                             }
                             else if (options.store && Array.isArray(options.store)) {
                                 store = [];
                                 options.store.map(function (item) {
-                                    warningOnce(props[item], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
+                                    warning.warningOnce(props[item], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
                                     //@ts-ignore
                                     store.push(props[item]);
                                 });
                             }
                             else {
                                 store = [];
-                                warningOnce(props['store'], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
+                                warning.warningOnce(props['store'], 'page(' + getDisplayName(WrappedComponent) + ')' + '你需要监听的数据store在props对象上不存在');
                                 //@ts-ignore
                                 store.push(props['store']);
                             }
@@ -501,12 +395,12 @@
                         //@ts-ignore
                         mountedWrapperInstances.push(new PageWrapper(this, options.mapPropsToPageState, this.uid));
                         /* emitChange(); */
-                        this.subscription = schedule([this.dispatch.bind(this)]);
+                        this.subscription = schedule.schedule([this.dispatch.bind(this)]);
                     }
                 };
                 page.prototype.componentDidMount = function () {
                     if (options && options.sideEffect) {
-                        this.subscriptionWatch = schedule([this.watch.bind(this), this.props]);
+                        this.subscriptionWatch = schedule.schedule([this.watch.bind(this), this.props]);
                     }
                 };
                 page.prototype.componentWillReact = function () {

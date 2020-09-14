@@ -2,7 +2,9 @@ import React from 'react'
 /* import { observer } from 'legions/store-react'
 import { autorun, observable, runInAction } from 'mobx'; */
 import { shortHash } from '../object-hash';
+//@ts-ignore
 import { warningOnce } from '../warning';
+//@ts-ignore
 import { schedule } from '../schedule';
 import { ISchedule } from '../../types/api/schedule';
 //@ts-ignore

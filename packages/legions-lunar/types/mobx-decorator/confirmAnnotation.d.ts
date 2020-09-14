@@ -1,5 +1,5 @@
 import React from 'react';
-import { OpenDeleteConfirm } from "../antd-toolkit";
+import { OpenDeleteConfirm } from "legions-lunar/antd-toolkit";
 declare type IConfirmOpions<T> = Parameters<typeof OpenDeleteConfirm>[0] & {
     logger?: (option: {
         error?: Error;

@@ -4,7 +4,6 @@ TODO.md
 lib
 docs/_book
 examples/**/build.js
-build
 types/typings
 types/test/*.js
 explorations

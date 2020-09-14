@@ -5,6 +5,7 @@ lib
 docs/_book
 examples/**/build.js
 types/typings
+build
 types/test/*.js
 explorations
 *.log

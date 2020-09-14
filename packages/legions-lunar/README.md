@@ -1,11 +1,11 @@
-# `legions-mobx-decorator`
+# `legions-lunar`
 
 > TODO: 基于 mobx 数据流的 React 库修饰器集合
 
 ## Usage
 
 ```
-npm i legions-mobx-decorator --save
+npm i legions-lunar/ --save
 ```
 
 ## API
@@ -15,7 +15,7 @@ npm i legions-mobx-decorator --save
 ```js
 import React from 'react';
 import { observer, bind } from 'legions/store-react';
-import {submittingAutoMessage} from 'legions-mobx-decorator';
+import {submittingAutoMessage} from 'legions-lunar/mobx-decorator';
 
 @bind({ store: UserInfoStore })
 @observer
