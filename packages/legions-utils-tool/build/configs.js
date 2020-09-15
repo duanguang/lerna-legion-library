@@ -1,3 +1,4 @@
+const entityConfig = require('./entity');
 const resolve = require('rollup-plugin-node-resolve'); //告诉 Rollup 如何查找外部模块
 const path = require('path');
 const buble = require('rollup-plugin-buble');
@@ -6,11 +7,28 @@ const babel = require('rollup-plugin-babel');
 const commonjs = require('rollup-plugin-commonjs');
 const typescript = require('rollup-plugin-typescript2');
 const version = process.env.VERSION || require('../package.json').version;
+const { DEFAULT_EXTENSIONS } = require('@babel/core');
+const uglify = require('rollup-plugin-uglify');
+const createTransformer = require('./ts-plugin').default;
 const banner = `/**
  * legions-utils-tool v${version}
  * (c) ${new Date().getFullYear()} duanguang
  * @license MIT
  */`;
+const transformer = () => ({
+  before: [
+    createTransformer([
+      {
+        libraryName: '../invariant',
+        mapLibraryName: 'legions-utils-tool/invariant',
+      },
+      {
+        libraryName: '../type.validation',
+        mapLibraryName: 'legions-utils-tool/type.validation',
+      },
+    ]),
+  ],
+});
 const resolves = _path => path.resolve(__dirname, '../', _path);
 /** 1. amd -- 异步模块定义，用于像RequestJS这样的模块加载器。
 2. cjs -- CommonJS, 适用于Node或Browserify/webpack
@@ -40,23 +58,26 @@ const configs = {
     format: 'iife',
     env: 'production',
   },
-  esmtaro: {
-    input: resolves('src/taro/index.ts'),
-    file: resolves('taro/index.js'),
-    format: 'es',
-  },
-  esmvue: {
-    input: resolves('src/vue/index.ts'),
-    file: resolves('vue/index.js'),
-    format: 'es',
-  },
+  /*  ...entityConfig.cookieConfig,
+  ...entityConfig.downloadConfig,
+  ...entityConfig.debounceConfig,
+  ...entityConfig.domConfig, */
+  ...entityConfig.invariantConfig,
+  ...entityConfig.formatdateConfig,
+  ...entityConfig.formatsttringConfig,
+  ...entityConfig.objectutilsConfig,
+  ...entityConfig.regexConfig,
+  ...entityConfig.storageConfig,
+  ...entityConfig.typevalidationConfig,
+  ...entityConfig.vueStoreConfig,
+  ...entityConfig.tarorequestConfig,
 };
 
 function genConfig(opts) {
   const config = {
     input: {
       input: opts.input,
-      external: [],
+      external: ['invariant'],
       plugins: [
         replace({
           __VERSION__: version,
@@ -70,6 +91,7 @@ function genConfig(opts) {
         typescript({
           typescript: require('typescript'),
           include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+          clean: true,
           exclude: [
             'dist',
             'node_modules/**',
@@ -77,9 +99,21 @@ function genConfig(opts) {
             '**/*.test.{js+(|x), ts+(|x)}',
           ],
           useTsconfigDeclarationDir: true,
-          /* transformers: [transformer], */
+          transformers: [transformer],
         }),
-        buble(),
+        /*  buble(), */
+        /* babel({
+          runtimeHelpers: true,
+          // 只转换源代码，不运行外部依赖
+          exclude: 'node_modules/**',
+          // babel 默认不支持 ts 需要手动添加
+          extensions: [...DEFAULT_EXTENSIONS, '.ts'],
+          plugins: [
+            '@babel/plugin-transform-runtime',
+            ['@babel/plugin-proposal-decorators', { legacy: true }],
+          ],
+        }), */
+        opts.compress === true && uglify.uglify(),
       ],
     },
     output: {

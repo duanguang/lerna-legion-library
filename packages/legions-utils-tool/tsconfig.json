@@ -2,7 +2,8 @@
     "compilerOptions": {
         "declaration": true,
         "declarationDir": "./types",
-        "module": "esnext",
+        /* "module": "esnext", */
+        /* "module": "es2015", */
         /*  "noImplicitAny": true, */
         "outDir": "./dist",
         "target": "es5",
@@ -10,8 +11,10 @@
         "baseUrl": "./src",
         "lib": [
             "dom",
+            "es5",
             "dom.iterable",
-            "esnext"
+            /* "esnext", */
+            "ES2015.Promise"
         ],
         "allowJs": true,
         "isolatedModules": true,
