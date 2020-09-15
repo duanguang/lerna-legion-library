@@ -1,5 +1,5 @@
 /**
- * legions-thirdparty-plugin v0.0.5
+ * legions-thirdparty-plugin v0.0.6
  * (c) 2020 duanguang
  * @license MIT
  */

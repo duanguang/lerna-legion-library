@@ -61,17 +61,16 @@ const proxyGetters = function (
 proxyGetters(PROXY_LEGIONS_THIRPARTY_PLUGIN, LEGIONS_THIRDPARTY_PLUGIN);
 function onLoadScript(plugin: IPlugin) {
   let id = `legions-${plugin.name}`;
-  let parenLegionstValue = null;
+  let LegionstValue = null;
   try {
-    parenLegionstValue = window.parent[THIRDPARTY_PLUGINS[plugin.name]];
+    LegionstValue = window.parent[THIRDPARTY_PLUGINS[plugin.name]];
   } catch (e) {
-    parenLegionstValue = null;
+    LegionstValue = null;
   }
-  if (
-    !window[THIRDPARTY_PLUGINS[plugin.name]] &&
-    !parenLegionstValue &&
-    !document.getElementById(id)
-  ) {
+  if (!LegionstValue) {
+    LegionstValue = window[THIRDPARTY_PLUGINS[plugin.name]];
+  }
+  if (!LegionstValue && !document.getElementById(id)) {
     let script = document.createElement('script');
     script.id = id;
     const version = Date.parse(new Date().toString());
@@ -82,34 +81,34 @@ function onLoadScript(plugin: IPlugin) {
       // tslint:disable-next-line: no-invalid-this
       //@ts-ignore
       if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
-        if (plugin.name === 'jsBarcode') {
-          LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
-            window[THIRDPARTY_PLUGINS[plugin.name]]['JsBarcode'];
-        } else if (plugin.name === 'dexie') {
-          LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
-            window[THIRDPARTY_PLUGINS[plugin.name]]['DexieUtils'];
-        } else {
-          LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
-            window[THIRDPARTY_PLUGINS[plugin.name]];
+        if (window[THIRDPARTY_PLUGINS[plugin.name]]) {
+          if (plugin.name === 'jsBarcode') {
+            LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
+              window[THIRDPARTY_PLUGINS[plugin.name]]['JsBarcode'];
+          } else if (plugin.name === 'dexie') {
+            LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
+              window[THIRDPARTY_PLUGINS[plugin.name]]['DexieUtils'];
+          } else {
+            LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
+              window[THIRDPARTY_PLUGINS[plugin.name]];
+          }
+          EventContainer.emit(plugin.name);
+          EventContainer.off(plugin.name);
         }
-        console.log(
-          EventContainer.cache[plugin.name],
-          EventContainer.cache,
-          'EventContainer'
-        );
-        EventContainer.emit(plugin.name);
-        EventContainer.off(plugin.name);
       }
     };
   } else {
-    const globalValue =
-      window[THIRDPARTY_PLUGINS[plugin.name]] || parenLegionstValue;
-    if (plugin.name === 'jsBarcode') {
-      LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue['JsBarcode'];
-    } else if (plugin.name === 'dexie') {
-      LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue['DexieUtils'];
-    } else {
-      LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = globalValue;
+    if (LegionstValue) {
+      /** 修复在节点和值都不存在时才去请求插件，
+      导致在并发环境中,其中一个请求已经创建节点请求资源,但资源还未回来，
+      导致条件判定不成立，误认为已经有值，直接取值导致异常 */
+      if (plugin.name === 'jsBarcode') {
+        LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = LegionstValue['JsBarcode'];
+      } else if (plugin.name === 'dexie') {
+        LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = LegionstValue['DexieUtils'];
+      } else {
+        LEGIONS_THIRDPARTY_PLUGIN[plugin.name] = LegionstValue;
+      }
     }
   }
 }
