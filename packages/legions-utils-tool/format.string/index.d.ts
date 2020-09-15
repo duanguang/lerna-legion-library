@@ -37,3 +37,11 @@ export declare function amount(value: number | string): any;
  * @returns 返回布尔值
  */
 export declare function isJSON(str: string): boolean;
+/**
+ * 获取字符串长度
+ *
+ * @export
+ * @param {*} str
+ * @returns
+ */
+export declare function getStringLen(str: string): number;

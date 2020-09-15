@@ -1,6 +1,6 @@
 export function warning(condition: boolean, format: string) {
   //@ts-ignore
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     if (!condition) {
       if (typeof console !== 'undefined') {
         console.error(format);
@@ -15,5 +15,13 @@ export function warning(condition: boolean, format: string) {
         console.error(x);
       }
     }
+  }
+}
+
+const warned = {};
+export function warningOnce(condition, format) {
+  if (!warned[format]) {
+    warning(condition, format);
+    warned[format] = !condition;
   }
 }

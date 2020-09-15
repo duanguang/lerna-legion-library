@@ -1,5 +1,5 @@
 /**
- * legions-utils-tool v0.0.5
+ * legions-utils-tool v0.0.6
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -136,15 +136,35 @@
         });
         return newObj;
     }
+    /* export const get = (p: string | number[],o) => p.reduce((xs,x) => (xs && xs[x]) ? xs[x] : null,o) */
     /**  获取指定对象属性 不存在返回 null*/
     var get = function (p) { return function (o) {
         //@ts-ignore
         return p.reduce(function (xs, x) { return (xs && xs[x] ? xs[x] : null); }, o);
     }; };
+    function proxyGetters(target, obj, keys) {
+        keys.map(function (key) {
+            Object.defineProperty(target, key, {
+                get: function () { return obj[key]; },
+            });
+        });
+    }
+    function promiseTry(fn) {
+        return new Promise(function (resolve, reject) {
+            try {
+                resolve(fn());
+            }
+            catch (err) {
+                reject(err);
+            }
+        });
+    }
 
     exports.compare = compare;
     exports.excludeObj = excludeObj;
     exports.get = get;
+    exports.promiseTry = promiseTry;
+    exports.proxyGetters = proxyGetters;
     exports.sort = sort;
 
     Object.defineProperty(exports, '__esModule', { value: true });

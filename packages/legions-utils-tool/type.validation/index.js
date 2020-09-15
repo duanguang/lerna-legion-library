@@ -1,5 +1,5 @@
 /**
- * legions-utils-tool v0.0.5
+ * legions-utils-tool v0.0.6
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -9,9 +9,12 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.legionsUtilsTool = {}));
 }(this, (function (exports) { 'use strict';
 
-  function isObject(value) {
-      return Object(value) === value;
-  }
+  /* export function isObject(value: any) {
+    return Object(value) === value;
+  } */
+  var isObject = function (obj) {
+      return obj && typeof obj === 'object' && !Array.isArray(obj);
+  };
   function isUndefined(value) {
       return value === undefined;
   }
@@ -23,8 +26,16 @@
           (typeof obj === 'object' || typeof obj === 'function') &&
           typeof obj.then === 'function');
   }
+  function isArray(val) {
+      return Object.prototype.toString.call(val) === '[object Array]';
+  }
+  function isNullUndefined(val) {
+      return val === null || val === void 0;
+  }
 
+  exports.isArray = isArray;
   exports.isNull = isNull;
+  exports.isNullUndefined = isNullUndefined;
   exports.isObject = isObject;
   exports.isPromise = isPromise;
   exports.isUndefined = isUndefined;

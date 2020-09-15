@@ -1,5 +1,5 @@
 /**
- * legions-utils-tool v0.0.5
+ * legions-utils-tool v0.0.6
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -197,10 +197,36 @@
       }
       return result;
   }
+  /**
+   * 获取字符串长度
+   *
+   * @export
+   * @param {*} str
+   * @returns
+   */
+  function getStringLen(str) {
+      var len = 0;
+      str = str || '';
+      if (str && typeof str !== 'object') {
+          str = str.toString();
+          if (typeof str === 'string') {
+              for (var i = 0; i < str.length; i++) {
+                  if (str.charCodeAt(i) > 127 || str.charCodeAt(i) == 94) {
+                      len += 2;
+                  }
+                  else {
+                      len++;
+                  }
+              }
+          }
+      }
+      return len;
+  }
 
   exports.amount = amount;
   exports.formatLocaleString = formatLocaleString;
   exports.formatTrim = formatTrim;
+  exports.getStringLen = getStringLen;
   exports.isJSON = isJSON;
   exports.number = number;
 

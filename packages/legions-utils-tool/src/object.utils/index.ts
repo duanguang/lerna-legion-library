@@ -69,8 +69,26 @@ export function excludeObj<T = {}>(exclude: Object, source: Object): T {
   });
   return newObj;
 }
-
+/* export const get = (p: string | number[],o) => p.reduce((xs,x) => (xs && xs[x]) ? xs[x] : null,o) */
 /**  获取指定对象属性 不存在返回 null*/
 export const get = (p: (string | number)[]) => <T = {}>(o: Object): T =>
   //@ts-ignore
   p.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), o);
+
+export function proxyGetters(target, obj, keys) {
+  keys.map(key => {
+    Object.defineProperty(target, key, {
+      get: () => obj[key],
+    });
+  });
+}
+
+export function promiseTry(fn: Function) {
+  return new Promise((resolve, reject) => {
+    try {
+      resolve(fn());
+    } catch (err) {
+      reject(err);
+    }
+  });
+}

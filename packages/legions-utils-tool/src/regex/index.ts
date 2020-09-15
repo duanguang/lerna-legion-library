@@ -21,6 +21,7 @@ interface validatorTypeEnum {
 
   zipCode: number;
   amount: number;
+  path: number;
 }
 export function RegExChk(type: RegExp | validatorTypeEnum, value: string) {
   let $pintu = value;
@@ -84,6 +85,10 @@ export function RegExChk(type: RegExp | validatorTypeEnum, value: string) {
       regex = /^http|https:\/\/\w+\.\w+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/;
       return regex.test($pintu);
     //@ts-ignore
+    case validatorType.path:
+      regex = commonRegex.PATH;
+      return regex.test($pintu);
+    //@ts-ignore
     case validatorType.ip:
       regex = /^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$/;
       return regex.test($pintu);
@@ -128,5 +133,35 @@ export let validatorType: validatorTypeEnum;
   validatorType[(validatorType['decimal'] = 15)] = 'decimal';
   validatorType[(validatorType['zipCode'] = 16)] = 'zipCode';
   validatorType[(validatorType['amount'] = 17)] = 'amount';
+  validatorType[(validatorType['path'] = 18)] = 'path';
   //@ts-ignore
 })(validatorType || (validatorType = {}));
+
+export const commonRegex = {
+  REQUIRED: /[^(^\s*)|(\s*$)]/,
+  CHINESE: /^[\u0391-\uFFE5]+$/,
+  NUMBER: /^[\d]+$/, //或者/^\d+$/
+  INTEGER: /^[-\+]?\d$/, //正负整数
+  PLUSINTEGER: /^[+]?\d$/,
+  DOUBLE: /^[-\+]?\d+(\.\d+)?$/,
+  PLUSDOUBLE: /[+]?\d+(\.\d+)?$/,
+  ENGLISH: /^[A-Z a-z]+$/,
+  USERNAME: /^[a-z]\w{3,}$/i,
+  MOBILE: /^1[3|4|5|7|8][0-9]\d{8}$/,
+  PHONE: /^\d{3}-\d{8}|\d{4}-\d{7,8}$/, //手机号
+  EMAIL: /^[\w\.]+([-]\w+)*@\w+[\.]\w*$/,
+  URL: /^http|https:\/\/\w+\.\w+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/,
+  PATH: /^#|\/(.*)\/?$/i,
+  IP: /^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$/,
+  QQ: /^[1-9]\d{4,10}$/,
+  DECIMAL: /^\d+(\.\d+)*$/,
+  ZIPCODE: /^[1-9]\d{5}$/,
+  /** 集装箱号 */
+  PACKBOXNO: /^[A-Z]{4}[0-9]{7}$/,
+  /** 价格，整数位10位，小数位4位 */
+  PRICE: /^\d{1,10}(\.\d{0,4})?$/,
+  /** 单位转化率，整数位10位，小数位6位 */
+  RATE: /^\d{1,10}(\.\d{0,6})?$/,
+  /** 重量，整数位9位，小数位9位 */
+  WEIGHT: /^\d{1,9}(\.\d{0,9})?$/,
+};

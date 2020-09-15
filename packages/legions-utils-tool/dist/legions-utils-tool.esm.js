@@ -1,11 +1,11 @@
 /**
- * legions-utils-tool v0.0.5
+ * legions-utils-tool v0.0.6
  * (c) 2020 duanguang
  * @license MIT
  */
 function warning(condition, format) {
     //@ts-ignore
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'production') {
         if (!condition) {
             if (typeof console !== 'undefined') {
                 console.error(format);
@@ -23,5 +23,12 @@ function warning(condition, format) {
         }
     }
 }
+var warned = {};
+function warningOnce(condition, format) {
+    if (!warned[format]) {
+        warning(condition, format);
+        warned[format] = !condition;
+    }
+}
 
-export { warning };
+export { warning, warningOnce };

@@ -1,5 +1,5 @@
 /**
- * legions-utils-tool v0.0.5
+ * legions-utils-tool v0.0.6
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -29,8 +29,16 @@
           }
       }
   }
+  var warned = {};
+  function warningOnce(condition, format) {
+      if (!warned[format]) {
+          warning(condition, format);
+          warned[format] = !condition;
+      }
+  }
 
   exports.warning = warning;
+  exports.warningOnce = warningOnce;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

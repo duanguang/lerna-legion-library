@@ -20,3 +20,5 @@ export declare function compare(a: string, b: string): any;
 export declare function excludeObj<T = {}>(exclude: Object, source: Object): T;
 /**  获取指定对象属性 不存在返回 null*/
 export declare const get: (p: (string | number)[]) => <T = {}>(o: Object) => T;
+export declare function proxyGetters(target: any, obj: any, keys: any): void;
+export declare function promiseTry(fn: Function): Promise<unknown>;

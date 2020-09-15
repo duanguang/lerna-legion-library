@@ -1,1 +1,1 @@
-export { warning } from './utils/warning';
+export { warning, warningOnce } from './utils/warning';
