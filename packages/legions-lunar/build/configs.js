@@ -86,6 +86,13 @@ const VModelConfig = {
     format: 'es',
   },
 };
+const legionpluginConfig = {
+  esmlegionpluginsdk: {
+    input: resolves('src/legion.plugin.sdk/index.tsx'),
+    file: resolves('legion.plugin.sdk/index.js'),
+    format: 'es',
+  },
+};
 const configs = Object.assign(
   {
     /* commonjs: {
@@ -104,12 +111,13 @@ const configs = Object.assign(
       format: 'umd',
     },
   },
-  MobxDecoratorConfig,
+  /* MobxDecoratorConfig,
   AntdToolKitConfig,
   ObjectHashConfig,
   warningConfig,
   scheduleConfig,
-  VModelConfig
+  VModelConfig, */
+  legionpluginConfig
 );
 function genConfig(opts) {
   const config = {
