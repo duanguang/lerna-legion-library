@@ -1,11 +1,11 @@
 {
-  "name": "legions-mobx-decorator",
+  "name": "legions-decorator",
   "version": "0.0.2",
-  "description": "> 基于mobx数据流的React 库修饰器集合",
+  "description": "> 常用修饰器集合，如表单规则修饰器等",
   "keywords": [
-    "mobx-decorator",
+    "form-decorator",
     "decorator",
-    "legions-mobx-decorator"
+    "legions-decorator"
   ],
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
