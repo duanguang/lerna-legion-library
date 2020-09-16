@@ -111,12 +111,12 @@ const configs = Object.assign(
       format: 'umd',
     },
   },
-  /* MobxDecoratorConfig,
+  MobxDecoratorConfig,
   AntdToolKitConfig,
   ObjectHashConfig,
   warningConfig,
   scheduleConfig,
-  VModelConfig, */
+  VModelConfig,
   legionpluginConfig
 );
 function genConfig(opts) {

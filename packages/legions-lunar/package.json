@@ -84,6 +84,7 @@
     "warning",
     "schedule",
     "object-hash",
+    "legion.plugin.sdk",
     "model"
   ],
   "browserslist": [
