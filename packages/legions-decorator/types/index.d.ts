@@ -1,2 +1,1 @@
-export { loadProgress } from './loadProgress';
-export { submittingAutoMessage } from './submittingAutoMessage';
+export { FormRuleProperty } from 'async.validator';

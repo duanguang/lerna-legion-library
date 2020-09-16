@@ -1,3 +1,4 @@
+const entityConfig = require('./entity');
 const resolve = require('rollup-plugin-node-resolve'); //告诉 Rollup 如何查找外部模块
 const path = require('path');
 const buble = require('rollup-plugin-buble');
@@ -6,20 +7,23 @@ const babel = require('rollup-plugin-babel');
 const commonjs = require('rollup-plugin-commonjs');
 const typescript = require('rollup-plugin-typescript2');
 const version = process.env.VERSION || require('../package.json').version;
-const tsImportPluginFactory = require('ts-import-plugin');
-const dts = require('rollup-plugin-dts');
+/* const tsImportPluginFactory = require('ts-import-plugin'); */
+const { DEFAULT_EXTENSIONS } = require('@babel/core');
+const uglify = require('rollup-plugin-uglify');
+const createTransformer = require('./ts-plugin').default;
 const banner = `/**
- * legions-mobx-decorator v${version}
+ * legions-decorator v${version}
  * (c) ${new Date().getFullYear()} duanguang
  * @license MIT
  */`;
 const transformer = () => ({
   before: [
-    tsImportPluginFactory({
-      libraryDirectory: 'lib',
-      libraryName: 'antd',
-      style: 'css',
-    }),
+    createTransformer([
+      {
+        libraryName: '../regex',
+        mapLibraryName: 'legions-utils-tool/regex',
+      },
+    ]),
   ],
 });
 const resolves = _path => path.resolve(__dirname, '../', _path);
@@ -34,26 +38,19 @@ const configs = {
     file: resolves('dist/egg-decoratorers.common.js'),
     format: 'cjs',
   }, */
-  esm: {
+  umd: {
     input: resolves('src/index.ts'),
     file: resolves('dist/legions-mobx-decorator.esm.js'),
-    format: 'es',
+    format: 'umd',
   },
+  ...entityConfig.asyncvalidator,
 };
 
 function genConfig(opts) {
   const config = {
     input: {
       input: opts.input,
-      external: [
-        'reflect-metadata',
-        'antd',
-        'brain-store',
-        'brain-store-utils',
-        'react',
-        'mobx',
-        'legions-nprogress',
-      ],
+      external: ['reflect-metadata', 'legions-utils-tool/regex', '../regex'],
       plugins: [
         replace({
           __VERSION__: version,
@@ -63,9 +60,11 @@ function genConfig(opts) {
           main: true,
           browser: true,
         }),
+        commonjs(),
         typescript({
           typescript: require('typescript'),
           include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+          clean: true,
           exclude: [
             'dist',
             'node_modules/**',
@@ -73,8 +72,20 @@ function genConfig(opts) {
             '**/*.test.{js+(|x), ts+(|x)}',
           ],
           useTsconfigDeclarationDir: true,
-          /* transformers: [transformer], */
+          transformers: [transformer],
         }),
+        /* babel({
+          runtimeHelpers: true,
+          // 只转换源代码，不运行外部依赖
+          exclude: 'node_modules/**',
+          // babel 默认不支持 ts 需要手动添加
+          extensions: [...DEFAULT_EXTENSIONS, '.ts'],
+          plugins: [
+            '@babel/plugin-transform-runtime',
+            ['@babel/plugin-proposal-decorators', { legacy: true }],
+          ],
+        }), */
+        opts.compress === true && uglify.uglify(),
         /*  buble(), */
       ],
     },
@@ -82,7 +93,7 @@ function genConfig(opts) {
       banner,
       file: opts.file,
       format: opts.format,
-      name: 'legionsMobxDecorator',
+      name: 'legionsDecorator',
     },
   };
 
