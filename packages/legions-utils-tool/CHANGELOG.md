@@ -8,3 +8,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Feature
 
 - 新增常用工具类方法，如对象类型判定等等 ([fdb987c](https://github.com/duanguang/lerna-legion-library/commit/fdb987c9f28400e20f88fddd9cb5d2a3c402db47))
+
+## [0.0.7](https://github.com/duanguang/lerna-legion-library/compare/legions-utils-tool@0.0.7...legions-utils-tool@0.0.7) (2020-09-18)
+
+### Bug Fixes
+
+- 修复下载事件调用方法错误问题 ([fdb987c](https://github.com/duanguang/lerna-legion-library/commit/fdb987c9f28400e20f88fddd9cb5d2a3c402db47))
