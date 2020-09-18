@@ -81,6 +81,7 @@ function genConfig(opts) {
       plugins: [
         replace({
           __VERSION__: version,
+          __DEV__: `(process.env.NODE_ENV !== 'production')`,
         }),
         resolve({
           jsnext: true,

@@ -18,7 +18,7 @@
  * will remain to ensure logic does not differ in production.
  */
 
-var NODE_ENV = process.env.NODE_ENV;
+const NODE_ENV = process.env.NODE_ENV;
 
 export var invariant = function (condition, format, a, b, c, d, e, f) {
   if (NODE_ENV !== 'production') {
