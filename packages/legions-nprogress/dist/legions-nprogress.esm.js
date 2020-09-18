@@ -1,5 +1,5 @@
 /**
- * legions-nprogress v0.0.3
+ * legions-nprogress v0.0.5
  * (c) 2020 duanguang
  * @license MIT
  */

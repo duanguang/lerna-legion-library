@@ -1,0 +1,36 @@
+{
+    "name": "legions-nprogress",
+    "version": "0.0.5",
+    "description": "页面顶部进度条组件",
+    "keywords": [
+        "nprogress",
+        "nprogress-component"
+    ],
+    "author": "duanguang <18520583569@163.com>",
+    "homepage": "",
+    "license": "MIT",
+    "main": "dist/legions-nprogress.umd.js",
+    "typings": "types/index.d.ts",
+    "devDependencies": {
+        "legions-rpc-cli": "^0.0.7",
+        "core-js": "3",
+        "invariant": "^2.2.1"
+    },
+    "directories": {
+        "lib": "lib",
+        "test": "__tests__"
+    },
+    "files": [
+        "dist",
+        "types/index.d.ts",
+        "types/nprogress.d.ts",
+        "style"
+    ],
+    "scripts": {
+        "test": "echo \"Error: run tests from root\" && exit 1",
+        "build": "legions-rpc rpc -c",
+        "build:main": "node build/build.main.js",
+        "release": "bash build/release.sh"
+    },
+    "gitHead": "1e80f0ebb53edb8e9ecaa46efa41e0442e9d1716"
+}

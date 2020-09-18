@@ -1,0 +1,83 @@
+{
+    "name": "legions-lunar",
+    "version": "0.0.4",
+    "description": "> 连接增强器，提高业务产出效率 ",
+    "keywords": [
+      "mobx-decorator",
+      "decorator",
+      "react-decorator",
+      "antd-mobx-decorator",
+      "mobx"
+    ],
+    "author": "duanguang <18520583569@163.com>",
+    "homepage": "https://github.com/duanguang/lerna-legion-library.git",
+    "license": "MIT",
+    "main": "dist/legions-lunar.esm.js",
+    "module": "dist/legions-lunar.esm.js",
+    "typings": "types/index.d.ts",
+    "exports": {
+      "./mobx-decorator": "./mobx-decorator/index.js",
+      "./antd-toolkit": "./antd-toolkit/index.js",
+      "./model": "./model/index.js",
+      "./warning": "./warning/index.js",
+      "./schedule": "./schedule/index.js"
+    },
+    "peerDependencies": {
+      "brain-store": ">0.1.8",
+      "brain-store-utils": ">0.1.8",
+      "mobx": ">3.0.0",
+      "legions-nprogress": ">0.0.1",
+      "reflect-metadata": ">0.1.1"
+    },
+    "dependencies": {
+      "warning": "^3.0.0"
+    },
+    "devDependencies": {
+      "@types/node": "^10.0.0",
+      "@types/react": "^15.6.6",
+      "@types/react-dom": "^0.14.22",
+      "antd": "^2.7.4",
+      "core-js": "3",
+      "brain-store": "^0.1.10-rc.1",
+      "brain-store-utils": "0.1.13-beta.2",
+      "history": "^4.7.2",
+      "husky": "^1.3.1",
+      "invariant": "^2.2.1",
+      "mobx": "^3.6.2",
+      "object-hash": "^1.3.0",
+      "react": "^15.4.2",
+      "react-dom": "^15.4.2",
+      "legions-nprogress": "^0.0.5",
+      "reflect-metadata": "^0.1.13",
+      "legions-rpc-cli": "^0.0.2"
+    },
+    "directories": {
+      "lib": "lib",
+      "test": "__tests__"
+    },
+    "files": [
+      "dist",
+      "types",
+      "mobx-decorator",
+      "antd-toolkit",
+      "warning",
+      "schedule",
+      "object-hash",
+      "legion.plugin.sdk",
+      "model"
+    ],
+    "browserslist": [
+      ">0.2%",
+      "not dead",
+      "not ie <= 9",
+      "not op_mini all"
+    ],
+    "scripts": {
+      "test": "echo \"Error: run tests from root\" && exit 1",
+      "build": "legions-rpc rpc -c",
+      "builds": "npm run build:main",
+      "build:main": "node build/build.main.js",
+      "release": "bash build/release.sh"
+    },
+    "gitHead": "1e80f0ebb53edb8e9ecaa46efa41e0442e9d1716"
+  }
