@@ -1,5 +1,5 @@
 /**
- * legions-utils-tool v0.0.5
+ * legions-utils-tool v0.0.7
  * (c) 2020 duanguang
  * @license MIT
  */
@@ -46,6 +46,13 @@
       a.href = url;
       return location.hostname === a.hostname && location.protocol === a.protocol;
   }
+  function downloading(url) {
+      var a = document.createElement('a');
+      a.download = '';
+      a.href = url;
+      // firefox doesn't support `a.click()`...
+      a.dispatchEvent(new MouseEvent('click'));
+  }
   function download(urls) {
       if (!urls) {
           throw new Error('`urls` required');
@@ -58,9 +65,9 @@
       urls.forEach(function (url) {
           // the download init has to be sequential for firefox if the urls are not on the same domain
           if (isFirefox() && !sameDomain(url)) {
-              return setTimeout(download.bind(null, url), 100 * ++delay);
+              return setTimeout(downloading.bind(null, url), 100 * ++delay);
           }
-          setTimeout(download.bind(null, url), 100 * ++delay);
+          setTimeout(downloading.bind(null, url), 100 * ++delay);
       });
   }
 

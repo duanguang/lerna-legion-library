@@ -44,7 +44,7 @@ function sameDomain(url) {
   return location.hostname === a.hostname && location.protocol === a.protocol;
 }
 
-function _download(url) {
+function downloading(url) {
   let a = document.createElement('a');
   a.download = '';
   a.href = url;
@@ -65,8 +65,8 @@ export function download(urls: string[]) {
   urls.forEach(function (url) {
     // the download init has to be sequential for firefox if the urls are not on the same domain
     if (isFirefox() && !sameDomain(url)) {
-      return setTimeout(_download.bind(null, url), 100 * ++delay);
+      return setTimeout(downloading.bind(null, url), 100 * ++delay);
     }
-    setTimeout(_download.bind(null, url), 100 * ++delay);
+    setTimeout(downloading.bind(null, url), 100 * ++delay);
   });
 }

@@ -58,10 +58,10 @@ const configs = {
     format: 'iife',
     env: 'production',
   },
-  /*  ...entityConfig.cookieConfig,
+  ...entityConfig.cookieConfig,
   ...entityConfig.downloadConfig,
   ...entityConfig.debounceConfig,
-  ...entityConfig.domConfig, */
+  ...entityConfig.domConfig,
   ...entityConfig.invariantConfig,
   ...entityConfig.formatdateConfig,
   ...entityConfig.formatsttringConfig,

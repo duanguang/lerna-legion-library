@@ -4,14 +4,24 @@
  * @param fmt 目标字符串格式，支持的字符有：y,M,d,q,w,H,h,m,S，默认：yyyy-MM-dd HH:mm:ss
  * @returns 返回格式化后的日期字符串
  */
-export declare function formatDate(date: Date | number, fmt: string): string;
+export declare function formatDate(date: Date | number, fmt?: string): string;
 /**
  * 将字符串解析成日期
  * @param str 输入的日期字符串，如'2014-09-13'
  * @param fmt 字符串格式，默认'yyyy-MM-dd'，支持如下：y、M、d、H、m、s、S，不支持w和q
  * @returns 解析后的Date类型日期
  */
-export declare function parseDate(str: string, fmt: 'yyyy-MM-dd' | 'yyyy-MM' | 'yyyy-MM-dd hh:mm:ss' | 'yyyy-MM-dd hh' | 'yyyy-MM-dd hh:mm' | 'hh:mm' | 'mm'): Date;
+export declare function parseDate(
+  str: string,
+  fmt:
+    | 'yyyy-MM-dd'
+    | 'yyyy-MM'
+    | 'yyyy-MM-dd hh:mm:ss'
+    | 'yyyy-MM-dd hh'
+    | 'yyyy-MM-dd hh:mm'
+    | 'hh:mm'
+    | 'mm'
+): Date;
 /**
  * 将一个日期格式化成友好格式，比如，1分钟以内的返回“刚刚”，
  * 当天的返回时分，当年的返回月日，否则，返回年月日
@@ -41,14 +51,20 @@ export declare function isLeapYear(year: Date | number): boolean;
  * 方式二：getMonthDays(new Date());
  * 方式三：getMonthDays(2013, 12);
  */
-export declare function getMonthDays(date?: Date | number, month?: number): number;
+export declare function getMonthDays(
+  date?: Date | number,
+  month?: number
+): number;
 /**
  * 计算2日期之间的天数，用的是比较毫秒数的方法
  * 传进来的日期要么是Date类型，要么是yyyy-MM-dd格式的字符串日期
  * @param date1 日期一
  * @param date2 日期二
  */
-export declare function countDays(date1: Date | string, date2: Date | string): number;
+export declare function countDays(
+  date1: Date | string,
+  date2: Date | string
+): number;
 /**
  *获取指定日期月数最后一天
  *
