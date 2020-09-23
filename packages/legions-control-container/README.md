@@ -1,6 +1,6 @@
 # `legions-control-container`
 
-> TODO: 常用修饰器集合
+> TODO: IoC 容器使用类构造函数来标识并注入其依赖项
 
 ## Usage
 
