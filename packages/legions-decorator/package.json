@@ -15,6 +15,7 @@
   "typings": "types/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
+    "@types/jest": "^24.0.25",
     "reflect-metadata": "^0.1.13",
     "legions-utils-tool": "^0.0.6",
     "warning": "^3.0.0"
