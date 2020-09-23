@@ -1,11 +1,11 @@
 {
   "name": "legions-control-container",
   "version": "0.0.2",
-  "description": "> 常用修饰器集合，如表单规则修饰器等",
+  "description": "IoC 容器使用类构造函数来标识并注入其依赖项",
   "keywords": [
-    "form-decorator",
-    "decorator",
-    "legions-decorator"
+    "container",
+    "IoC",
+    "node-IoC"
   ],
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
@@ -15,10 +15,7 @@
   "typings": "types/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "inversify": "^5.0.1",
-    "inversify-binding-decorators": "^4.0.0",
-    "inversify-inject-decorators": "^3.1.0"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
@@ -38,8 +35,7 @@
   },
   "files": [
     "dist",
-    "types",
-    "async.validator"
+    "types"
   ],
   "scripts": {
     "test": "jest",
