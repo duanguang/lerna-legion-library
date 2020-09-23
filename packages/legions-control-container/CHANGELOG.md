@@ -3,8 +3,8 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 0.0.2 (2020-09-16)
+## 0.0.2 (2020-09-23)
 
-### Bug Fixes
+### Feature
 
-- 新增[@FormRuleProperty](https://github.com/submitting)FormRuleProperty 修饰器 ([a018052](https://github.com/duanguang/lerna-legion-library/commit/a018052def80c8d2a872f4e269f5e35e203df6ff))
+- 新增容器实现及依赖注入方法
