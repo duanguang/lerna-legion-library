@@ -12,13 +12,10 @@
   "license": "MIT",
   "main": "dist/legions-control-container.umd.js",
   "module": "dist/legions-control-container.umd.js",
-  "typings": "types/index.d.ts",
+  "typings": "types/main/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "inversify": "^5.0.1",
-    "inversify-binding-decorators": "^4.0.0",
-    "inversify-inject-decorators": "^3.1.0"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
@@ -38,7 +35,8 @@
   },
   "files": [
     "dist",
-    "types"
+    "types/api",
+    "types/main"
   ],
   "scripts": {
     "test": "jest",
