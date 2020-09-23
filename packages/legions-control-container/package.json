@@ -15,7 +15,10 @@
   "typings": "types/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "inversify": "^5.0.1",
+    "inversify-binding-decorators": "^4.0.0",
+    "inversify-inject-decorators": "^3.1.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
@@ -39,6 +42,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "test1": "jest --watch /__tests__/legions-control-container.*.ts",
     "build": "lrpc rpc -c",
     "build:main": "node build/build.main.js",
     "release": "bash build/release.sh"
