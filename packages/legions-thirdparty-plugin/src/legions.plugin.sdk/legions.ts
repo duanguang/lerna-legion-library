@@ -273,7 +273,7 @@ export function dynamicLoadingScript<T = {}>(options: {
     if (!sdkElemnet && !LegionstValue) {
       onload();
     } else if (sdkElemnet && !LegionstValue) {
-      console.warn('定义了相同节点ID，检查scriptId 值');
+      console.warn('定义了相同节点ID,检查scriptId 值');
     }
   }
 }
