@@ -185,4 +185,15 @@ function mapValues(obj, fn) {
   return res;
 }
 
-module.exports = mapValues(configs, genConfig);
+module.exports = mapValues(
+  {
+    umdDev: {
+      input: resolves('src/index.ts'),
+      file: resolves('dist/legions-thirdparty-plugin.umd.js'),
+      format: 'umd',
+      compress: true,
+      env: 'development',
+    },
+  },
+  genConfig
+);

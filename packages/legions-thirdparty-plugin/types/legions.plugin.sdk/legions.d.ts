@@ -97,7 +97,11 @@ interface IlegionsPlugin {
     MicroApps: ClassOf<MicroApps> & typeof MicroApps;
 }
 /** 公共SDK方法，包含用户浏览器信息,写入公共方法 */
-export declare const legionsPlugins: (onLoaded?: () => void, src?: string) => IlegionsPlugin;
+export declare const legionsPlugins: (options?: {
+    onLoaded?: () => void;
+    src?: string;
+    notification?: () => void;
+}) => IlegionsPlugin;
 /**全局变量LegionsPlugins执行函数
  * 回调函数执行时机，如果SDK资源未加载，则在资源加载完成时执行。如果资源已经准备妥当，则直接执行回调
  *

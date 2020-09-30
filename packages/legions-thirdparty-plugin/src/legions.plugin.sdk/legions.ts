@@ -193,9 +193,7 @@ const _LegionsPlugins = () => {
           // 当资源还未加载完成时，所有调用该函数的回调，全部写入待执行队列，在资源加载完成，在依次执行
           legionsPluginLoadedList.push(options.onLoaded);
         }
-        if (options) {
-          onLoadScript(options);
-        }
+        onLoadScript(options);
       }
     }
     _legions = legions;
@@ -205,10 +203,11 @@ const _LegionsPlugins = () => {
 };
 /** 公共SDK方法，包含用户浏览器信息,写入公共方法 */
 //@ts-ignore
-export const legionsPlugins: (
-  onLoaded?: () => void,
-  src?: string
-) => IlegionsPlugin = _LegionsPlugins();
+export const legionsPlugins: (options?: {
+  onLoaded?: () => void;
+  src?: string;
+  notification?: () => void;
+}) => IlegionsPlugin = _LegionsPlugins();
 
 /**全局变量LegionsPlugins执行函数
  * 回调函数执行时机，如果SDK资源未加载，则在资源加载完成时执行。如果资源已经准备妥当，则直接执行回调
@@ -217,11 +216,13 @@ export const legionsPlugins: (
 export function LegionsPluginsExecute(
   onExecute: (legions: IlegionsPlugin) => void
 ) {
-  legionsPlugins(() => {
-    const legions = legionsPlugins();
-    if (legions) {
-      onExecute && onExecute(legions);
-    }
+  legionsPlugins({
+    onLoaded: () => {
+      const legions = legionsPlugins();
+      if (legions) {
+        onExecute && onExecute(legions);
+      }
+    },
   });
 }
 /** 查找window 变量值，优先查找父级元素，如果没有找到 */
