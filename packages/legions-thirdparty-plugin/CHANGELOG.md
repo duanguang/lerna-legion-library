@@ -20,3 +20,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 - 修复在节点和值都不存在时才去请求插件，导致在并发环境中,其中一个请求已经创建节点请求资源,但资源还未回来，导致条件判定不成立，误认为已经有值，直接取值导致异常，
+
+## [0.0.8](https://github.com/duanguang/lerna-legion-library/compare/legions-thirdparty-plugin@0.1.0...legions-nprogress@0.0.7) (2020-09-15)
+
+### feature
+
+- 新增 sdk 插件加载
+- 新增动态加载资源

@@ -214,3 +214,10 @@ export class LegionsThirdpartyPlugin {
   }
 }
 export const legionsThirdpartyPlugin = new LegionsThirdpartyPlugin();
+
+export {
+  LegionsPluginsExecute,
+  legionsPlugins,
+  dynamicLoadingScript,
+  findWindow,
+} from './legions.plugin.sdk/legions';
