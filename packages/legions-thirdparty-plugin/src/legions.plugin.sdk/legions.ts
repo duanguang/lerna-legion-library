@@ -54,7 +54,7 @@ declare class MicroApps {
     container: string;
   }): void;
 }
-interface IlegionsPlugin {
+interface IlegionsPlugin<DataOrigin = {}> {
   BrowserMatch: {
     getBrowser: () => {
       browser: string;
@@ -71,7 +71,7 @@ interface IlegionsPlugin {
   DataOrigin: {
     add: <T, K extends keyof T>(key: keyof Partial<T>, value: T[K]) => void;
     has: <T>(key: keyof Partial<T>) => boolean;
-    get: <T, K extends keyof T, DataOrigin = {}>(
+    get: <T, K extends keyof T>(
       key: keyof Partial<T & ILegionsPluginDataOrigin & DataOrigin>
     ) => T[K];
     update: <T, K extends keyof T>(key: keyof Partial<T>, value: T[K]) => void;

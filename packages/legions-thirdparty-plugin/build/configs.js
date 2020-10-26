@@ -20,7 +20,7 @@ const resolves = _path => path.resolve(__dirname, '../', _path);
 3. es -- 将软件包保存为ES模块文件。
 4. iife -- 一个自动执行的功能，适合作为 <script>标签这样的。
 5. umd -- 通用模块定义，以amd, cjs, 和 iife 为一体。 */
-const configs = {
+const main = {
   umdDev: {
     input: resolves('src/index.ts'),
     file: resolves('dist/legions-thirdparty-plugin.umd.js'),
@@ -33,13 +33,14 @@ const configs = {
     file: resolves('dist/legions-thirdparty-plugin.js'),
     format: 'iife',
   }, */
-  iifeProd: {
+  /* iifeProd: {
     input: resolves('src/index.ts'),
     file: resolves('release/legions-thirdparty-plugin.min.js'),
     format: 'iife',
     env: 'production',
-  },
-
+  }, */
+};
+const focusOutside = {
   umdfocusOutsideDev: {
     input: resolves('src/focus-outside/index.ts'),
     file: resolves('focus-outside/index.js'),
@@ -54,6 +55,8 @@ const configs = {
     env: 'production',
     outputName: 'legionsThirdpartyFocusOutsidePlugin',
   },
+};
+const dexie = {
   /* esmdexie: {
     input: resolves('src/dexie/index.ts'),
     file: resolves('dexie/index.js'),
@@ -66,7 +69,8 @@ const configs = {
     env: 'production',
     outputName: 'legionsThirdpartyDexiePlugin',
   },
-
+};
+const clipboard = {
   esmclipboard: {
     input: resolves('src/clipboard/index.ts'),
     file: resolves('clipboard/index.js'),
@@ -79,6 +83,8 @@ const configs = {
     env: 'production',
     outputName: 'legionsThirdpartyClipboardPlugin',
   },
+};
+const jsbarcode = {
   esmjsbarcode: {
     input: resolves('src/jsbarcode/index.ts'),
     file: resolves('jsbarcode/index.js'),
@@ -91,6 +97,8 @@ const configs = {
     env: 'production',
     outputName: 'legionsThirdpartyJsbarcodePlugin',
   },
+};
+const html2canvas = {
   /* esmhtml2canvas: {
     input: resolves('src/html2canvas/index.ts'),
     file: resolves('html2canvas/index.js'),
@@ -103,18 +111,35 @@ const configs = {
     env: 'production',
     outputName: 'legionsThirdpartyHtml2canvasPlugin',
   },
+};
+const excel = {
   /* esmexcel: {
     input: resolves('src/excel/index.ts'),
     file: resolves('excel/index.js'),
     format: 'umd',
   }, */
-  /* iifeexcelProd: {
+  iifeexcelProd: {
     input: resolves('src/excel/index.ts'),
     file: resolves('release/excel.min.js'),
     format: 'iife',
     env: 'production',
     outputName: 'legionsThirdpartyExcelPlugin',
-  }, */
+  },
+};
+const mainEntity = {
+  main,
+  excel,
+  html2canvas,
+  jsbarcode,
+  clipboard,
+  dexie,
+  focusOutside,
+};
+const entity = mainEntity.hasOwnProperty(process.env.PACKAGE)
+  ? mainEntity[process.env.PACKAGE]
+  : mainEntity;
+const configs = {
+  ...entity,
 };
 
 function genConfig(opts) {
@@ -185,15 +210,4 @@ function mapValues(obj, fn) {
   return res;
 }
 
-module.exports = mapValues(
-  {
-    umdDev: {
-      input: resolves('src/index.ts'),
-      file: resolves('dist/legions-thirdparty-plugin.umd.js'),
-      format: 'umd',
-      compress: true,
-      env: 'development',
-    },
-  },
-  genConfig
-);
+module.exports = mapValues(configs, genConfig);
