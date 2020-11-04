@@ -1,0 +1,50 @@
+{
+  "name": "legions-report",
+  "version": "0.0.1",
+  "description": "日志上报",
+  "keywords": [
+    "container",
+    "IoC",
+    "node-IoC"
+  ],
+  "author": "duanguang <18520583569@163.com>",
+  "homepage": "https://github.com/duanguang/lerna-legion-library.git",
+  "license": "MIT",
+  "main": "dist/legions-report.umd.js",
+  "module": "dist/legions-report.umd.js",
+  "typings": "types/index.d.ts",
+  "peerDependencies": {},
+  "dependencies": {
+    "legions-utils-tool": "^0.0.9-rc.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.25",
+    "@commitlint/cli": "^7.3.2",
+    "@commitlint/config-conventional": "^7.3.1",
+    "legions-rpc-cli": "^0.0.8",
+    "core-js": "3",
+    "cross-env": "^2.0.1",
+    "husky": "^1.3.1",
+    "invariant": "^2.2.1",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist",
+    "types/api",
+    "types/main"
+  ],
+  "scripts": {
+    "test": "jest",
+    "test1": "jest --watch /__tests__/legions-control-container.*.ts",
+    "build:c": "cross-env PACKAGE=commonjs legions-rpc rpc -c",
+    "build:b": "cross-env PACKAGE=browser legions-rpc rpc -c",
+    "build:main": "node build/build.main.js",
+    "release": "bash build/release.sh"
+  },
+  "gitHead": "1e80f0ebb53edb8e9ecaa46efa41e0442e9d1716"
+}
