@@ -3,9 +3,12 @@ const resolves = _path => path.join(process.cwd(), _path);
 module.exports = {
   external: [],
   rollupPlugin: {
-    babel: false,
+    /* babel: false, */
     typescript: {
       include: ['*.ts+(|x)', '**/*.ts+(|x)', '**/*.js', '*.js'],
+    },
+    replace: {
+      __DEV__: `(process.env.NODE_ENV !== 'production')`,
     },
   },
   extendPlugins: [],
@@ -16,8 +19,9 @@ module.exports = {
       file: resolves('dist/legions-import-html-entry.iife.js'),
       format: 'iife',
       compress: false,
+      env: 'production',
       banner: ' legions-import-html-entry',
-      outputName: 'importHTML',
+      outputName: 'legionsImportHTML',
     },
     {
       name: 'umdprod',

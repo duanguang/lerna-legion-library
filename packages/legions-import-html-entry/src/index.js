@@ -1,5 +1,3 @@
-import 'core-js/modules/es6.weak-map';
-
 import processTpl, { genLinkReplaceSymbol } from './process-tpl';
 import {
   /* defaultGetPublicPath */ getGlobalProp,
@@ -15,25 +13,6 @@ var embedHTMLCache = {};
 var isMergeCache = {};
 /* var fetch = window.fetch.bind(window); */
 import { fetch } from 'whatwg-fetch';
-var sandboxProxies = new WeakMap();
-function compileCode(src) {
-  isWith && (src = 'with (sandbox) {' + src + '}');
-  var code = new Function('sandbox', src);
-  function has(target, key) {
-    return true;
-  }
-  function get(target, key) {
-    if (key === Symbol.unscopables) return undefined;
-    return target[key];
-  }
-  return function (sandbox) {
-    if (!sandboxProxies.has(sandbox)) {
-      var sandboxProxy = new Proxy(sandbox, { has: has, get: get });
-      sandboxProxies.set(sandbox, sandboxProxy);
-    }
-    return code(sandboxProxies.get(sandbox));
-  };
-}
 function IEVersion() {
   var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
   var isIE =
@@ -150,7 +129,9 @@ function getExternalScripts(scripts) {
         return (
           scriptCache[script] ||
           (scriptCache[script] = fetch(script).then(function (response) {
-            return { scriptsText: response.text(), scripts: script };
+            return response.text().then((result=>{
+              return { scriptsText: result, scripts: script };
+              }))
           }))
         );
       }
@@ -327,7 +308,7 @@ function execScripts(entryMain, scripts, proxy, keys) {
   });
 }
 
-export default function importHTML(url, options) {
+export  function importHTML(url, options) {
   /* var getPublicPath = defaultGetPublicPath; */
   if (options && typeof options === 'object') {
     isMergeCache[url] = true;

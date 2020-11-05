@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>index</title>
+    </head>
+
+    <body>
+        <script src="../dist/legions-import-html-entry.iife.js"></script>
+        <!-- <script src="https://qa-zy.hoolinks.com/static/plugin/import-html-entry.min.js"></script> -->
+        <script>
+            legionsImportHTML.importHTML('./template.html').then(res => {
+                res.execScripts().then(exports => {
+                    const {mobx} = exports;
+                    const { observable } = mobx;
+                    console.log(exports,mobx);
+                    observable({
+                        name: 'kuitos'
+                    })	
+                });
+            });
+        </script>
+    </body>
+
+</html>

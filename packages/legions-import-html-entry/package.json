@@ -14,7 +14,8 @@
   "typings": "types/main/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
-    "whatwg-fetch":"^3.4.1"
+    "whatwg-fetch":"^3.4.1",
+    "axios":"^0.19.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
@@ -36,6 +37,11 @@
     "types/api",
     "types/main"
   ],
+  "browserslist": [
+    "> 1%",
+    "last 6 versions",
+    "not ie <= 8"
+  ],  
   "scripts": {
     "test": "jest",
     "test1": "jest --watch /__tests__/legions-control-container.*.ts",
