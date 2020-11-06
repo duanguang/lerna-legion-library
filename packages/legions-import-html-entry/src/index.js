@@ -1,48 +1,20 @@
 import processTpl, { genLinkReplaceSymbol } from './process-tpl';
 import {
-  /* defaultGetPublicPath */ getGlobalProp,
+  getGlobalProp /* defaultGetPublicPath */,
   getInlineCode,
   noteGlobalProps,
   requestIdleCallback,
+  IEVersion,
+  transHttpUrl,
 } from './utils';
 var styleCache = {};
 var scriptCache = {};
-var isWith = false;
 var excludeFilesCache = {}; // 排除在沙箱之外代码文件列表
 var embedHTMLCache = {};
 var isMergeCache = {};
 /* var fetch = window.fetch.bind(window); */
 import { fetch } from 'whatwg-fetch';
-function IEVersion() {
-  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
-  var isIE =
-    userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1; //判断是否IE<11浏览器
-  var isEdge = userAgent.indexOf('Edge') > -1 && !isIE; //判断是否IE的Edge浏览器
-  var isIE11 =
-    userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1;
-  if (isIE) {
-    var reIE = new RegExp('MSIE (\\d+\\.\\d+);');
-    reIE.test(userAgent);
-    var fIEVersion = parseFloat(RegExp['$1']);
-    if (fIEVersion == 7) {
-      return 7;
-    } else if (fIEVersion == 8) {
-      return 8;
-    } else if (fIEVersion == 9) {
-      return 9;
-    } else if (fIEVersion == 10) {
-      return 10;
-    } else {
-      return 6; //IE版本<=7
-    }
-  } else if (isEdge) {
-    return 'edge'; //edge
-  } else if (isIE11) {
-    return 11; //IE11
-  } else {
-    return -1; //不是ie浏览器
-  }
-}
+
 function getDomain(url) {
   try {
     // URL 构造函数不支持使用 // 前缀的 url
@@ -129,9 +101,9 @@ function getExternalScripts(scripts) {
         return (
           scriptCache[script] ||
           (scriptCache[script] = fetch(script).then(function (response) {
-            return response.text().then((result=>{
+            return response.text().then(result => {
               return { scriptsText: result, scripts: script };
-              }))
+            });
           }))
         );
       }
@@ -171,7 +143,7 @@ function execScripts(entryMain, scripts, proxy, keys) {
       if (
         excludeFilesCache[keys] &&
         Object.prototype.toString.call(excludeFilesCache[keys]) ===
-          '[object Array]'
+          '[object Array]'&&excludeFilesCache[keys].length
       ) {
         for (var i = 0; i < excludeFilesCache[keys].length; i++) {
           if (scriptSrc.indexOf(excludeFilesCache[keys][i]) < 0) {
@@ -234,13 +206,6 @@ function execScripts(entryMain, scripts, proxy, keys) {
             /* console.error(e); */
             throw e;
           }
-        } else {
-          /* inlineScript.async && inlineScript?.content
-							.then(downloadedScriptText => geval(`;(function(window){;${downloadedScriptText}\n}).bind(window.proxy)(window.proxy);`))
-							.catch(e => {
-								console.error(`error occurs while executing async script ${scriptSrc?.src}`);
-								throw e;
-							}); */
         }
       }
 
@@ -259,13 +224,6 @@ function execScripts(entryMain, scripts, proxy, keys) {
             /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
             /* geval(';(function(window){;'+entry.join(' ')+'\n})(window.proxy);'); */
           } else {
-            /* var compileCodes= function(src) {
-							var code = new Function('sandbox', src)
-							return function(sandbox) {
-								return code(sandbox)
-							}
-						}
-						compileCodes(''+entry.join(' ')+'')(window.proxy); */
             geval(getExecutableScript(entry.join(' '), proxy));
             /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
           }
@@ -286,6 +244,7 @@ function execScripts(entryMain, scripts, proxy, keys) {
         var scriptSrc = scripts[i];
         var inlineScript = scriptsText[i]['scriptsText'];
         if (isMergeCache[keys]) {
+          // 收集需要合并执行的js代码
           collectInlineScript(scriptSrc, inlineScript, resolvePromise);
           schedule(i + 1, resolvePromise);
         } else {
@@ -308,13 +267,10 @@ function execScripts(entryMain, scripts, proxy, keys) {
   });
 }
 
-export  function importHTML(url, options) {
+export function importHTML(url, options) {
   /* var getPublicPath = defaultGetPublicPath; */
   if (options && typeof options === 'object') {
     isMergeCache[url] = true;
-    if (options.isWith !== undefined) {
-      isWith = options.isWith;
-    }
     if (
       options.excludeFiles !== undefined &&
       Array.isArray(options.excludeFiles)
@@ -326,22 +282,7 @@ export  function importHTML(url, options) {
     }
     /* getPublicPath = options.getPublicPath || options.getDomain || defaultGetPublicPath; */
   }
-  var transHttpUrl = function (url, timestamp) {
-    var arr = url.split('?');
-    var version = timestamp ? '&version=' + timestamp + '' : '';
-    if (arr.length > 1) {
-      var _query = arr[1] + version;
-      if (arr.length > 2) {
-        var query = '?' + arr[2] + version;
-        return arr[0] + '?' + arr[1] + query;
-      }
-      return arr[0] + '?' + _query;
-    } else {
-      var version = timestamp ? '?version=' + timestamp + '' : '';
-      var _query = url + version;
-      return _query;
-    }
-  };
+
   return (
     embedHTMLCache[url] ||
     /* (embedHTMLCache[url] = axios.get(url+'?version='+Date.parse(new Date().toString())+'') */
@@ -352,7 +293,7 @@ export  function importHTML(url, options) {
         return response.text();
       })
       .then(function (html) {
-        /* var assetPublicPath = getPublicPath(url); */
+        var assetPublicPath = getDomain(url) + '/';
         var result = processTpl(html, getDomain(url));
         var template = result.template;
         var scripts = result.scripts;
@@ -363,7 +304,7 @@ export  function importHTML(url, options) {
         return getEmbedHTML(template, styles).then(function (embedHTML) {
           return {
             template: embedHTML,
-            /* assetPublicPath, */
+            assetPublicPath,
             getExternalScripts: function () {
               return getExternalScripts(scripts);
             },
@@ -421,7 +362,7 @@ export function importEntry(entry) {
     return getEmbedHTML(html, styles).then(function (embedHTML) {
       return {
         template: embedHTML,
-        /* assetPublicPath: getPublicPath('/'), */
+        assetPublicPath: '/',
         getExternalScripts: function () {
           return getExternalScripts(scripts);
         },

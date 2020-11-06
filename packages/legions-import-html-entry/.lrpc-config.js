@@ -13,16 +13,16 @@ module.exports = {
   },
   extendPlugins: [],
   entitys: [
-    {
+   /*  {
       name: 'iifeprod',
       input: resolves('src/index.js'),
-      file: resolves('dist/legions-import-html-entry.iife.js'),
+      file: resolves('dist/legions-import-html-entry.min.js'),
       format: 'iife',
-      compress: false,
+      compress: true,
       env: 'production',
       banner: ' legions-import-html-entry',
       outputName: 'legionsImportHTML',
-    },
+    }, */
     {
       name: 'umdprod',
       input: resolves('src/index.js'),

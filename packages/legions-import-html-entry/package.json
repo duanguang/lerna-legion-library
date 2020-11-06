@@ -9,13 +9,12 @@
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
   "license": "MIT",
-  "main": "dist/legions-import-html-entry.umd.js",
-  "module": "dist/legions-import-html-entry.umd.js",
+  "main": "lib/legions-import-html-entry.umd.js",
+  "module": "lib/legions-import-html-entry.umd.js",
   "typings": "types/main/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
-    "whatwg-fetch":"^3.4.1",
-    "axios":"^0.19.0"
+    "whatwg-fetch":"^3.4.1"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
@@ -34,6 +33,7 @@
   },
   "files": [
     "dist",
+    "lib",
     "types/api",
     "types/main"
   ],

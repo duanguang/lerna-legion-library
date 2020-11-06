@@ -6,7 +6,7 @@
 import { getInlineCode } from './utils';
 
 var ALL_SCRIPT_REGEX = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
-var SCRIPT_TAG_REGEX = /<(script)\s+((?!type=('|')text\/ng-template\3).)*?>.*?<\/\1>/i;
+var SCRIPT_TAG_REGEX = /<(script)\s+((?!type=('|')text\/ng-template\3).)*?>.*?<\/\1>/is;
 var SCRIPT_SRC_REGEX = /.*\ssrc=('|")(\S+)\1.*/;
 var SCRIPT_ENTRY_REGEX = /.*\sentry\s*.*/;
 

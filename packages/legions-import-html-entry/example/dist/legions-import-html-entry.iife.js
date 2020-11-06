@@ -1243,56 +1243,6 @@ var legionsImportHTML = (function (exports) {
 	  redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
 	}
 
-	// a string of all valid unicode whitespaces
-	// eslint-disable-next-line max-len
-	var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
-
-	var whitespace = '[' + whitespaces + ']';
-	var ltrim = RegExp('^' + whitespace + whitespace + '*');
-	var rtrim = RegExp(whitespace + whitespace + '*$');
-
-	// `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
-	var createMethod$3 = function (TYPE) {
-	  return function ($this) {
-	    var string = String(requireObjectCoercible($this));
-	    if (TYPE & 1) string = string.replace(ltrim, '');
-	    if (TYPE & 2) string = string.replace(rtrim, '');
-	    return string;
-	  };
-	};
-
-	var stringTrim = {
-	  // `String.prototype.{ trimLeft, trimStart }` methods
-	  // https://tc39.github.io/ecma262/#sec-string.prototype.trimstart
-	  start: createMethod$3(1),
-	  // `String.prototype.{ trimRight, trimEnd }` methods
-	  // https://tc39.github.io/ecma262/#sec-string.prototype.trimend
-	  end: createMethod$3(2),
-	  // `String.prototype.trim` method
-	  // https://tc39.github.io/ecma262/#sec-string.prototype.trim
-	  trim: createMethod$3(3)
-	};
-
-	var trim = stringTrim.trim;
-
-
-	var $parseFloat = global_1.parseFloat;
-	var FORCED = 1 / $parseFloat(whitespaces + '-0') !== -Infinity;
-
-	// `parseFloat` method
-	// https://tc39.github.io/ecma262/#sec-parsefloat-string
-	var numberParseFloat = FORCED ? function parseFloat(string) {
-	  var trimmedString = trim(String(string));
-	  var result = $parseFloat(trimmedString);
-	  return result === 0 && trimmedString.charAt(0) == '-' ? -0 : result;
-	} : $parseFloat;
-
-	// `parseFloat` method
-	// https://tc39.github.io/ecma262/#sec-parsefloat-string
-	_export({ global: true, forced: parseFloat != numberParseFloat }, {
-	  parseFloat: numberParseFloat
-	});
-
 	var nativePromiseConstructor = global_1.Promise;
 
 	var redefineAll = function (target, src, options) {
@@ -1692,7 +1642,7 @@ var legionsImportHTML = (function (exports) {
 	var UNHANDLED = 2;
 	var Internal, OwnPromiseCapability, PromiseWrapper, nativeThen;
 
-	var FORCED$1 = isForced_1(PROMISE, function () {
+	var FORCED = isForced_1(PROMISE, function () {
 	  var GLOBAL_CORE_JS_PROMISE = inspectSource(PromiseConstructor) !== String(PromiseConstructor);
 	  if (!GLOBAL_CORE_JS_PROMISE) {
 	    // V8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
@@ -1716,7 +1666,7 @@ var legionsImportHTML = (function (exports) {
 	  return !(promise.then(function () { /* empty */ }) instanceof FakePromise);
 	});
 
-	var INCORRECT_ITERATION = FORCED$1 || !checkCorrectnessOfIteration(function (iterable) {
+	var INCORRECT_ITERATION = FORCED || !checkCorrectnessOfIteration(function (iterable) {
 	  PromiseConstructor.all(iterable)['catch'](function () { /* empty */ });
 	});
 
@@ -1862,7 +1812,7 @@ var legionsImportHTML = (function (exports) {
 	};
 
 	// constructor polyfill
-	if (FORCED$1) {
+	if (FORCED) {
 	  // 25.4.3.1 Promise(executor)
 	  PromiseConstructor = function Promise(executor) {
 	    anInstance(this, PromiseConstructor, PROMISE);
@@ -1943,7 +1893,7 @@ var legionsImportHTML = (function (exports) {
 	  }
 	}
 
-	_export({ global: true, wrap: true, forced: FORCED$1 }, {
+	_export({ global: true, wrap: true, forced: FORCED }, {
 	  Promise: PromiseConstructor
 	});
 
@@ -1953,7 +1903,7 @@ var legionsImportHTML = (function (exports) {
 	PromiseWrapper = getBuiltIn(PROMISE);
 
 	// statics
-	_export({ target: PROMISE, stat: true, forced: FORCED$1 }, {
+	_export({ target: PROMISE, stat: true, forced: FORCED }, {
 	  // `Promise.reject` method
 	  // https://tc39.github.io/ecma262/#sec-promise.reject
 	  reject: function reject(r) {
@@ -1963,7 +1913,7 @@ var legionsImportHTML = (function (exports) {
 	  }
 	});
 
-	_export({ target: PROMISE, stat: true, forced:  FORCED$1 }, {
+	_export({ target: PROMISE, stat: true, forced:  FORCED }, {
 	  // `Promise.resolve` method
 	  // https://tc39.github.io/ecma262/#sec-promise.resolve
 	  resolve: function resolve(x) {
@@ -2018,30 +1968,6 @@ var legionsImportHTML = (function (exports) {
 	  }
 	});
 
-	// makes subclassing work correct for wrapped built-ins
-	var inheritIfRequired = function ($this, dummy, Wrapper) {
-	  var NewTarget, NewTargetPrototype;
-	  if (
-	    // it can work only with native `setPrototypeOf`
-	    objectSetPrototypeOf &&
-	    // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
-	    typeof (NewTarget = dummy.constructor) == 'function' &&
-	    NewTarget !== Wrapper &&
-	    isObject(NewTargetPrototype = NewTarget.prototype) &&
-	    NewTargetPrototype !== Wrapper.prototype
-	  ) objectSetPrototypeOf($this, NewTargetPrototype);
-	  return $this;
-	};
-
-	var MATCH = wellKnownSymbol('match');
-
-	// `IsRegExp` abstract operation
-	// https://tc39.github.io/ecma262/#sec-isregexp
-	var isRegexp = function (it) {
-	  var isRegExp;
-	  return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
-	};
-
 	// `RegExp.prototype.flags` getter implementation
 	// https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
 	var regexpFlags = function () {
@@ -2081,87 +2007,6 @@ var legionsImportHTML = (function (exports) {
 		BROKEN_CARET: BROKEN_CARET
 	};
 
-	var defineProperty$2 = objectDefineProperty.f;
-	var getOwnPropertyNames = objectGetOwnPropertyNames.f;
-
-
-
-
-
-	var setInternalState$2 = internalState.set;
-
-
-
-	var MATCH$1 = wellKnownSymbol('match');
-	var NativeRegExp = global_1.RegExp;
-	var RegExpPrototype = NativeRegExp.prototype;
-	var re1 = /a/g;
-	var re2 = /a/g;
-
-	// "new" should create a new object, old webkit bug
-	var CORRECT_NEW = new NativeRegExp(re1) !== re1;
-
-	var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y;
-
-	var FORCED$2 = descriptors && isForced_1('RegExp', (!CORRECT_NEW || UNSUPPORTED_Y$1 || fails(function () {
-	  re2[MATCH$1] = false;
-	  // RegExp constructor can alter flags and IsRegExp works correct with @@match
-	  return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
-	})));
-
-	// `RegExp` constructor
-	// https://tc39.github.io/ecma262/#sec-regexp-constructor
-	if (FORCED$2) {
-	  var RegExpWrapper = function RegExp(pattern, flags) {
-	    var thisIsRegExp = this instanceof RegExpWrapper;
-	    var patternIsRegExp = isRegexp(pattern);
-	    var flagsAreUndefined = flags === undefined;
-	    var sticky;
-
-	    if (!thisIsRegExp && patternIsRegExp && pattern.constructor === RegExpWrapper && flagsAreUndefined) {
-	      return pattern;
-	    }
-
-	    if (CORRECT_NEW) {
-	      if (patternIsRegExp && !flagsAreUndefined) pattern = pattern.source;
-	    } else if (pattern instanceof RegExpWrapper) {
-	      if (flagsAreUndefined) flags = regexpFlags.call(pattern);
-	      pattern = pattern.source;
-	    }
-
-	    if (UNSUPPORTED_Y$1) {
-	      sticky = !!flags && flags.indexOf('y') > -1;
-	      if (sticky) flags = flags.replace(/y/g, '');
-	    }
-
-	    var result = inheritIfRequired(
-	      CORRECT_NEW ? new NativeRegExp(pattern, flags) : NativeRegExp(pattern, flags),
-	      thisIsRegExp ? this : RegExpPrototype,
-	      RegExpWrapper
-	    );
-
-	    if (UNSUPPORTED_Y$1 && sticky) setInternalState$2(result, { sticky: sticky });
-
-	    return result;
-	  };
-	  var proxy = function (key) {
-	    key in RegExpWrapper || defineProperty$2(RegExpWrapper, key, {
-	      configurable: true,
-	      get: function () { return NativeRegExp[key]; },
-	      set: function (it) { NativeRegExp[key] = it; }
-	    });
-	  };
-	  var keys$1 = getOwnPropertyNames(NativeRegExp);
-	  var index = 0;
-	  while (keys$1.length > index) proxy(keys$1[index++]);
-	  RegExpPrototype.constructor = RegExpWrapper;
-	  RegExpWrapper.prototype = RegExpPrototype;
-	  redefine(global_1, 'RegExp', RegExpWrapper);
-	}
-
-	// https://tc39.github.io/ecma262/#sec-get-regexp-@@species
-	setSpecies('RegExp');
-
 	var nativeExec = RegExp.prototype.exec;
 	// This always refers to the native implementation, because the
 	// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
@@ -2178,18 +2023,18 @@ var legionsImportHTML = (function (exports) {
 	  return re1.lastIndex !== 0 || re2.lastIndex !== 0;
 	})();
 
-	var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
+	var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
 
 	// nonparticipating capturing group, copied from es5-shim's String#split patch.
 	var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
 
-	var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$2;
+	var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
 
 	if (PATCH) {
 	  patchedExec = function exec(str) {
 	    var re = this;
 	    var lastIndex, reCopy, match, i;
-	    var sticky = UNSUPPORTED_Y$2 && re.sticky;
+	    var sticky = UNSUPPORTED_Y$1 && re.sticky;
 	    var flags = regexpFlags.call(re);
 	    var source = re.source;
 	    var charsAdded = 0;
@@ -2251,8 +2096,8 @@ var legionsImportHTML = (function (exports) {
 	});
 
 	var TO_STRING$1 = 'toString';
-	var RegExpPrototype$1 = RegExp.prototype;
-	var nativeToString = RegExpPrototype$1[TO_STRING$1];
+	var RegExpPrototype = RegExp.prototype;
+	var nativeToString = RegExpPrototype[TO_STRING$1];
 
 	var NOT_GENERIC = fails(function () { return nativeToString.call({ source: 'a', flags: 'b' }) != '/a/b'; });
 	// FF44- RegExp#toString has a wrong name
@@ -2265,13 +2110,13 @@ var legionsImportHTML = (function (exports) {
 	    var R = anObject(this);
 	    var p = String(R.source);
 	    var rf = R.flags;
-	    var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype$1) ? regexpFlags.call(R) : rf);
+	    var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype) ? regexpFlags.call(R) : rf);
 	    return '/' + p + '/' + f;
 	  }, { unsafe: true });
 	}
 
 	// `String.prototype.{ codePointAt, at }` methods implementation
-	var createMethod$4 = function (CONVERT_TO_STRING) {
+	var createMethod$3 = function (CONVERT_TO_STRING) {
 	  return function ($this, pos) {
 	    var S = String(requireObjectCoercible($this));
 	    var position = toInteger(pos);
@@ -2289,10 +2134,10 @@ var legionsImportHTML = (function (exports) {
 	var stringMultibyte = {
 	  // `String.prototype.codePointAt` method
 	  // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
-	  codeAt: createMethod$4(false),
+	  codeAt: createMethod$3(false),
 	  // `String.prototype.at` method
 	  // https://github.com/mathiasbynens/String.prototype.at
-	  charAt: createMethod$4(true)
+	  charAt: createMethod$3(true)
 	};
 
 	var charAt = stringMultibyte.charAt;
@@ -2300,13 +2145,13 @@ var legionsImportHTML = (function (exports) {
 
 
 	var STRING_ITERATOR = 'String Iterator';
-	var setInternalState$3 = internalState.set;
+	var setInternalState$2 = internalState.set;
 	var getInternalState$2 = internalState.getterFor(STRING_ITERATOR);
 
 	// `String.prototype[@@iterator]` method
 	// https://tc39.github.io/ecma262/#sec-string.prototype-@@iterator
 	defineIterator(String, 'String', function (iterated) {
-	  setInternalState$3(this, {
+	  setInternalState$2(this, {
 	    type: STRING_ITERATOR,
 	    string: String(iterated),
 	    index: 0
@@ -2602,128 +2447,14 @@ var legionsImportHTML = (function (exports) {
 	  }
 	});
 
-	var arrayPush = [].push;
-	var min$3 = Math.min;
-	var MAX_UINT32 = 0xFFFFFFFF;
+	var MATCH = wellKnownSymbol('match');
 
-	// babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
-	var SUPPORTS_Y = !fails(function () { return !RegExp(MAX_UINT32, 'y'); });
-
-	// @@split logic
-	fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCallNative) {
-	  var internalSplit;
-	  if (
-	    'abbc'.split(/(b)*/)[1] == 'c' ||
-	    'test'.split(/(?:)/, -1).length != 4 ||
-	    'ab'.split(/(?:ab)*/).length != 2 ||
-	    '.'.split(/(.?)(.?)/).length != 4 ||
-	    '.'.split(/()()/).length > 1 ||
-	    ''.split(/.?/).length
-	  ) {
-	    // based on es5-shim implementation, need to rework it
-	    internalSplit = function (separator, limit) {
-	      var string = String(requireObjectCoercible(this));
-	      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
-	      if (lim === 0) return [];
-	      if (separator === undefined) return [string];
-	      // If `separator` is not a regex, use native split
-	      if (!isRegexp(separator)) {
-	        return nativeSplit.call(string, separator, lim);
-	      }
-	      var output = [];
-	      var flags = (separator.ignoreCase ? 'i' : '') +
-	                  (separator.multiline ? 'm' : '') +
-	                  (separator.unicode ? 'u' : '') +
-	                  (separator.sticky ? 'y' : '');
-	      var lastLastIndex = 0;
-	      // Make `global` and avoid `lastIndex` issues by working with a copy
-	      var separatorCopy = new RegExp(separator.source, flags + 'g');
-	      var match, lastIndex, lastLength;
-	      while (match = regexpExec.call(separatorCopy, string)) {
-	        lastIndex = separatorCopy.lastIndex;
-	        if (lastIndex > lastLastIndex) {
-	          output.push(string.slice(lastLastIndex, match.index));
-	          if (match.length > 1 && match.index < string.length) arrayPush.apply(output, match.slice(1));
-	          lastLength = match[0].length;
-	          lastLastIndex = lastIndex;
-	          if (output.length >= lim) break;
-	        }
-	        if (separatorCopy.lastIndex === match.index) separatorCopy.lastIndex++; // Avoid an infinite loop
-	      }
-	      if (lastLastIndex === string.length) {
-	        if (lastLength || !separatorCopy.test('')) output.push('');
-	      } else output.push(string.slice(lastLastIndex));
-	      return output.length > lim ? output.slice(0, lim) : output;
-	    };
-	  // Chakra, V8
-	  } else if ('0'.split(undefined, 0).length) {
-	    internalSplit = function (separator, limit) {
-	      return separator === undefined && limit === 0 ? [] : nativeSplit.call(this, separator, limit);
-	    };
-	  } else internalSplit = nativeSplit;
-
-	  return [
-	    // `String.prototype.split` method
-	    // https://tc39.github.io/ecma262/#sec-string.prototype.split
-	    function split(separator, limit) {
-	      var O = requireObjectCoercible(this);
-	      var splitter = separator == undefined ? undefined : separator[SPLIT];
-	      return splitter !== undefined
-	        ? splitter.call(separator, O, limit)
-	        : internalSplit.call(String(O), separator, limit);
-	    },
-	    // `RegExp.prototype[@@split]` method
-	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
-	    //
-	    // NOTE: This cannot be properly polyfilled in engines that don't support
-	    // the 'y' flag.
-	    function (regexp, limit) {
-	      var res = maybeCallNative(internalSplit, regexp, this, limit, internalSplit !== nativeSplit);
-	      if (res.done) return res.value;
-
-	      var rx = anObject(regexp);
-	      var S = String(this);
-	      var C = speciesConstructor(rx, RegExp);
-
-	      var unicodeMatching = rx.unicode;
-	      var flags = (rx.ignoreCase ? 'i' : '') +
-	                  (rx.multiline ? 'm' : '') +
-	                  (rx.unicode ? 'u' : '') +
-	                  (SUPPORTS_Y ? 'y' : 'g');
-
-	      // ^(? + rx + ) is needed, in combination with some S slicing, to
-	      // simulate the 'y' flag.
-	      var splitter = new C(SUPPORTS_Y ? rx : '^(?:' + rx.source + ')', flags);
-	      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
-	      if (lim === 0) return [];
-	      if (S.length === 0) return regexpExecAbstract(splitter, S) === null ? [S] : [];
-	      var p = 0;
-	      var q = 0;
-	      var A = [];
-	      while (q < S.length) {
-	        splitter.lastIndex = SUPPORTS_Y ? q : 0;
-	        var z = regexpExecAbstract(splitter, SUPPORTS_Y ? S : S.slice(q));
-	        var e;
-	        if (
-	          z === null ||
-	          (e = min$3(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
-	        ) {
-	          q = advanceStringIndex(S, q, unicodeMatching);
-	        } else {
-	          A.push(S.slice(p, q));
-	          if (A.length === lim) return A;
-	          for (var i = 1; i <= z.length - 1; i++) {
-	            A.push(z[i]);
-	            if (A.length === lim) return A;
-	          }
-	          q = p = e;
-	        }
-	      }
-	      A.push(S.slice(p));
-	      return A;
-	    }
-	  ];
-	}, !SUPPORTS_Y);
+	// `IsRegExp` abstract operation
+	// https://tc39.github.io/ecma262/#sec-isregexp
+	var isRegexp = function (it) {
+	  var isRegExp;
+	  return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
+	};
 
 	var notARegexp = function (it) {
 	  if (isRegexp(it)) {
@@ -2731,7 +2462,7 @@ var legionsImportHTML = (function (exports) {
 	  } return it;
 	};
 
-	var MATCH$2 = wellKnownSymbol('match');
+	var MATCH$1 = wellKnownSymbol('match');
 
 	var correctIsRegexpLogic = function (METHOD_NAME) {
 	  var regexp = /./;
@@ -2739,7 +2470,7 @@ var legionsImportHTML = (function (exports) {
 	    '/./'[METHOD_NAME](regexp);
 	  } catch (e) {
 	    try {
-	      regexp[MATCH$2] = false;
+	      regexp[MATCH$1] = false;
 	      return '/./'[METHOD_NAME](regexp);
 	    } catch (f) { /* empty */ }
 	  } return false;
@@ -2753,7 +2484,7 @@ var legionsImportHTML = (function (exports) {
 
 
 	var nativeStartsWith = ''.startsWith;
-	var min$4 = Math.min;
+	var min$3 = Math.min;
 
 	var CORRECT_IS_REGEXP_LOGIC = correctIsRegexpLogic('startsWith');
 	// https://github.com/zloirock/core-js/pull/702
@@ -2768,7 +2499,7 @@ var legionsImportHTML = (function (exports) {
 	  startsWith: function startsWith(searchString /* , position = 0 */) {
 	    var that = String(requireObjectCoercible(this));
 	    notARegexp(searchString);
-	    var index = toLength(min$4(arguments.length > 1 ? arguments[1] : undefined, that.length));
+	    var index = toLength(min$3(arguments.length > 1 ? arguments[1] : undefined, that.length));
 	    var search = String(searchString);
 	    return nativeStartsWith
 	      ? nativeStartsWith.call(that, search, index)
@@ -2871,16 +2602,16 @@ var legionsImportHTML = (function (exports) {
 	});
 
 	var nativeAssign = Object.assign;
-	var defineProperty$3 = Object.defineProperty;
+	var defineProperty$2 = Object.defineProperty;
 
 	// `Object.assign` method
 	// https://tc39.github.io/ecma262/#sec-object.assign
 	var objectAssign = !nativeAssign || fails(function () {
 	  // should have correct order of operations (Edge bug)
-	  if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$3({}, 'a', {
+	  if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$2({}, 'a', {
 	    enumerable: true,
 	    get: function () {
-	      defineProperty$3(this, 'b', {
+	      defineProperty$2(this, 'b', {
 	        value: 3,
 	        enumerable: false
 	      });
@@ -3155,7 +2886,7 @@ var legionsImportHTML = (function (exports) {
 	var ITERATOR$7 = wellKnownSymbol('iterator');
 	var URL_SEARCH_PARAMS = 'URLSearchParams';
 	var URL_SEARCH_PARAMS_ITERATOR = URL_SEARCH_PARAMS + 'Iterator';
-	var setInternalState$4 = internalState.set;
+	var setInternalState$3 = internalState.set;
 	var getInternalParamsState = internalState.getterFor(URL_SEARCH_PARAMS);
 	var getInternalIteratorState = internalState.getterFor(URL_SEARCH_PARAMS_ITERATOR);
 
@@ -3234,7 +2965,7 @@ var legionsImportHTML = (function (exports) {
 	};
 
 	var URLSearchParamsIterator = createIteratorConstructor(function Iterator(params, kind) {
-	  setInternalState$4(this, {
+	  setInternalState$3(this, {
 	    type: URL_SEARCH_PARAMS_ITERATOR,
 	    iterator: getIterator(getInternalParamsState(params).entries),
 	    kind: kind
@@ -3258,7 +2989,7 @@ var legionsImportHTML = (function (exports) {
 	  var entries = [];
 	  var iteratorMethod, iterator, next, step, entryIterator, entryNext, first, second, key;
 
-	  setInternalState$4(that, {
+	  setInternalState$3(that, {
 	    type: URL_SEARCH_PARAMS,
 	    entries: entries,
 	    updateURL: function () { /* empty */ },
@@ -3496,7 +3227,7 @@ var legionsImportHTML = (function (exports) {
 	var NativeURL = global_1.URL;
 	var URLSearchParams$1 = web_urlSearchParams.URLSearchParams;
 	var getInternalSearchParamsState = web_urlSearchParams.getState;
-	var setInternalState$5 = internalState.set;
+	var setInternalState$4 = internalState.set;
 	var getInternalURLState = internalState.getterFor('URL');
 	var floor$3 = Math.floor;
 	var pow = Math.pow;
@@ -4213,7 +3944,7 @@ var legionsImportHTML = (function (exports) {
 	  var that = anInstance(this, URLConstructor, 'URL');
 	  var base = arguments.length > 1 ? arguments[1] : undefined;
 	  var urlString = String(url);
-	  var state = setInternalState$5(that, { type: 'URL' });
+	  var state = setInternalState$4(that, { type: 'URL' });
 	  var baseState, failure;
 	  if (base !== undefined) {
 	    if (base instanceof URLConstructor) baseState = getInternalURLState(base);
@@ -4534,6 +4265,102 @@ var legionsImportHTML = (function (exports) {
 	  }
 	});
 
+	// makes subclassing work correct for wrapped built-ins
+	var inheritIfRequired = function ($this, dummy, Wrapper) {
+	  var NewTarget, NewTargetPrototype;
+	  if (
+	    // it can work only with native `setPrototypeOf`
+	    objectSetPrototypeOf &&
+	    // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
+	    typeof (NewTarget = dummy.constructor) == 'function' &&
+	    NewTarget !== Wrapper &&
+	    isObject(NewTargetPrototype = NewTarget.prototype) &&
+	    NewTargetPrototype !== Wrapper.prototype
+	  ) objectSetPrototypeOf($this, NewTargetPrototype);
+	  return $this;
+	};
+
+	var defineProperty$3 = objectDefineProperty.f;
+	var getOwnPropertyNames = objectGetOwnPropertyNames.f;
+
+
+
+
+
+	var setInternalState$5 = internalState.set;
+
+
+
+	var MATCH$2 = wellKnownSymbol('match');
+	var NativeRegExp = global_1.RegExp;
+	var RegExpPrototype$1 = NativeRegExp.prototype;
+	var re1 = /a/g;
+	var re2 = /a/g;
+
+	// "new" should create a new object, old webkit bug
+	var CORRECT_NEW = new NativeRegExp(re1) !== re1;
+
+	var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y;
+
+	var FORCED$1 = descriptors && isForced_1('RegExp', (!CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
+	  re2[MATCH$2] = false;
+	  // RegExp constructor can alter flags and IsRegExp works correct with @@match
+	  return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
+	})));
+
+	// `RegExp` constructor
+	// https://tc39.github.io/ecma262/#sec-regexp-constructor
+	if (FORCED$1) {
+	  var RegExpWrapper = function RegExp(pattern, flags) {
+	    var thisIsRegExp = this instanceof RegExpWrapper;
+	    var patternIsRegExp = isRegexp(pattern);
+	    var flagsAreUndefined = flags === undefined;
+	    var sticky;
+
+	    if (!thisIsRegExp && patternIsRegExp && pattern.constructor === RegExpWrapper && flagsAreUndefined) {
+	      return pattern;
+	    }
+
+	    if (CORRECT_NEW) {
+	      if (patternIsRegExp && !flagsAreUndefined) pattern = pattern.source;
+	    } else if (pattern instanceof RegExpWrapper) {
+	      if (flagsAreUndefined) flags = regexpFlags.call(pattern);
+	      pattern = pattern.source;
+	    }
+
+	    if (UNSUPPORTED_Y$2) {
+	      sticky = !!flags && flags.indexOf('y') > -1;
+	      if (sticky) flags = flags.replace(/y/g, '');
+	    }
+
+	    var result = inheritIfRequired(
+	      CORRECT_NEW ? new NativeRegExp(pattern, flags) : NativeRegExp(pattern, flags),
+	      thisIsRegExp ? this : RegExpPrototype$1,
+	      RegExpWrapper
+	    );
+
+	    if (UNSUPPORTED_Y$2 && sticky) setInternalState$5(result, { sticky: sticky });
+
+	    return result;
+	  };
+	  var proxy = function (key) {
+	    key in RegExpWrapper || defineProperty$3(RegExpWrapper, key, {
+	      configurable: true,
+	      get: function () { return NativeRegExp[key]; },
+	      set: function (it) { NativeRegExp[key] = it; }
+	    });
+	  };
+	  var keys$1 = getOwnPropertyNames(NativeRegExp);
+	  var index = 0;
+	  while (keys$1.length > index) proxy(keys$1[index++]);
+	  RegExpPrototype$1.constructor = RegExpWrapper;
+	  RegExpWrapper.prototype = RegExpPrototype$1;
+	  redefine(global_1, 'RegExp', RegExpWrapper);
+	}
+
+	// https://tc39.github.io/ecma262/#sec-get-regexp-@@species
+	setSpecies('RegExp');
+
 	var getOwnPropertyDescriptor$4 = objectGetOwnPropertyDescriptor.f;
 
 
@@ -4542,7 +4369,7 @@ var legionsImportHTML = (function (exports) {
 
 
 	var nativeEndsWith = ''.endsWith;
-	var min$5 = Math.min;
+	var min$4 = Math.min;
 
 	var CORRECT_IS_REGEXP_LOGIC$1 = correctIsRegexpLogic('endsWith');
 	// https://github.com/zloirock/core-js/pull/702
@@ -4559,7 +4386,7 @@ var legionsImportHTML = (function (exports) {
 	    notARegexp(searchString);
 	    var endPosition = arguments.length > 1 ? arguments[1] : undefined;
 	    var len = toLength(that.length);
-	    var end = endPosition === undefined ? len : min$5(toLength(endPosition), len);
+	    var end = endPosition === undefined ? len : min$4(toLength(endPosition), len);
 	    var search = String(searchString);
 	    return nativeEndsWith
 	      ? nativeEndsWith.call(that, search, end)
@@ -4604,6 +4431,159 @@ var legionsImportHTML = (function (exports) {
 	  ];
 	});
 
+	var arrayPush = [].push;
+	var min$5 = Math.min;
+	var MAX_UINT32 = 0xFFFFFFFF;
+
+	// babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
+	var SUPPORTS_Y = !fails(function () { return !RegExp(MAX_UINT32, 'y'); });
+
+	// @@split logic
+	fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCallNative) {
+	  var internalSplit;
+	  if (
+	    'abbc'.split(/(b)*/)[1] == 'c' ||
+	    'test'.split(/(?:)/, -1).length != 4 ||
+	    'ab'.split(/(?:ab)*/).length != 2 ||
+	    '.'.split(/(.?)(.?)/).length != 4 ||
+	    '.'.split(/()()/).length > 1 ||
+	    ''.split(/.?/).length
+	  ) {
+	    // based on es5-shim implementation, need to rework it
+	    internalSplit = function (separator, limit) {
+	      var string = String(requireObjectCoercible(this));
+	      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
+	      if (lim === 0) return [];
+	      if (separator === undefined) return [string];
+	      // If `separator` is not a regex, use native split
+	      if (!isRegexp(separator)) {
+	        return nativeSplit.call(string, separator, lim);
+	      }
+	      var output = [];
+	      var flags = (separator.ignoreCase ? 'i' : '') +
+	                  (separator.multiline ? 'm' : '') +
+	                  (separator.unicode ? 'u' : '') +
+	                  (separator.sticky ? 'y' : '');
+	      var lastLastIndex = 0;
+	      // Make `global` and avoid `lastIndex` issues by working with a copy
+	      var separatorCopy = new RegExp(separator.source, flags + 'g');
+	      var match, lastIndex, lastLength;
+	      while (match = regexpExec.call(separatorCopy, string)) {
+	        lastIndex = separatorCopy.lastIndex;
+	        if (lastIndex > lastLastIndex) {
+	          output.push(string.slice(lastLastIndex, match.index));
+	          if (match.length > 1 && match.index < string.length) arrayPush.apply(output, match.slice(1));
+	          lastLength = match[0].length;
+	          lastLastIndex = lastIndex;
+	          if (output.length >= lim) break;
+	        }
+	        if (separatorCopy.lastIndex === match.index) separatorCopy.lastIndex++; // Avoid an infinite loop
+	      }
+	      if (lastLastIndex === string.length) {
+	        if (lastLength || !separatorCopy.test('')) output.push('');
+	      } else output.push(string.slice(lastLastIndex));
+	      return output.length > lim ? output.slice(0, lim) : output;
+	    };
+	  // Chakra, V8
+	  } else if ('0'.split(undefined, 0).length) {
+	    internalSplit = function (separator, limit) {
+	      return separator === undefined && limit === 0 ? [] : nativeSplit.call(this, separator, limit);
+	    };
+	  } else internalSplit = nativeSplit;
+
+	  return [
+	    // `String.prototype.split` method
+	    // https://tc39.github.io/ecma262/#sec-string.prototype.split
+	    function split(separator, limit) {
+	      var O = requireObjectCoercible(this);
+	      var splitter = separator == undefined ? undefined : separator[SPLIT];
+	      return splitter !== undefined
+	        ? splitter.call(separator, O, limit)
+	        : internalSplit.call(String(O), separator, limit);
+	    },
+	    // `RegExp.prototype[@@split]` method
+	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
+	    //
+	    // NOTE: This cannot be properly polyfilled in engines that don't support
+	    // the 'y' flag.
+	    function (regexp, limit) {
+	      var res = maybeCallNative(internalSplit, regexp, this, limit, internalSplit !== nativeSplit);
+	      if (res.done) return res.value;
+
+	      var rx = anObject(regexp);
+	      var S = String(this);
+	      var C = speciesConstructor(rx, RegExp);
+
+	      var unicodeMatching = rx.unicode;
+	      var flags = (rx.ignoreCase ? 'i' : '') +
+	                  (rx.multiline ? 'm' : '') +
+	                  (rx.unicode ? 'u' : '') +
+	                  (SUPPORTS_Y ? 'y' : 'g');
+
+	      // ^(? + rx + ) is needed, in combination with some S slicing, to
+	      // simulate the 'y' flag.
+	      var splitter = new C(SUPPORTS_Y ? rx : '^(?:' + rx.source + ')', flags);
+	      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
+	      if (lim === 0) return [];
+	      if (S.length === 0) return regexpExecAbstract(splitter, S) === null ? [S] : [];
+	      var p = 0;
+	      var q = 0;
+	      var A = [];
+	      while (q < S.length) {
+	        splitter.lastIndex = SUPPORTS_Y ? q : 0;
+	        var z = regexpExecAbstract(splitter, SUPPORTS_Y ? S : S.slice(q));
+	        var e;
+	        if (
+	          z === null ||
+	          (e = min$5(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
+	        ) {
+	          q = advanceStringIndex(S, q, unicodeMatching);
+	        } else {
+	          A.push(S.slice(p, q));
+	          if (A.length === lim) return A;
+	          for (var i = 1; i <= z.length - 1; i++) {
+	            A.push(z[i]);
+	            if (A.length === lim) return A;
+	          }
+	          q = p = e;
+	        }
+	      }
+	      A.push(S.slice(p));
+	      return A;
+	    }
+	  ];
+	}, !SUPPORTS_Y);
+
+	// a string of all valid unicode whitespaces
+	// eslint-disable-next-line max-len
+	var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
+
+	var whitespace = '[' + whitespaces + ']';
+	var ltrim = RegExp('^' + whitespace + whitespace + '*');
+	var rtrim = RegExp(whitespace + whitespace + '*$');
+
+	// `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
+	var createMethod$4 = function (TYPE) {
+	  return function ($this) {
+	    var string = String(requireObjectCoercible($this));
+	    if (TYPE & 1) string = string.replace(ltrim, '');
+	    if (TYPE & 2) string = string.replace(rtrim, '');
+	    return string;
+	  };
+	};
+
+	var stringTrim = {
+	  // `String.prototype.{ trimLeft, trimStart }` methods
+	  // https://tc39.github.io/ecma262/#sec-string.prototype.trimstart
+	  start: createMethod$4(1),
+	  // `String.prototype.{ trimRight, trimEnd }` methods
+	  // https://tc39.github.io/ecma262/#sec-string.prototype.trimend
+	  end: createMethod$4(2),
+	  // `String.prototype.trim` method
+	  // https://tc39.github.io/ecma262/#sec-string.prototype.trim
+	  trim: createMethod$4(3)
+	};
+
 	var non = '\u200B\u0085\u180E';
 
 	// check that a method works with the correct list
@@ -4631,11 +4611,11 @@ var legionsImportHTML = (function (exports) {
 	var STRICT_METHOD$4 = arrayMethodIsStrict('lastIndexOf');
 	// For preventing possible almost infinite loop in non-standard implementations, test the forward version of the method
 	var USES_TO_LENGTH$5 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
-	var FORCED$3 = NEGATIVE_ZERO$1 || !STRICT_METHOD$4 || !USES_TO_LENGTH$5;
+	var FORCED$2 = NEGATIVE_ZERO$1 || !STRICT_METHOD$4 || !USES_TO_LENGTH$5;
 
 	// `Array.prototype.lastIndexOf` method implementation
 	// https://tc39.github.io/ecma262/#sec-array.prototype.lastindexof
-	var arrayLastIndexOf = FORCED$3 ? function lastIndexOf(searchElement /* , fromIndex = @[*-1] */) {
+	var arrayLastIndexOf = FORCED$2 ? function lastIndexOf(searchElement /* , fromIndex = @[*-1] */) {
 	  // convert -0 to +0
 	  if (NEGATIVE_ZERO$1) return nativeLastIndexOf.apply(this, arguments) || 0;
 	  var O = toIndexedObject(this);
@@ -4659,6 +4639,26 @@ var legionsImportHTML = (function (exports) {
 	  now: function now() {
 	    return new Date().getTime();
 	  }
+	});
+
+	var trim = stringTrim.trim;
+
+
+	var $parseFloat = global_1.parseFloat;
+	var FORCED$3 = 1 / $parseFloat(whitespaces + '-0') !== -Infinity;
+
+	// `parseFloat` method
+	// https://tc39.github.io/ecma262/#sec-parsefloat-string
+	var numberParseFloat = FORCED$3 ? function parseFloat(string) {
+	  var trimmedString = trim(String(string));
+	  var result = $parseFloat(trimmedString);
+	  return result === 0 && trimmedString.charAt(0) == '-' ? -0 : result;
+	} : $parseFloat;
+
+	// `parseFloat` method
+	// https://tc39.github.io/ecma262/#sec-parsefloat-string
+	_export({ global: true, forced: parseFloat != numberParseFloat }, {
+	  parseFloat: numberParseFloat
 	});
 
 	var slice = [].slice;
@@ -4739,9 +4739,63 @@ var legionsImportHTML = (function (exports) {
 	  var end = match.lastIndexOf('<');
 	  return match.substring(start, end);
 	}
+	function IEVersion() {
+	  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+
+	  var isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1; //判断是否IE<11浏览器
+
+	  var isEdge = userAgent.indexOf('Edge') > -1 && !isIE; //判断是否IE的Edge浏览器
+
+	  var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1;
+
+	  if (isIE) {
+	    var reIE = new RegExp('MSIE (\\d+\\.\\d+);');
+	    reIE.test(userAgent);
+	    var fIEVersion = parseFloat(RegExp['$1']);
+
+	    if (fIEVersion == 7) {
+	      return 7;
+	    } else if (fIEVersion == 8) {
+	      return 8;
+	    } else if (fIEVersion == 9) {
+	      return 9;
+	    } else if (fIEVersion == 10) {
+	      return 10;
+	    } else {
+	      return 6; //IE版本<=7
+	    }
+	  } else if (isEdge) {
+	    return 'edge'; //edge
+	  } else if (isIE11) {
+	    return 11; //IE11
+	  } else {
+	    return -1; //不是ie浏览器
+	  }
+	}
+	function transHttpUrl(url, timestamp) {
+	  var arr = url.split('?');
+	  var version = timestamp ? '&version=' + timestamp + '' : '';
+
+	  if (arr.length > 1) {
+	    var _query = arr[1] + version;
+
+	    if (arr.length > 2) {
+	      var query = '?' + arr[2] + version;
+	      return arr[0] + '?' + arr[1] + query;
+	    }
+
+	    return arr[0] + '?' + _query;
+	  } else {
+	    var version = timestamp ? '?version=' + timestamp + '' : '';
+
+	    var _query = url + version;
+
+	    return _query;
+	  }
+	}
 
 	var ALL_SCRIPT_REGEX = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
-	var SCRIPT_TAG_REGEX = /<(script)\s+((?!type=('|')text\/ng-template\3).)*?>.*?<\/\1>/i;
+	var SCRIPT_TAG_REGEX = /<(script)[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]+((?!type=('|')text\/ng\x2Dtemplate\3)[\s\S])*?>[\s\S]*?<\/\1>/i;
 	var SCRIPT_SRC_REGEX = /.*\ssrc=('|")(\S+)\1.*/;
 	var SCRIPT_ENTRY_REGEX = /.*\sentry\s*.*/;
 	var SCRIPT_ASYNC_REGEX = /.*\sasync\s*.*/;
@@ -5515,45 +5569,10 @@ var legionsImportHTML = (function (exports) {
 
 	var styleCache = {};
 	var scriptCache = {};
-	var isWith = false;
 	var excludeFilesCache = {}; // 排除在沙箱之外代码文件列表
 
 	var embedHTMLCache = {};
 	var isMergeCache = {};
-
-	function IEVersion() {
-	  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
-
-	  var isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1; //判断是否IE<11浏览器
-
-	  var isEdge = userAgent.indexOf('Edge') > -1 && !isIE; //判断是否IE的Edge浏览器
-
-	  var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1;
-
-	  if (isIE) {
-	    var reIE = new RegExp('MSIE (\\d+\\.\\d+);');
-	    reIE.test(userAgent);
-	    var fIEVersion = parseFloat(RegExp['$1']);
-
-	    if (fIEVersion == 7) {
-	      return 7;
-	    } else if (fIEVersion == 8) {
-	      return 8;
-	    } else if (fIEVersion == 9) {
-	      return 9;
-	    } else if (fIEVersion == 10) {
-	      return 10;
-	    } else {
-	      return 6; //IE版本<=7
-	    }
-	  } else if (isEdge) {
-	    return 'edge'; //edge
-	  } else if (isIE11) {
-	    return 11; //IE11
-	  } else {
-	    return -1; //不是ie浏览器
-	  }
-	}
 
 	function getDomain(url) {
 	  try {
@@ -5657,7 +5676,7 @@ var legionsImportHTML = (function (exports) {
 
 	    function collectInlineScript(scriptSrc, inlineScript, resolve) {
 
-	      if (excludeFilesCache[keys] && Object.prototype.toString.call(excludeFilesCache[keys]) === '[object Array]') {
+	      if (excludeFilesCache[keys] && Object.prototype.toString.call(excludeFilesCache[keys]) === '[object Array]' && excludeFilesCache[keys].length) {
 	        for (var i = 0; i < excludeFilesCache[keys].length; i++) {
 	          if (scriptSrc.indexOf(excludeFilesCache[keys][i]) < 0) {
 	            entry.push(inlineScript);
@@ -5724,13 +5743,6 @@ var legionsImportHTML = (function (exports) {
 
 	            /* geval(';(function(window){;'+entry.join(' ')+'\n})(window.proxy);'); */
 	          } else {
-	            /* var compileCodes= function(src) {
-	                            var code = new Function('sandbox', src)
-	                            return function(sandbox) {
-	                                return code(sandbox)
-	                            }
-	                        }
-	                        compileCodes(''+entry.join(' ')+'')(window.proxy); */
 	            geval(getExecutableScript(entry.join(' '), proxy));
 	            /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
 	          }
@@ -5750,6 +5762,7 @@ var legionsImportHTML = (function (exports) {
 	        var inlineScript = scriptsText[i]['scriptsText'];
 
 	        if (isMergeCache[keys]) {
+	          // 收集需要合并执行的js代码
 	          collectInlineScript(scriptSrc, inlineScript, resolvePromise);
 	          schedule(i + 1, resolvePromise);
 	        } else {
@@ -5779,10 +5792,6 @@ var legionsImportHTML = (function (exports) {
 	  if (options && _typeof_1(options) === 'object') {
 	    isMergeCache[url] = true;
 
-	    if (options.isWith !== undefined) {
-	      isWith = options.isWith;
-	    }
-
 	    if (options.excludeFiles !== undefined && Array.isArray(options.excludeFiles)) {
 	      excludeFilesCache[url] = options.excludeFiles; // 排除在沙箱之外的js文件列表
 	    }
@@ -5794,34 +5803,12 @@ var legionsImportHTML = (function (exports) {
 
 	  }
 
-	  var transHttpUrl = function transHttpUrl(url, timestamp) {
-	    var arr = url.split('?');
-	    var version = timestamp ? '&version=' + timestamp + '' : '';
-
-	    if (arr.length > 1) {
-	      var _query = arr[1] + version;
-
-	      if (arr.length > 2) {
-	        var query = '?' + arr[2] + version;
-	        return arr[0] + '?' + arr[1] + query;
-	      }
-
-	      return arr[0] + '?' + _query;
-	    } else {
-	      var version = timestamp ? '?version=' + timestamp + '' : '';
-
-	      var _query = url + version;
-
-	      return _query;
-	    }
-	  };
-
 	  return embedHTMLCache[url] || (
 	  /* (embedHTMLCache[url] = axios.get(url+'?version='+Date.parse(new Date().toString())+'') */
 	  embedHTMLCache[url] = fetch(transHttpUrl(url, Date.parse(new Date().toString()))).then(function (response) {
 	    return response.text();
 	  }).then(function (html) {
-	    /* var assetPublicPath = getPublicPath(url); */
+	    var assetPublicPath = getDomain(url) + '/';
 	    var result = processTpl(html, getDomain(url));
 	    var template = result.template;
 	    var scripts = result.scripts;
@@ -5832,8 +5819,7 @@ var legionsImportHTML = (function (exports) {
 	    return getEmbedHTML(template, styles).then(function (embedHTML) {
 	      return {
 	        template: embedHTML,
-
-	        /* assetPublicPath, */
+	        assetPublicPath: assetPublicPath,
 	        getExternalScripts: function getExternalScripts() {
 	          return _getExternalScripts(scripts);
 	        },
@@ -5887,8 +5873,7 @@ var legionsImportHTML = (function (exports) {
 	    return getEmbedHTML(html, styles).then(function (embedHTML) {
 	      return {
 	        template: embedHTML,
-
-	        /* assetPublicPath: getPublicPath('/'), */
+	        assetPublicPath: '/',
 	        getExternalScripts: function getExternalScripts() {
 	          return _getExternalScripts(scripts);
 	        },

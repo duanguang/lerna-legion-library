@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>index</title>
+        <style></style>
+        <!--   <script src="../dist/legions-import-html-entry.iife.js"></script> -->
+    </head>
+
+    <body>
+        <div id=react-scm></div>
+        <a href="#groupManage">groupManage</a>
+        <a href="#material">material</a>
+        <a href="#supplyOrder">supplyOrder</a>
+        <script>
+            let script = document.createElement('script');
+            script.src = 'http://127.0.0.1:8080/dist/legions-import-html-entry.min.js';
+            /* script.src = 'https://hoolinks.com/static/common/plugins/import-html-entry.min.js'; */
+            document.getElementsByTagName('head')[0].appendChild(script)
+            /* document.body.appendChild(script); */
+            /** 等待js加载完毕后执行主体脚本 */
+            script.onload = script.onreadystatechange = function () {
+                if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
+                    console.dir(this)
+                    setTimeout(() => {
+                        main();
+                    }, 100);
+                }
+            };
+
+            var main = function () {
+                
+                if (!window['importHTML']) {
+                    if (window['legionsImportHTML']) {
+                        window['importHTML'] = window['legionsImportHTML'].importHTML
+                    }
+                }
+                console.log(window.importHTML);
+                var mainApplication = {}
+                var url = 'https://uat-scm.hoolinks.com//scm-static/scm/'
+                window['importHTML'](url, {
+                    excludeFiles: [ ],
+                    /* isMerge: false, */
+                }).then(function (res) {
+
+                    if (!mainApplication[url]) {
+                        mainApplication[url] = {
+                            execScripts: res.execScripts,
+                            getExternalScripts: res.getExternalScripts,
+                            getExternalStyleSheets: res.getExternalStyleSheets,
+                            perform: false,
+                            //template:res.template
+                        }
+                    }
+                    console.log(mainApplication);
+                    if (mainApplication[url]) {
+                        mainApplication[url].execScripts().then(function (exports) {
+                            console.log(exports, 'execScripts');
+                            mainApplication[url].perform = true
+                        });
+                        mainApplication[url].getExternalScripts().then(exports => {
+                            console.log(exports, 'getExternalScripts');
+
+                        });
+                        mainApplication[url].getExternalStyleSheets().then(function (exports) {
+                            var headss = document.getElementsByTagName('head')[0].getElementsByTagName('style')[0]
+                            /* headss.append(exports); */
+                            headss.innerHTML = exports;
+
+                        });
+                    }
+
+
+                });
+            }
+        </script>
+    </body>
+
+</html>
