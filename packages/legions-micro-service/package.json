@@ -17,7 +17,7 @@
   "dependencies": {
     "legions-utils-tool": "^0.0.9-rc.1",
     "es6-proxy-polyfill": "^2.1.0",
-    "whatwg-fetch":"^3.4.1"
+    "legions-import-html-entry":"^0.0.3"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",

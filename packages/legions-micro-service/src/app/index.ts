@@ -1,5 +1,6 @@
 import { onloadScript, isObject } from '../utils';
 import { checkBrowser } from '../utils/browser';
+import { importHTML } from 'legions-import-html-entry';
 let microApps: {
   name: string;
   entry: string;
@@ -15,7 +16,7 @@ let externalOnloadScript: { url: string; code: string }[] = []; // [{url:'',code
 let isPassCheckBrowser = false;
 let currentEnvironment = 'normal'; // 'normal'|'sandbox'  正常环境或沙盒
 export class MicroApps {
-  importHTML = `https://qa-zy.hoolinks.com/static/plugin/import-html-entry.min.js?version=${new Date().getTime()}`;
+  /* importHTML = `https://qa-zy.hoolinks.com/static/plugin/import-html-entry.min.js?version=${new Date().getTime()}`; */
   importHTMLOptions: {
     excludeFiles: string[];
     isMerge: boolean;
@@ -32,16 +33,16 @@ export class MicroApps {
      * @memberof MicroApps
      */
   constructor(options: {
-    importHTML?: string;
+    /* importHTML?: string; */
     excludeFiles?: string[];
     isMerge?: boolean;
   }) {
     if (options && isObject(options)) {
-      if (options['importHTML']) {
+      /* if (options['importHTML']) {
         this.importHTML = options['importHTML'];
         //@ts-ignore
         delete options['importHTML'];
-      }
+      } */
       this.importHTMLOptions = {
         excludeFiles: options['excludeFiles'] || [],
         isMerge: options['isMerge'] || false,
