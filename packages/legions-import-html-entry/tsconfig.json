@@ -11,10 +11,11 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "lib": [
-      "dom",
-      "es6",
-      "es5",
-      "dom.iterable",
+      "DOM",
+      "ES6",
+      "ES5",
+      "DOM.Iterable",
+      "ES2017.String",
       /* "esnext", */
       "ES2015.Promise"
     ],

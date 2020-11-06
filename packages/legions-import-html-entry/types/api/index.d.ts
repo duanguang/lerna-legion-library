@@ -10,11 +10,14 @@ interface IImportResult {
   getExternalStyleSheets(): Promise<string[]>;
   getScripts: () => {
     scripts: IScripts;
-    excludeFiles: IScripts;
+    excludeFiles: IExcludeFiles;
   };
 }
 interface IScripts {
-  [key: string]: string;
+  [key: string]: string[];
+}
+interface IExcludeFiles {
+  [key: string]: string[];
 }
 export type ImportEntryOpts = {
   /* fetch?: typeof window.fetch; */
@@ -42,7 +45,7 @@ export function execScripts<T>(
   opts?: ExecScriptsOpts
 ): Promise<T>;
 
-export default function importHTML(
+export function importHTML(
   url: string,
   opts?: ImportEntryOpts
 ): Promise<IImportResult>;

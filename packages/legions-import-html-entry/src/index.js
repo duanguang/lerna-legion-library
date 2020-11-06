@@ -14,7 +14,7 @@ var embedHTMLCache = {};
 var isMergeCache = {};
 /* var fetch = window.fetch.bind(window); */
 import { fetch } from 'whatwg-fetch';
-
+import 'core-js/modules/es.string.starts-with';
 function getDomain(url) {
   try {
     // URL 构造函数不支持使用 // 前缀的 url
@@ -143,7 +143,8 @@ function execScripts(entryMain, scripts, proxy, keys) {
       if (
         excludeFilesCache[keys] &&
         Object.prototype.toString.call(excludeFilesCache[keys]) ===
-          '[object Array]'&&excludeFilesCache[keys].length
+          '[object Array]' &&
+        excludeFilesCache[keys].length
       ) {
         for (var i = 0; i < excludeFilesCache[keys].length; i++) {
           if (scriptSrc.indexOf(excludeFilesCache[keys][i]) < 0) {
