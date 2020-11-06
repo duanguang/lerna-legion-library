@@ -3,7 +3,7 @@ const resolves = _path => path.join(process.cwd(), _path);
 module.exports = {
   external: [],
   rollupPlugin: {
-    /* babel: false, */
+    babel: false,
     typescript: {
       include: ['*.ts+(|x)', '**/*.ts+(|x)', '**/*.js', '*.js'],
     },
@@ -26,7 +26,7 @@ module.exports = {
     {
       name: 'umdprod',
       input: resolves('src/index.js'),
-      file: resolves('dist/legions-import-html-entry.umd.js'),
+      file: resolves('lib/legions-import-html-entry.umd.js'),
       format: 'umd',
       compress: false,
       banner: ' legions-import-html-entry',

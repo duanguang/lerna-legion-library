@@ -11,7 +11,7 @@
   "license": "MIT",
   "main": "lib/legions-import-html-entry.umd.js",
   "module": "lib/legions-import-html-entry.umd.js",
-  "typings": "types/main/index.d.ts",
+  "typings": "types/api/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
     "whatwg-fetch":"^3.4.1"
@@ -32,7 +32,6 @@
     "test": "__tests__"
   },
   "files": [
-    "dist",
     "lib",
     "types/api",
     "types/main"
