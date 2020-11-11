@@ -54,3 +54,5 @@ export function importEntry(
   entry: Entry,
   opts?: ImportEntryOpts
 ): Promise<IImportResult>;
+const fetch: typeof window.fetch;
+export { fetch };

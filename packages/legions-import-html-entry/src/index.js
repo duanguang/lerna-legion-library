@@ -15,6 +15,7 @@ var isMergeCache = {};
 /* var fetch = window.fetch.bind(window); */
 import { fetch } from 'whatwg-fetch';
 import 'core-js/modules/es.string.starts-with';
+export { fetch };
 function getDomain(url) {
   try {
     // URL 构造函数不支持使用 // 前缀的 url
@@ -155,8 +156,8 @@ function execScripts(entryMain, scripts, proxy, keys) {
         entry.push(inlineScript);
       }
       noteGlobalProps();
-      var exports = proxy[getGlobalProp()] || {};
-      resolve(exports);
+      /*  var exports = proxy[getGlobalProp()] || {};
+      resolve(exports); */
 
       if (process.env.NODE_ENV === 'development') {
         performance.measure(measureName, markName);
@@ -216,7 +217,7 @@ function execScripts(entryMain, scripts, proxy, keys) {
         performance.clearMeasures(measureName);
       }
     }
-    function collectExec() {
+    function collectExec(resolve) {
       try {
         var isIE = window.ActiveXObject || 'ActiveXObject' in window;
         if (isIE) {
@@ -228,10 +229,14 @@ function execScripts(entryMain, scripts, proxy, keys) {
             geval(getExecutableScript(entry.join(' '), proxy));
             /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
           }
+          /* var exports = proxy[getGlobalProp(proxy)] || {}; */
+          resolve(proxy);
         } else {
           /* compileCode(''+entry.join(' ')+'').bind(window.proxy)(window.proxy); */
           geval(getExecutableScript(entry.join(' '), proxy));
           // geval(';(function(window){;'+entry.join(' ')+'\n})(window);');
+          var exports = proxy[getGlobalProp(proxy)] || {};
+          resolve(exports);
         }
       } catch (e) {
         console.error(
@@ -258,7 +263,7 @@ function execScripts(entryMain, scripts, proxy, keys) {
         }
       } else {
         if (isMergeCache[keys]) {
-          collectExec();
+          collectExec(resolvePromise);
         }
       }
     }
