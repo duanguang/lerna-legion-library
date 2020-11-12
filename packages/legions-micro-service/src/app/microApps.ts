@@ -1,6 +1,7 @@
 import { onloadScript, isObject } from '../utils/app';
 import { checkBrowser } from '../utils/browser';
 import { importHTML } from 'legions-import-html-entry';
+import { Unpacked } from '../interfaces';
 let microApps: {
   name: string;
   entry: string;
@@ -10,7 +11,19 @@ let microApps: {
   loading?: boolean;
   render?: () => void;
 }[] = []; // {name:'',entry:'url',container:'DOMid',appId:'',styleId:'',loading:true}
-let scriptResources = {}; // {'entry':{scripts:[],scriptCache:[],sandbox:[],excludeSandboxFiles:[]}}
+interface IScriptResources {
+  [key: string]: {
+    scripts: string[];
+    scriptCache: { key: string; code: string }[];
+    sandbox: string[];
+    styles: string[];
+    excludeSandboxFiles: { url: string; code: string }[];
+    importHtmlentryResult: Unpacked<ReturnType<typeof importHTML>>;
+    /** 外部资源加载Promise结果 */
+    externalOnloadScriptPromise: Promise<any>[];
+  };
+}
+let scriptResources: IScriptResources = {}; // {'entry':{scripts:[],scriptCache:[],sandbox:[],excludeSandboxFiles:[]}}
 /* let isImportHTML = false; */
 let externalOnloadScript: { url: string; code: string }[] = []; // [{url:'',code:''}] 已加载过外部资源列表
 let isPassCheckBrowser = false;
@@ -121,7 +134,7 @@ export class MicroApps {
       }
     };
     isCheckRegister.call(that);
-    function renderStyles(styles = []) {
+    function renderStyles(styles: string[] = []) {
       styles.forEach(function (item) {
         var style = document.createElement('style');
         var styleWrap = document.getElementById(styleId);
@@ -183,6 +196,8 @@ export class MicroApps {
               excludeSandboxFiles: excludeFiles, // [{url:'',code:''}]
               sandbox: [], //['url']
               styles: [],
+              importHtmlentryResult: res,
+              externalOnloadScriptPromise: [],
             };
             if (_scripts.hasOwnProperty(sourceUrl)) {
               _scripts[sourceUrl].forEach(item => {
@@ -226,7 +241,12 @@ export class MicroApps {
                 });
               }
             });
-            Promise.all(promiseLoadScript).then(values => {
+            scriptResources[
+              sourceUrl
+            ].externalOnloadScriptPromise = promiseLoadScript;
+            /* Promise.all(
+              scriptResources[sourceUrl].externalOnloadScriptPromise
+            ).then(values => {
               res.execScripts().then(() => {
                 isCheckRegister.call(that);
                 currentEnvironment = 'sandbox';
@@ -245,46 +265,10 @@ export class MicroApps {
                   styleWrap.appendChild(style);
                 });
               });
-            });
+            }); */
           }
         });
       });
-    }
-    /** 环境准备，加载import-html-entry.js，创建模块渲染节点，创建样式节点 */
-
-    let wrap =
-      document.getElementById(container) ||
-      document.getElementsByClassName(container);
-    let style = document.createElement('div');
-    let app = document.createElement('div');
-    /* script.src = 'https://hoolinks.com/static/common/plugins/import-html-entry.js'; */
-
-    style.id = styleId;
-    app.id = appId;
-    if (apps.loading) {
-      app.innerHTML =
-        '<div class="preloader"><div class="cs-loader"><div class="cs-loader-inner"><label> ●</label><label> ●</label><label> ●</label><label> ●</label><label> ●</label><label> ●</label></div></div></div><style type="text/css">.reactSandboxWrap{position:relative;min-height: 100%;}.tab-right{padding: 0!important;}.preloader{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;background:#1890ff;z-index:9999;transition:opacity .65s}.preloader-hidden-add{opacity:1;display:block}.preloader-hidden-add-active{opacity:0}.preloader-hidden{display:none}.cs-loader{position:absolute;top:0;left:0;height:100%;width:100%}.cs-loader-inner{transform:translateY(-50%);top:50%;position:absolute;width:100%;color:#fff;text-align:center}.cs-loader-inner label{font-size:20px;opacity:0;display:inline-block}@keyframes lol{0%{opacity:0;transform:translateX(-300px)}33%{opacity:1;transform:translateX(0)}66%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(300px)}}.cs-loader-inner label:nth-child(6){animation:lol 3s infinite ease-in-out}.cs-loader-inner label:nth-child(5){animation:lol 3s .1s infinite ease-in-out}.cs-loader-inner label:nth-child(4){animation:lol 3s .2s infinite ease-in-out}.cs-loader-inner label:nth-child(3){animation:lol 3s .3s infinite ease-in-out}.cs-loader-inner label:nth-child(2){animation:lol 3s .4s infinite ease-in-out}.cs-loader-inner label:nth-child(1){animation:lol 3s .5s infinite ease-in-out}</style>';
-    }
-    /** 插入app节点和样式节点 */
-    if (wrap) {
-      if (wrap instanceof HTMLCollection) {
-        if (wrap[0]) {
-          !document.getElementById(style.id) && wrap[0].appendChild(style);
-          !document.getElementById(app.id) && wrap[0].appendChild(app);
-        } else {
-          !document.getElementById(style.id) &&
-            document.body.appendChild(style);
-          !document.getElementById(app.id) && document.body.appendChild(app);
-        }
-      } else {
-        //@ts-ignore
-        !document.getElementById(style.id) && wrap.appendChild(style);
-        //@ts-ignore
-        !document.getElementById(app.id) && wrap.appendChild(app);
-      }
-    } else {
-      !document.getElementById(style.id) && document.body.appendChild(style);
-      !document.getElementById(app.id) && document.body.appendChild(app);
     }
 
     main.call(that);

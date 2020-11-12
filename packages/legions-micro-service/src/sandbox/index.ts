@@ -1,212 +1,68 @@
-import Proxy from 'es6-proxy-polyfill';
-let PROXY = Proxy;
-export interface SandboxProps {
-  multiMode?: boolean;
-}
+import { SandBoxType } from '../utils';
+import { Freer, Rebuilder } from '../interfaces';
+import ProxySandbox from './proxySandbox';
+/**
+ * 生成应用运行时沙箱
+ *
+ * 沙箱分两个类型：
+ * 1. app 环境沙箱
+ *  app 环境沙箱是指应用初始化过之后，应用会在什么样的上下文环境运行。每个应用的环境沙箱只会初始化一次，因为子应用只会触发一次 bootstrap 。
+ *  子应用在切换时，实际上切换的是 app 环境沙箱。
+ * 2. render 沙箱
+ *  子应用在 app mount 开始前生成好的的沙箱。每次子应用切换过后，render 沙箱都会重现初始化。
+ *
+ * 这么设计的目的是为了保证每个子应用切换回来之后，还能运行在应用 bootstrap 之后的环境下。
+ *
+ * @param appName
+ */
+import { hijack } from '../hijackers';
+export function createSandbox(appName: string) {
+  let sandbox: ProxySandbox = new ProxySandbox({ name: appName });
+  // mounting freers are one-off and should be re-init at every mounting time
+  let mountingFreers: Freer[] = [];
 
-export interface SandboxContructor {
-  new (): Sandbox;
-}
+  let sideEffectsRebuilders: Rebuilder[] = [];
+  console.log(sandbox, 'createSandboxcreateSandbox');
+  return {
+    proxy: sandbox.sandbox,
 
-// check window contructor function， like Object Array
-function isConstructor(fn) {
-  // generator function and has own prototype properties
-  const hasConstructor =
-    fn.prototype &&
-    fn.prototype.constructor === fn &&
-    Object.getOwnPropertyNames(fn.prototype).length > 1;
-  // unnecessary to call toString if it has contructor function
-  const functionStr = !hasConstructor && fn.toString();
-  const upperCaseRegex = /^function\s+[A-Z]/;
+    /**
+     * 沙箱被 mount
+     * 可能是从 bootstrap 状态进入的 mount
+     * 也可能是从 unmount 之后再次唤醒进入 mount
+     */
+    async mount() {
+      /* ------------------------------------------ 因为有上下文依赖（window），以下代码执行顺序不能变 ------------------------------------------ */
 
-  return (
-    hasConstructor ||
-    // upper case
-    upperCaseRegex.test(functionStr) ||
-    // ES6 class, window function do not have this case
-    functionStr.slice(0, 5) === 'class'
-  );
-}
+      /* ------------------------------------------ 1. 启动/恢复 沙箱------------------------------------------ */
+      sandbox.active();
 
-// get function from original window, such as scrollTo, parseInt
-function isWindowFunction(func) {
-  return func && typeof func === 'function' && !isConstructor(func);
-}
+      /* ------------------------------------------ 2. 开启全局变量补丁 ------------------------------------------*/
+      // render 沙箱启动时开始劫持各类全局监听，尽量不要在应用初始化阶段有 事件监听/定时器 等副作用
+      mountingFreers.push(...hijack());
 
-export default class Sandbox {
-  private sandbox: Window;
-
-  private multiMode: boolean = false;
-
-  private eventListeners = {};
-
-  private timeoutIds: number[] = [];
-
-  private intervalIds: number[] = [];
-
-  private propertyAdded = {};
-
-  private originalValues = {};
-
-  //@ts-ignore
-  public sandboxDisabled: boolean;
-
-  constructor(props: SandboxProps = {}) {
-    const { multiMode } = props;
-    if (!window.Proxy) {
-      console.warn('proxy sandbox is not support by current browser');
-      /* this.sandboxDisabled = true; */
-    } else {
-      PROXY = window.Proxy;
-    }
-    // enable multiMode in case of create mulit sandbox in same time
-    //@ts-ignore
-    this.multiMode = multiMode;
-    //@ts-ignore
-    this.sandbox = null;
-  }
-
-  createProxySandbox() {
-    const { propertyAdded, originalValues, multiMode } = this;
-    const proxyWindow = Object.create(null) as Window;
-    const originalWindow = window;
-    const originalAddEventListener = window.addEventListener;
-    const originalRemoveEventListener = window.removeEventListener;
-    const originalSetInerval = window.setInterval;
-    const originalSetTimeout = window.setTimeout;
-    // hijack addEventListener
-    proxyWindow.addEventListener = (eventName, fn, ...rest) => {
-      const listeners = this.eventListeners[eventName] || [];
-      listeners.push(fn);
-      return originalAddEventListener.apply(originalWindow, [
-        eventName,
-        fn,
-        ...rest,
-      ]);
-    };
-    // hijack removeEventListener
-    proxyWindow.removeEventListener = (eventName, fn, ...rest) => {
-      const listeners = this.eventListeners[eventName] || [];
-      if (listeners.includes(fn)) {
-        listeners.splice(listeners.indexOf(fn), 1);
+      /* ------------------------------------------ 3. 重置一些初始化时的副作用 ------------------------------------------*/
+      // 存在 rebuilder 则表明有些副作用需要重建
+      if (sideEffectsRebuilders.length) {
+        sideEffectsRebuilders.forEach(rebuild => rebuild());
       }
-      return originalRemoveEventListener.apply(originalWindow, [
-        eventName,
-        fn,
-        ...rest,
-      ]);
-    };
-    // hijack setTimeout
-    proxyWindow.setTimeout = (...args) => {
-      const timerId = originalSetTimeout(...args);
-      this.timeoutIds.push(timerId);
-      return timerId;
-    };
-    // hijack setInterval
-    proxyWindow.setInterval = (...args) => {
-      const intervalId = originalSetInerval(...args);
-      this.intervalIds.push(intervalId);
-      return intervalId;
-    };
 
-    const sandbox = new PROXY(proxyWindow, {
-      set(target: Window, p: PropertyKey, value: any): boolean {
-        // eslint-disable-next-line no-prototype-builtins
-        if (!originalWindow.hasOwnProperty(p)) {
-          // recorde value added in sandbox
-          propertyAdded[p] = value;
-          // eslint-disable-next-line no-prototype-builtins
-        } else if (!originalValues.hasOwnProperty(p)) {
-          // if it is already been setted in orignal window, record it's original value
-          originalValues[p] = originalWindow[p];
-        }
-        // set new value to original window in case of jsonp, js bundle which will be execute outof sandbox
-        if (!multiMode) {
-          originalWindow[p] = value;
-        }
-        // eslint-disable-next-line no-param-reassign
-        target[p] = value;
-        return true;
-      },
-      get(target: Window, p: PropertyKey): any {
-        if (p === Symbol.unscopables) {
-          // 加固，防止逃逸
-          return undefined;
-        }
-        //@ts-ignore
-        if (['top', 'window', 'self', 'globalThis'].includes(p as string)) {
-          // 优先从自身应用取值
-          return sandbox;
-        }
-        // proxy hasOwnProperty, in case of proxy.hasOwnProperty value represented as originalWindow.hasOwnProperty
-        if (p === 'hasOwnProperty') {
-          // eslint-disable-next-line no-prototype-builtins
-          return (key: PropertyKey) =>
-            !!target[key] || originalWindow.hasOwnProperty(key);
-        }
-        const targetValue = target[p];
-        if (targetValue) {
-          // case of addEventListener, removeEventListener, setTimeout, setInterval setted in sandbox
-          return targetValue;
-        } else {
-          const value = originalWindow[p];
-          if (isWindowFunction(value)) {
-            // fix Illegal invocation
-            return value.bind(originalWindow);
-          } else {
-            // case of window.clientWidth、new window.Object()
-            return value;
-          }
-        }
-      },
-      has(target: Window, p: PropertyKey): boolean {
-        return p in target || p in originalWindow;
-      },
-    });
-    this.sandbox = sandbox;
-  }
+      // clean up rebuilders
+      sideEffectsRebuilders = [];
+    },
 
-  getSandbox() {
-    return this.sandbox;
-  }
-
-  execScriptInSandbox(script: string): void {
-    if (!this.sandboxDisabled) {
-      // create sandbox before exec script
-      if (!this.sandbox) {
-        this.createProxySandbox();
-      }
-      try {
-        const execScript = `with (sandbox) {;${script}\n}`;
-        // eslint-disable-next-line no-new-func
-        const code = new Function('sandbox', execScript).bind(this.sandbox);
-        // run code with sandbox
-        code(this.sandbox);
-      } catch (error) {
-        console.error(`error occurs when execute script in sandbox: ${error}`);
-        throw error;
-      }
-    }
-  }
-
-  clear() {
-    if (!this.sandboxDisabled) {
-      // remove event listeners
-      Object.keys(this.eventListeners).forEach(eventName => {
-        (this.eventListeners[eventName] || []).forEach(listener => {
-          window.removeEventListener(eventName, listener);
-        });
-      });
-      // clear timeout
-      this.timeoutIds.forEach(id => window.clearTimeout(id));
-      this.intervalIds.forEach(id => window.clearInterval(id));
-      // recover original values
-      Object.keys(this.originalValues).forEach(key => {
-        window[key] = this.originalValues[key];
-      });
-      Object.keys(this.propertyAdded).forEach(key => {
-        delete window[key];
-      });
-    }
-  }
+    /**
+     * 恢复 global 状态，使其能回到应用加载之前的状态
+     */
+    async unmount() {
+      // record the rebuilders of window side effects (event listeners or timers)
+      // note that the frees of mounting phase are one-off as it will be re-init at next mounting
+      /* sideEffectsRebuilders = [
+        ...mountingFreers,
+      ].map(free => free()); */
+      mountingFreers.forEach(free => sideEffectsRebuilders.push(free()));
+      mountingFreers = [];
+      sandbox.inactive();
+    },
+  };
 }

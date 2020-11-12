@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>index</title>
+        <style></style>
+        <!--   <script src="../dist/legions-import-html-entry.iife.js"></script> -->
+    </head>
+
+    <body>
+        <div id=reactSandboxWrap3></div>
+        <a href="#groupManage">groupManage</a>
+        <a href="#material">material</a>
+        <a href="#supplyOrder">supplyOrder</a>
+        <script>
+            var script = document.createElement('script');
+            script.src = 'http://192.168.100.141:8080/dist/legions-micro-service.iife 2.js';
+            document.getElementsByTagName('head')[0].appendChild(script)
+            /* document.body.appendChild(script); */
+            /** 等待js加载完毕后执行主体脚本 */
+            script.onload = script.onreadystatechange = function () {
+                if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
+                    setTimeout(function () {
+                        /*  main(); */
+                        if (window['legionsMicroservice']) {
+                            /* var sourceUrl = 'https://uat-scm.hoolinks.com//scm-static/scm/'; */
+                            var sourceUrl = 'http://192.168.100.141:8081/home/#/';
+                            var appId = 'app';
+                            var styleId = 'react-scm-style';
+                            var options = {
+                                excludeFiles: [],
+                                isMerge: true
+                            };
+                            new window.legionsMicroservice.MicroApps(options).mounted({
+                                entry: sourceUrl,
+                                name: 'SCMSystem',
+                                appId: appId,
+                                styleId: styleId,
+                                container: 'reactSandboxWrap3',
+                            });
+                            console.log(window['legionsMicroservice'], 111);
+                        }
+                    }, 100);
+                }
+            };
+        </script>
+    </body>
+
+</html>

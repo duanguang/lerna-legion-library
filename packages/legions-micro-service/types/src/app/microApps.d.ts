@@ -1,3 +1,23 @@
+import { importHTML } from 'legions-import-html-entry';
+import { Unpacked } from '../interfaces';
+interface IScriptResources {
+    [key: string]: {
+        scripts: string[];
+        scriptCache: {
+            key: string;
+            code: string;
+        }[];
+        sandbox: string[];
+        styles: string[];
+        excludeSandboxFiles: {
+            url: string;
+            code: string;
+        }[];
+        importHtmlentryResult: Unpacked<ReturnType<typeof importHTML>>;
+        /** 外部资源加载Promise结果 */
+        externalOnloadScriptPromise: Promise<any>[];
+    };
+}
 export declare class MicroApps {
     importHTMLOptions: {
         excludeFiles: string[];
@@ -25,7 +45,7 @@ export declare class MicroApps {
             loading?: boolean | undefined;
             render?: (() => void) | undefined;
         }[];
-        scriptResources: {};
+        scriptResources: IScriptResources;
         currentEnvironment: string;
         externalOnloadScript: {
             url: string;
@@ -42,7 +62,7 @@ export declare class MicroApps {
             loading?: boolean | undefined;
             render?: (() => void) | undefined;
         }[];
-        scriptResources: {};
+        scriptResources: IScriptResources;
         currentEnvironment: string;
         externalOnloadScript: {
             url: string;
@@ -73,3 +93,4 @@ export declare class MicroApps {
         render?: () => void;
     }): void;
 }
+export {};

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>index</title>
+    </head>
+
+    <body>
+        <script src="../dist/legions-micro-service.iife.js"></script>
+        <div id=reactSandboxWrap3></div>
+        <!-- <script src="https://qa-zy.hoolinks.com/static/plugin/import-html-entry.min.js"></script> -->
+        <script>
+            if (window['legionsMicroservice']) {
+                var sourceUrl = './template.html';
+                var appId = 'react-scm';
+                var styleId = 'react-scm-style';
+                var options = {
+                    excludeFiles: [],
+                    isMerge: true
+                };
+                new window.legionsMicroservice.MicroApps(options).mounted({
+                    entry: sourceUrl,
+                    name: 'SCMSystem',
+                    appId: appId,
+                    styleId: styleId,
+                    container: 'reactSandboxWrap3',
+                });
+                console.log(window['legionsMicroservice']);
+            }
+        </script>
+    </body>
+
+</html>

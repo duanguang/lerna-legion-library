@@ -3,7 +3,7 @@
     "declaration": true,
     "declarationDir": "./types",
     /* "module": "esnext", */
-    "types": ["jest"],
+    "types": [ "jest"],
     /* "typeRoots": ["./node_modules/@types"], */
     /*  "noImplicitAny": true, */
     "outDir": "./dist",
@@ -15,7 +15,7 @@
       "es6",
       "es5",
       "dom.iterable",
-      /* "esnext", */
+      "esnext",
       "ES2015.Promise"
     ],
     "allowJs": true,

@@ -1,3 +1,4 @@
 import { MicroApps } from './app';
-import Sandbox from './sandbox';
-export { MicroApps, Sandbox };
+import { start, registerMicroApps } from './app/apis';
+import { setDefaultMountApp } from './app/effects';
+export { MicroApps, start, registerMicroApps, setDefaultMountApp };
