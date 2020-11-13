@@ -30,6 +30,5 @@ export function getTargetValue(target: any, value: any): any {
     functionBoundedValueMap.set(value, boundValue);
     return boundValue;
   }
-
   return value;
 }

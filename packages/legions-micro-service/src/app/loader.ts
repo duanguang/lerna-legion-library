@@ -325,10 +325,6 @@ export async function loadApp<T extends object>(
       appName
       // FIXME should use a strict sandbox logic while remount, see https://github.com/umijs/qiankun/issues/518
     );
-    console.log(
-      sandboxInstance.proxy,
-      'sandboxInstance.proxy sandboxInstance.proxy '
-    );
     // 用沙箱的代理对象作为接下来使用的全局对象
     global = sandboxInstance.proxy as typeof window;
     mountSandbox = sandboxInstance.mount;
@@ -354,8 +350,6 @@ export async function loadApp<T extends object>(
     appName,
     global
   );
-
-  console.log(mount, 'mountmount');
   const {
     onGlobalStateChange,
     setGlobalState,

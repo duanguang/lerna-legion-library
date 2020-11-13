@@ -13,10 +13,7 @@ import {
 import { doPrefetchStrategy } from '../core/prefetch';
 import { Deferred, toArray } from '../utils';
 import { loadApp } from './loader';
-import Proxy from 'es6-proxy-polyfill';
-if (!window.Proxy) {
-  window['Proxy'] = Proxy;
-}
+
 export let frameworkConfiguration: FrameworkConfiguration = {};
 const frameworkStartedDefer = new Deferred<void>();
 let microApps: RegistrableApp[] = [];
@@ -48,7 +45,6 @@ export function registerMicroApps<T extends object = {}>(
             lifeCycles
           )
         )();
-
         return {
           mount: [
             async () => loader(true),

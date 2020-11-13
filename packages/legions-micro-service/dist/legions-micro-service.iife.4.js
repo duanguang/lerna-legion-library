@@ -10346,66 +10346,6 @@ var legionsMicroservice = (function (exports) {
 	  }
 	});
 
-	var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('splice');
-	var USES_TO_LENGTH$8 = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
-
-	var max$3 = Math.max;
-	var min$3 = Math.min;
-	var MAX_SAFE_INTEGER$3 = 0x1FFFFFFFFFFFFF;
-	var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
-
-	// `Array.prototype.splice` method
-	// https://tc39.github.io/ecma262/#sec-array.prototype.splice
-	// with adding support of @@species
-	_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_TO_LENGTH$8 }, {
-	  splice: function splice(start, deleteCount /* , ...items */) {
-	    var O = toObject(this);
-	    var len = toLength(O.length);
-	    var actualStart = toAbsoluteIndex(start, len);
-	    var argumentsLength = arguments.length;
-	    var insertCount, actualDeleteCount, A, k, from, to;
-	    if (argumentsLength === 0) {
-	      insertCount = actualDeleteCount = 0;
-	    } else if (argumentsLength === 1) {
-	      insertCount = 0;
-	      actualDeleteCount = len - actualStart;
-	    } else {
-	      insertCount = argumentsLength - 2;
-	      actualDeleteCount = min$3(max$3(toInteger(deleteCount), 0), len - actualStart);
-	    }
-	    if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$3) {
-	      throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
-	    }
-	    A = arraySpeciesCreate(O, actualDeleteCount);
-	    for (k = 0; k < actualDeleteCount; k++) {
-	      from = actualStart + k;
-	      if (from in O) createProperty(A, k, O[from]);
-	    }
-	    A.length = actualDeleteCount;
-	    if (insertCount < actualDeleteCount) {
-	      for (k = actualStart; k < len - actualDeleteCount; k++) {
-	        from = k + actualDeleteCount;
-	        to = k + insertCount;
-	        if (from in O) O[to] = O[from];
-	        else delete O[to];
-	      }
-	      for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
-	    } else if (insertCount > actualDeleteCount) {
-	      for (k = len - actualDeleteCount; k > actualStart; k--) {
-	        from = k + actualDeleteCount - 1;
-	        to = k + insertCount - 1;
-	        if (from in O) O[to] = O[from];
-	        else delete O[to];
-	      }
-	    }
-	    for (k = 0; k < insertCount; k++) {
-	      O[k + actualStart] = arguments[k + 2];
-	    }
-	    O.length = len - actualDeleteCount + insertCount;
-	    return A;
-	  }
-	});
-
 	var defineProperty$7 = objectDefineProperty.f;
 
 
@@ -10883,8 +10823,6 @@ var legionsMicroservice = (function (exports) {
 	  };
 
 	  ProxySandbox.prototype.createProxySandbox = function () {
-	    var _this = this;
-
 	    var
 	    /* propertyAdded, originalValues,  */
 	    updatedValueSet = this.updatedValueSet;
@@ -10895,70 +10833,6 @@ var legionsMicroservice = (function (exports) {
 	        fakeWindow = _a.fakeWindow,
 	        propertiesWithGetter = _a.propertiesWithGetter; // 生成一份伪造的window
 
-
-	    var originalAddEventListener = window.addEventListener;
-	    var originalRemoveEventListener = window.removeEventListener;
-	    var originalSetInerval = window.setInterval;
-	    var originalSetTimeout = window.setTimeout; // hijack addEventListener
-
-	    /* fakeWindow.addEventListener = function (eventName, fn) {
-	      var rest = [];
-
-	      for (var _i = 2; _i < arguments.length; _i++) {
-	        rest[_i - 2] = arguments[_i];
-	      }
-
-	      var listeners = _this.eventListeners[eventName] || [];
-	      listeners.push(fn);
-	      return originalAddEventListener.apply(rawWindow, __spread([eventName, fn], rest));
-	    }; // hijack removeEventListener
-
-
-	    fakeWindow.removeEventListener = function (eventName, fn) {
-	      var rest = [];
-
-	      for (var _i = 2; _i < arguments.length; _i++) {
-	        rest[_i - 2] = arguments[_i];
-	      }
-
-	      var listeners = _this.eventListeners[eventName] || [];
-
-	      if (listeners.includes(fn)) {
-	        listeners.splice(listeners.indexOf(fn), 1);
-	      }
-
-	      return originalRemoveEventListener.apply(rawWindow, __spread([eventName, fn], rest));
-	    }; // hijack setTimeout
-
-
-	    fakeWindow.setTimeout = function () {
-	      var args = [];
-
-	      for (var _i = 0; _i < arguments.length; _i++) {
-	        args[_i] = arguments[_i];
-	      }
-
-	      var timerId = originalSetTimeout.apply(void 0, __spread(args));
-
-	      _this.timeoutIds.push(timerId);
-
-	      return timerId;
-	    }; // hijack setInterval
-
-
-	    fakeWindow.setInterval = function () {
-	      var args = [];
-
-	      for (var _i = 0; _i < arguments.length; _i++) {
-	        args[_i] = arguments[_i];
-	      }
-
-	      var intervalId = originalSetInerval.apply(void 0, __spread(args));
-
-	      _this.intervalIds.push(intervalId);
-
-	      return intervalId;
-	    }; */
 
 	    var descriptorTargetMap = new Map();
 
@@ -11111,6 +10985,66 @@ var legionsMicroservice = (function (exports) {
 
 	  return ProxySandbox;
 	}();
+
+	var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('splice');
+	var USES_TO_LENGTH$8 = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
+
+	var max$3 = Math.max;
+	var min$3 = Math.min;
+	var MAX_SAFE_INTEGER$3 = 0x1FFFFFFFFFFFFF;
+	var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
+
+	// `Array.prototype.splice` method
+	// https://tc39.github.io/ecma262/#sec-array.prototype.splice
+	// with adding support of @@species
+	_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_TO_LENGTH$8 }, {
+	  splice: function splice(start, deleteCount /* , ...items */) {
+	    var O = toObject(this);
+	    var len = toLength(O.length);
+	    var actualStart = toAbsoluteIndex(start, len);
+	    var argumentsLength = arguments.length;
+	    var insertCount, actualDeleteCount, A, k, from, to;
+	    if (argumentsLength === 0) {
+	      insertCount = actualDeleteCount = 0;
+	    } else if (argumentsLength === 1) {
+	      insertCount = 0;
+	      actualDeleteCount = len - actualStart;
+	    } else {
+	      insertCount = argumentsLength - 2;
+	      actualDeleteCount = min$3(max$3(toInteger(deleteCount), 0), len - actualStart);
+	    }
+	    if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$3) {
+	      throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
+	    }
+	    A = arraySpeciesCreate(O, actualDeleteCount);
+	    for (k = 0; k < actualDeleteCount; k++) {
+	      from = actualStart + k;
+	      if (from in O) createProperty(A, k, O[from]);
+	    }
+	    A.length = actualDeleteCount;
+	    if (insertCount < actualDeleteCount) {
+	      for (k = actualStart; k < len - actualDeleteCount; k++) {
+	        from = k + actualDeleteCount;
+	        to = k + insertCount;
+	        if (from in O) O[to] = O[from];
+	        else delete O[to];
+	      }
+	      for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
+	    } else if (insertCount > actualDeleteCount) {
+	      for (k = len - actualDeleteCount; k > actualStart; k--) {
+	        from = k + actualDeleteCount - 1;
+	        to = k + insertCount - 1;
+	        if (from in O) O[to] = O[from];
+	        else delete O[to];
+	      }
+	    }
+	    for (k = 0; k < insertCount; k++) {
+	      O[k + actualStart] = arguments[k + 2];
+	    }
+	    O.length = len - actualDeleteCount + insertCount;
+	    return A;
+	  }
+	});
 
 	function hijack() {
 	  // FIXME umi unmount feature request
@@ -11583,9 +11517,9 @@ var legionsMicroservice = (function (exports) {
 	          // render 沙箱启动时开始劫持各类全局监听，尽量不要在应用初始化阶段有 事件监听/定时器 等副作用
 
 	          if (window.Proxy) {
-	            
-			  }
-			  mountingFreers.push.apply(mountingFreers, __spread(hijackAtMounting(appName, sandbox.sandbox)));
+	            // 在不支持Proxy浏览器环境，比如IE11及以下，执行代码会导致切换应用时，执行异常，暂时还未查出原因，先临时这样处理
+	            mountingFreers.push.apply(mountingFreers, __spread(hijackAtMounting(appName, sandbox.sandbox)));
+	          }
 	          /* ------------------------------------------ 3. 重置一些初始化时的副作用 ------------------------------------------*/
 	          // 存在 rebuilder 则表明有些副作用需要重建
 
@@ -11616,9 +11550,6 @@ var legionsMicroservice = (function (exports) {
 	          sideEffectsRebuilders = __spread(bootstrappingFreers, mountingFreers).map(function (free) {
 	            return free();
 	          });
-	          /*  mountingFreers.forEach(free => sideEffectsRebuilders.push(free()));
-	          mountingFreers = []; */
-			  mountingFreers = [];
 	          sandbox.inactive();
 	          return [2
 	          /*return*/

@@ -1,8 +1,12 @@
-import Proxy from 'es6-proxy-polyfill';
+/* import Proxy from 'es6-proxy-polyfill';
+import 'object-defineproperty-ie'; */
 import { nextTick, SandBoxType } from '../utils';
 import { documentAttachProxyMap, getTargetValue } from './common';
 import 'reflect-metadata';
-let PROXY = Proxy;
+/* let PROXY = Proxy;
+if (!window.Proxy) {
+  window['Proxy'] = Proxy;
+} */
 let activeSandboxCount = 0;
 /**
  * fastest(at most time) unique array method
@@ -13,6 +17,19 @@ function uniq(array: PropertyKey[]) {
     return element in this ? false : ((this as any)[element] = true);
   }, {});
 }
+const unscopables = {
+  undefined: true,
+  Array: true,
+  Object: true,
+  String: true,
+  Boolean: true,
+  Math: true,
+  eval: true,
+  Number: true,
+  Symbol: true,
+  parseFloat: true,
+  Float32Array: true,
+};
 type SymbolTarget = 'target' | 'rawWindow';
 const rawObjectDefineProperty = Object.defineProperty;
 const variableWhiteListInDev =
@@ -100,35 +117,10 @@ export interface SandboxContructor {
 }
 
 // check window contructor function， like Object Array
-/* function isConstructor(fn) {
-  // generator function and has own prototype properties
-  const hasConstructor =
-    fn.prototype &&
-    fn.prototype.constructor === fn &&
-    Object.getOwnPropertyNames(fn.prototype).length > 1;
-  // unnecessary to call toString if it has contructor function
-  const functionStr = !hasConstructor && fn.toString();
-  const upperCaseRegex = /^function\s+[A-Z]/;
-
-  return (
-    hasConstructor ||
-    // upper case
-    upperCaseRegex.test(functionStr) ||
-    // ES6 class, window function do not have this case
-    functionStr.slice(0, 5) === 'class'
-  );
-}
-
-// get function from original window, such as scrollTo, parseInt
-function isWindowFunction(func) {
-  return func && typeof func === 'function' && !isConstructor(func);
-} */
 
 export default class ProxySandbox {
   /** 沙箱导出的代理实体 */
   sandbox: Window;
-
-  private multiMode: boolean = false;
 
   private eventListeners = {};
 
@@ -136,12 +128,9 @@ export default class ProxySandbox {
 
   private intervalIds: number[] = [];
 
-  private propertyAdded = {};
+  /* private propertyAdded = {};
 
-  private originalValues = {};
-
-  //@ts-ignore
-  public sandboxDisabled: boolean;
+  private originalValues = {}; */
 
   /** window 值变更记录 */
   private updatedValueSet = new Set<PropertyKey>();
@@ -158,12 +147,9 @@ export default class ProxySandbox {
     if (!window.Proxy) {
       console.warn('proxy sandbox is not support by current browser');
       /* this.sandboxDisabled = true; */
-    } else {
+    } /*  else {
       PROXY = window.Proxy;
-    }
-    // enable multiMode in case of create mulit sandbox in same time
-    //@ts-ignore
-    this.multiMode = multiMode;
+    } */
     //@ts-ignore
     this.sandbox = null;
     this.name = props.name;
@@ -175,13 +161,12 @@ export default class ProxySandbox {
   }
   inactive() {
     //@ts-ignore
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'production') {
       console.info(
         `[legions:sandbox] ${this.name} modified global properties restore...`,
         [...this.updatedValueSet.keys()]
       );
     }
-
     if (--activeSandboxCount === 0) {
       variableWhiteList.forEach(p => {
         if (this.sandbox.hasOwnProperty(p)) {
@@ -190,62 +175,25 @@ export default class ProxySandbox {
         }
       });
     }
-
     this.sandboxRunning = false;
   }
   createProxySandbox() {
-    const { propertyAdded, originalValues, multiMode, updatedValueSet } = this;
+    const {
+      /* propertyAdded, originalValues,  */
+      updatedValueSet,
+    } = this;
     const self = this;
     const rawWindow = window;
-    const { fakeWindow, propertiesWithGetter } = createFakeWindow(rawWindow);
-    console.log(fakeWindow, 'fakeWindowfakeWindowfakeWindow');
-    /* const proxyWindow = Object.create(null) as Window; */
-    /* const proxyWindow = fakeWindow; */
-    const originalAddEventListener = window.addEventListener;
-    const originalRemoveEventListener = window.removeEventListener;
-    const originalSetInerval = window.setInterval;
-    const originalSetTimeout = window.setTimeout;
-    // hijack addEventListener
-    fakeWindow.addEventListener = (eventName, fn, ...rest) => {
-      const listeners = this.eventListeners[eventName] || [];
-      listeners.push(fn);
-      return originalAddEventListener.apply(rawWindow, [
-        eventName,
-        fn,
-        ...rest,
-      ]);
-    };
-    // hijack removeEventListener
-    fakeWindow.removeEventListener = (eventName, fn, ...rest) => {
-      const listeners = this.eventListeners[eventName] || [];
-      if (listeners.includes(fn)) {
-        listeners.splice(listeners.indexOf(fn), 1);
-      }
-      return originalRemoveEventListener.apply(rawWindow, [
-        eventName,
-        fn,
-        ...rest,
-      ]);
-    };
-    // hijack setTimeout
-    fakeWindow.setTimeout = (...args) => {
-      const timerId = originalSetTimeout(...args);
-      this.timeoutIds.push(timerId);
-      return timerId;
-    };
-    // hijack setInterval
-    fakeWindow.setInterval = (...args) => {
-      const intervalId = originalSetInerval(...args);
-      this.intervalIds.push(intervalId);
-      return intervalId;
-    };
+    const { fakeWindow, propertiesWithGetter } = createFakeWindow(rawWindow); // 生成一份伪造的window
+
     const descriptorTargetMap = new Map<PropertyKey, SymbolTarget>();
-    const sandbox = new PROXY(fakeWindow, {
-      set(target: Window, p: PropertyKey, value: any): boolean {
-        console.log(self.sandboxRunning, 'self.sandboxRunning');
+    const hasOwnProperty = (key: PropertyKey) =>
+      fakeWindow.hasOwnProperty(key) || rawWindow.hasOwnProperty(key);
+    const sandbox = new window.Proxy(fakeWindow, {
+      set(target: FakeWindow, p: PropertyKey, value: any): boolean {
         if (self.sandboxRunning) {
           // eslint-disable-next-line no-prototype-builtins
-          if (!rawWindow.hasOwnProperty(p)) {
+          /* if (!rawWindow.hasOwnProperty(p)) {
             // 如果在原始window 不存在，则在沙箱中添加
             // recorde value added in sandbox
             propertyAdded[p] = value;
@@ -254,32 +202,46 @@ export default class ProxySandbox {
             // 如果在原始window 存在，则记录原始值
             // if it is already been setted in orignal window, record it's original value
             originalValues[p] = rawWindow[p];
-          }
+          } */
           // set new value to original window in case of jsonp, js bundle which will be execute outof sandbox
-          if (!multiMode) {
+          /* if (!multiMode) {
+            rawWindow[p] = value;
+          } */
+          if (variableWhiteList.indexOf(p) !== -1) {
+            // @ts-ignore
             rawWindow[p] = value;
           }
-          updatedValueSet.add(p);
           // eslint-disable-next-line no-param-reassign
+          //@ts-ignore
           target[p] = value;
+          updatedValueSet.add(p);
         }
         return true;
       },
-      get(target: Window, p: PropertyKey): any {
+      get(target: FakeWindow, p: PropertyKey): any {
         if (p === Symbol.unscopables) {
           // 加固，防止逃逸
-          return undefined;
+          return unscopables;
         }
-        //@ts-ignore
-        if (['top', 'window', 'self', 'globalThis'].includes(p as string)) {
-          // 优先从自身应用取值
+        // see https://github.com/eligrey/FileSaver.js/blob/master/src/FileSaver.js#L13
+        if (p === 'window' || p === 'self') {
           return sandbox;
+        }
+
+        if (p === 'top' || p === 'parent') {
+          // if your master app in an iframe context, allow these props escape the sandbox
+          if (rawWindow === rawWindow.parent) {
+            return sandbox;
+          }
+          return (rawWindow as any)[p];
         }
         // proxy hasOwnProperty, in case of proxy.hasOwnProperty value represented as originalWindow.hasOwnProperty
         if (p === 'hasOwnProperty') {
           // eslint-disable-next-line no-prototype-builtins
-          return (key: PropertyKey) =>
-            !!target[key] || rawWindow.hasOwnProperty(key);
+          /* return (key: PropertyKey) =>
+            //@ts-ignore
+            !!target[key] || rawWindow.hasOwnProperty(key); */
+          return hasOwnProperty;
         }
         // mark the symbol to document while accessing as document.createElement could know is invoked by which sandbox for dynamic append patcher
         if (p === 'document') {
@@ -290,21 +252,13 @@ export default class ProxySandbox {
           nextTick(() => documentAttachProxyMap.delete(document));
           return document;
         }
-        /* const targetValue = target[p];
-        if (targetValue) {
-          // case of addEventListener, removeEventListener, setTimeout, setInterval setted in sandbox
-          return targetValue;
-        } else {
-          
-        } */
         const value = propertiesWithGetter.has(p)
           ? (rawWindow as any)[p]
           : (target as any)[p] || (rawWindow as any)[p];
-        /* const value = originalWindow[p]; */
         return getTargetValue(rawWindow, value);
       },
       has(target: Window, p: PropertyKey): boolean {
-        return p in target || p in rawWindow;
+        return p in unscopables || p in target || p in rawWindow;
       },
       getOwnPropertyDescriptor(
         target: FakeWindow,
@@ -371,45 +325,5 @@ export default class ProxySandbox {
 
   getSandbox() {
     return this.sandbox;
-  }
-
-  execScriptInSandbox(script: string): void {
-    if (!this.sandboxDisabled) {
-      // create sandbox before exec script
-      if (!this.sandbox) {
-        this.createProxySandbox();
-      }
-      try {
-        const execScript = `with (sandbox) {;${script}\n}`;
-        // eslint-disable-next-line no-new-func
-        const code = new Function('sandbox', execScript).bind(this.sandbox);
-        // run code with sandbox
-        code(this.sandbox);
-      } catch (error) {
-        console.error(`error occurs when execute script in sandbox: ${error}`);
-        throw error;
-      }
-    }
-  }
-
-  clear() {
-    if (!this.sandboxDisabled) {
-      // remove event listeners
-      Object.keys(this.eventListeners).forEach(eventName => {
-        (this.eventListeners[eventName] || []).forEach(listener => {
-          window.removeEventListener(eventName, listener);
-        });
-      });
-      // clear timeout
-      this.timeoutIds.forEach(id => window.clearTimeout(id));
-      this.intervalIds.forEach(id => window.clearInterval(id));
-      // recover original values
-      Object.keys(this.originalValues).forEach(key => {
-        window[key] = this.originalValues[key];
-      });
-      Object.keys(this.propertyAdded).forEach(key => {
-        delete window[key];
-      });
-    }
   }
 }

@@ -13,11 +13,12 @@ module.exports = {
         'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
           'importHTML',
           'importEntry',
+          'execScripts',
         ],
-        'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
+        /*  'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
           'importHTML',
           'importEntry',
-        ],
+        ], */
       },
     },
     typescript: {

@@ -17,6 +17,7 @@
   "dependencies": {
     "legions-utils-tool": "^0.0.9-rc.1",
     "es6-proxy-polyfill": "^2.1.0",
+    "object-defineproperty-ie":"^3.1.0",
     "legions-import-html-entry":"^0.0.5",
     "reflect-metadata": "^0.1.13",
     "single-spa": "^5.6.1"

@@ -15,14 +15,21 @@ import ProxySandbox from './proxySandbox';
  *
  * @param appName
  */
-import { hijack } from '../hijackers';
+import { hijackAtBootstrapping, hijackAtMounting } from '../hijackers';
+import SnapshotSandbox from './snapshotSandbox';
 export function createSandbox(appName: string) {
-  let sandbox: ProxySandbox = new ProxySandbox({ name: appName });
+  let sandbox: ProxySandbox | SnapshotSandbox;
+  if (window.Proxy) {
+    sandbox = new ProxySandbox({ name: appName });
+  } else {
+    sandbox = new SnapshotSandbox(appName);
+  }
   // mounting freers are one-off and should be re-init at every mounting time
   let mountingFreers: Freer[] = [];
 
   let sideEffectsRebuilders: Rebuilder[] = [];
   console.log(sandbox, 'createSandboxcreateSandbox');
+  const bootstrappingFreers = hijackAtBootstrapping(appName, sandbox.sandbox);
   return {
     proxy: sandbox.sandbox,
 
@@ -32,6 +39,17 @@ export function createSandbox(appName: string) {
      * 也可能是从 unmount 之后再次唤醒进入 mount
      */
     async mount() {
+      const sideEffectsRebuildersAtBootstrapping = sideEffectsRebuilders.slice(
+        0,
+        bootstrappingFreers.length
+      );
+      const sideEffectsRebuildersAtMounting = sideEffectsRebuilders.slice(
+        bootstrappingFreers.length
+      );
+      // must rebuild the side effects which added at bootstrapping firstly to recovery to nature state
+      if (sideEffectsRebuildersAtBootstrapping.length) {
+        sideEffectsRebuildersAtBootstrapping.forEach(rebuild => rebuild());
+      }
       /* ------------------------------------------ 因为有上下文依赖（window），以下代码执行顺序不能变 ------------------------------------------ */
 
       /* ------------------------------------------ 1. 启动/恢复 沙箱------------------------------------------ */
@@ -39,12 +57,15 @@ export function createSandbox(appName: string) {
 
       /* ------------------------------------------ 2. 开启全局变量补丁 ------------------------------------------*/
       // render 沙箱启动时开始劫持各类全局监听，尽量不要在应用初始化阶段有 事件监听/定时器 等副作用
-      mountingFreers.push(...hijack());
+      if (window.Proxy) {
+        // 在不支持Proxy浏览器环境，比如IE11及以下，执行代码会导致切换应用时，执行异常，暂时还未查出原因，先临时这样处理
+        mountingFreers.push(...hijackAtMounting(appName, sandbox.sandbox));
+      }
 
       /* ------------------------------------------ 3. 重置一些初始化时的副作用 ------------------------------------------*/
       // 存在 rebuilder 则表明有些副作用需要重建
-      if (sideEffectsRebuilders.length) {
-        sideEffectsRebuilders.forEach(rebuild => rebuild());
+      if (sideEffectsRebuildersAtMounting.length) {
+        sideEffectsRebuildersAtMounting.forEach(rebuild => rebuild());
       }
 
       // clean up rebuilders
@@ -57,11 +78,10 @@ export function createSandbox(appName: string) {
     async unmount() {
       // record the rebuilders of window side effects (event listeners or timers)
       // note that the frees of mounting phase are one-off as it will be re-init at next mounting
-      /* sideEffectsRebuilders = [
+      sideEffectsRebuilders = [
+        ...bootstrappingFreers,
         ...mountingFreers,
-      ].map(free => free()); */
-      mountingFreers.forEach(free => sideEffectsRebuilders.push(free()));
-      mountingFreers = [];
+      ].map(free => free());
       sandbox.inactive();
     },
   };

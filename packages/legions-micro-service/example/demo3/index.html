@@ -99,23 +99,21 @@
                             };
 
                             function renderLoader() {
-                                const div = document.createElement('div');
-                                div.innerHTML = `<h4 class="subapp-loading">Loading...</h4>`
+                                var div = document.createElement('div');
+                                div.innerHTML = '<h4 class="subapp-loading">Loading...</h4>'
                                 return div;
                             }
 
                             function renderapp() {
-                                const div = document.createElement('div');
+                                var div = document.createElement('div');
                                 div.setAttribute('id', 'subapp-viewport');
                                 return div;
                             }
 
-                            function render({
-                                loading
-                            }) {
-                                const container = document.getElementById('subapp-container');
-                                const loadingDOM = document.getElementsByClassName('subapp-loading');
-                                if (loading && !loadingDOM.length) {
+                            function render(prpos) {
+                                var container = document.getElementById('subapp-container');
+                                var loadingDOM = document.getElementsByClassName('subapp-loading');
+                                if (prpos.loading && !loadingDOM.length) {
                                     console.log(document.getElementsByClassName('subapp-loading'));
                                     container.appendChild(renderLoader())
                                 } else {
@@ -131,11 +129,11 @@
                                 loading: true
                             });
 
-                            const loader = function (loading) {
+                            /* var loader = function (loading) {
                                 return render({
                                     loading
                                 });
-                            }
+                            } */
                             legionsMicroservice.registerMicroApps([{
                                     entry: sourceUrl,
                                     name: 'react15-home',
@@ -155,7 +153,7 @@
                                     activeRule: '/demo3#/react16',
                                 }
                             ])
-                            legionsMicroservice.setDefaultMountApp('/demo3#/react15');
+                            legionsMicroservice.setDefaultMountApp('/demo3#/react16');
                             legionsMicroservice.start();
                             /* new window.legionsMicroservice.MicroApps(options).mounted({
                                 entry: sourceUrl,
