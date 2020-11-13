@@ -1,5 +1,5 @@
 import { ImportEntryOpts } from 'legions-import-html-entry';
-import { RegisterApplicationConfig, StartOpts } from 'single-spa';
+import { RegisterApplicationConfig, StartOpts, Parcel } from 'single-spa';
 declare global {
     interface Window {
         __POWERED_BY_LEGIONS__?: boolean;
@@ -56,6 +56,7 @@ export declare type FrameworkLifeCycles<T extends object> = {
     beforeUnmount?: LifeCycleFn<T> | Array<LifeCycleFn<T>>;
     afterUnmount?: LifeCycleFn<T> | Array<LifeCycleFn<T>>;
 };
+export declare type MicroApp = Parcel;
 export declare type Rebuilder = () => void;
 export declare type Freer = () => Rebuilder;
 export declare type Patcher = () => Freer;

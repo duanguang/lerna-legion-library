@@ -76,6 +76,7 @@ export type FrameworkLifeCycles<T extends object> = {
   afterUnmount?: LifeCycleFn<T> | Array<LifeCycleFn<T>>; // function after app unmount
 };
 
+export type MicroApp = Parcel;
 export type Rebuilder = () => void;
 export type Freer = () => Rebuilder;
 export type Patcher = () => Freer;

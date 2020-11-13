@@ -66,7 +66,9 @@
                 <!-- 侧边栏 -->
                 <ul class="mainapp-sidemenu">
                     <li onclick="push('/react16')">React16</li>
+                    <li onclick="push('/react16/todo')">React16-todo</li>
                     <li onclick="push('/react15')">React15</li>
+                    <li onclick="push('/groupmanage')">SCM</li>
                     <!-- <li onclick="push('/vue')">Vue</li>
                     <li onclick="push('/vue3')">Vue3</li>
                     <li onclick="push('/angular9')">Angular9</li>
@@ -138,23 +140,27 @@
                                     entry: sourceUrl,
                                     name: 'react15-home',
                                     container: '#subapp-viewport',
-                                    appId: appId,
                                     loader: render,
-                                    styleId: styleId,
                                     activeRule: '/demo3#/react15',
                                 },
                                 {
                                     entry: 'http://192.168.100.141:8082/home',
                                     name: 'react16-home',
                                     container: '#subapp-viewport',
-                                    appId: appId,
                                     loader: render,
-                                    styleId: styleId,
                                     activeRule: '/demo3#/react16',
+                                },
+                                {
+                                    entry: 'https://uat-scm.hoolinks.com//scm-static/scm/',
+                                    name: 'hoolinks-scm-web-scm',
+                                    container: '#subapp-viewport',
+                                    loader: render,
+                                    activeRule: '/demo3#/groupmanage',
                                 }
                             ])
                             legionsMicroservice.setDefaultMountApp('/demo3#/react16');
                             legionsMicroservice.start();
+                            console.log(legionsMicroservice.MountedMicroApps.getStore());
                             /* new window.legionsMicroservice.MicroApps(options).mounted({
                                 entry: sourceUrl,
                                 name: 'SCMSystem',

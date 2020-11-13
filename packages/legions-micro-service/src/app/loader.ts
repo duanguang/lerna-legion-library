@@ -25,6 +25,7 @@ import * as css from '../sandbox/patchers/css';
 import getAddOns from '../addons';
 import { getMicroAppStateActions } from './globalState';
 import { createSandbox } from '../sandbox';
+import { MicroApps } from './microApps';
 
 function assertElementExist(element: Element | null | undefined, msg?: string) {
   if (!element) {
@@ -222,12 +223,7 @@ function getLifecyclesFromExports(
   appName: string,
   global: WindowProxy
 ) {
-  console.log(
-    appName,
-    'appName',
-    global['react15-home'],
-    validateExportLifecycle(scriptExports)
-  );
+
   if (validateExportLifecycle(scriptExports)) {
     return scriptExports;
   }
@@ -278,11 +274,18 @@ export async function loadApp<T extends object>(
   } = configuration;
 
   // get the entry html content and script executor
-  const { template, execScripts, assetPublicPath } = await importHTML(
+  const { template, execScripts, assetPublicPath,getExternalScripts,getScripts } = await importHTML(
     entry,
     importEntryOpts
   );
-  console.log(execScripts, 'execScripts');
+  new MicroApps().bootstrap({
+    container: app['container'],
+    entry: app.entry,
+    name:appName
+  },{
+    getExternalScripts,
+    getScripts
+  })
   // as single-spa load and bootstrap new app parallel with other apps unmounting
   // (see https://github.com/CanopyTax/single-spa/blob/master/src/navigation/reroute.js#L74)
   // we need wait to load the app until all apps are finishing unmount in singular mode

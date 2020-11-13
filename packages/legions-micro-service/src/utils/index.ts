@@ -146,3 +146,46 @@ export function isConstructable(fn: () => any | FunctionConstructor) {
   constructableMap.set(fn, constructable);
   return constructable;
 }
+
+
+/**
+ * copy from https://developer.mozilla.org/zh-CN/docs/Using_XPath
+ * @param el
+ * @param document
+ */
+export function getXPathForElement(el: Node, document: Document): string | void {
+  // not support that if el not existed in document yet(such as it not append to document before it mounted)
+  if (!document.body.contains(el)) {
+    return undefined;
+  }
+
+  let xpath = '';
+  let pos;
+  let tmpEle;
+  let element = el;
+
+  while (element !== document.documentElement) {
+    pos = 0;
+    tmpEle = element;
+    while (tmpEle) {
+      if (tmpEle.nodeType === 1 && tmpEle.nodeName === element.nodeName) {
+        // If it is ELEMENT_NODE of the same name
+        pos += 1;
+      }
+      tmpEle = tmpEle.previousSibling;
+    }
+
+    xpath = `*[name()='${element.nodeName}' and namespace-uri()='${
+      element.namespaceURI === null ? '' : element.namespaceURI
+    }'][${pos}]/${xpath}`;
+
+    element = element.parentNode!;
+  }
+
+  xpath = `/*[name()='${document.documentElement.nodeName}' and namespace-uri()='${
+    element.namespaceURI === null ? '' : element.namespaceURI
+  }']/${xpath}`;
+  xpath = xpath.replace(/\/$/, '');
+
+  return xpath;
+}

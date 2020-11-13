@@ -44,3 +44,9 @@ export interface SandBox {
 export declare const isCallable: (fn: any) => boolean;
 export declare function isBoundedFunction(fn: CallableFunction): boolean | undefined;
 export declare function isConstructable(fn: () => any | FunctionConstructor): boolean | undefined;
+/**
+ * copy from https://developer.mozilla.org/zh-CN/docs/Using_XPath
+ * @param el
+ * @param document
+ */
+export declare function getXPathForElement(el: Node, document: Document): string | void;

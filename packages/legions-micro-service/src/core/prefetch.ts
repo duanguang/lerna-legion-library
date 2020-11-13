@@ -93,7 +93,6 @@ function prefetchAfterFirstMounted(
         notLoadedApps
       );
     }
-    console.log(notLoadedApps, apps, 'notLoadedApps');
     notLoadedApps.forEach(({ entry }) => prefetch(entry, opts));
 
     window.removeEventListener('single-spa:first-mount', listener);

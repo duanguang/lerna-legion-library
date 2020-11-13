@@ -1,6 +1,8 @@
 import {
   FrameworkConfiguration,
   FrameworkLifeCycles,
+  LoadableApp,
+  MicroApp,
   RegistrableApp,
 } from '../interfaces';
 import noop from 'lodash/noop';
@@ -11,8 +13,8 @@ import {
   start as startSingleSpa,
 } from 'single-spa';
 import { doPrefetchStrategy } from '../core/prefetch';
-import { Deferred, toArray } from '../utils';
-import { loadApp } from './loader';
+import { Deferred, getContainer, getXPathForElement, toArray } from '../utils';
+import { loadApp, ParcelConfigObjectGetter } from './loader';
 
 export let frameworkConfiguration: FrameworkConfiguration = {};
 const frameworkStartedDefer = new Deferred<void>();
@@ -31,7 +33,6 @@ export function registerMicroApps<T extends object = {}>(
 
   unregisteredApps.forEach(app => {
     const { name, activeRule, loader = noop, props, ...appConfig } = app;
-
     registerApplication({
       name,
       app: async () => {
@@ -59,6 +60,71 @@ export function registerMicroApps<T extends object = {}>(
     });
   });
 }
+const appConfigPromiseGetterMap = new Map<string, Promise<ParcelConfigObjectGetter>>();
+
+export function loadMicroApp<T extends object = {}>(
+  app: LoadableApp<T>,
+  configuration?: FrameworkConfiguration,
+  lifeCycles?: FrameworkLifeCycles<T>,
+): MicroApp {
+  const { props, name } = app;
+
+  const getContainerXpath = (container: string | HTMLElement): string | void => {
+    const containerElement = getContainer(container);
+    if (containerElement) {
+      return getXPathForElement(containerElement, document);
+    }
+
+    return undefined;
+  };
+
+  const wrapParcelConfigForRemount = (config: ParcelConfigObject): ParcelConfigObject => {
+    return {
+      ...config,
+      // empty bootstrap hook which should not run twice while it calling from cached micro app
+      bootstrap: () => Promise.resolve(),
+    };
+  };
+
+  /**
+   * using name + container xpath as the micro app instance id,
+   * it means if you rendering a micro app to a dom which have been rendered before,
+   * the micro app would not load and evaluate its lifecycles again
+   */
+  const memorizedLoadingFn = async (): Promise<ParcelConfigObject> => {
+    const { $$cacheLifecycleByAppName } = configuration ?? frameworkConfiguration;
+    const container = 'container' in app ? app.container : undefined;
+
+    if (container) {
+      // using appName as cache for internal experimental scenario
+      if ($$cacheLifecycleByAppName) {
+        const parcelConfigGetterPromise = appConfigPromiseGetterMap.get(name);
+        if (parcelConfigGetterPromise) return wrapParcelConfigForRemount((await parcelConfigGetterPromise)(container));
+      }
+
+      const xpath = getContainerXpath(container);
+      if (xpath) {
+        const parcelConfigGetterPromise = appConfigPromiseGetterMap.get(`${name}-${xpath}`);
+        if (parcelConfigGetterPromise) return wrapParcelConfigForRemount((await parcelConfigGetterPromise)(container));
+      }
+    }
+
+    const parcelConfigObjectGetterPromise = loadApp(app, configuration ?? frameworkConfiguration, lifeCycles);
+
+    if (container) {
+      if ($$cacheLifecycleByAppName) {
+        appConfigPromiseGetterMap.set(name, parcelConfigObjectGetterPromise);
+      } else {
+        const xpath = getContainerXpath(container);
+        if (xpath) appConfigPromiseGetterMap.set(`${name}-${xpath}`, parcelConfigObjectGetterPromise);
+      }
+    }
+
+    return (await parcelConfigObjectGetterPromise)(container);
+  };
+
+  return mountRootParcel(memorizedLoadingFn, { domElement: document.createElement('div'), ...props });
+}
 
 export function start(opts: FrameworkConfiguration = {}) {
   frameworkConfiguration = {
@@ -74,10 +140,6 @@ export function start(opts: FrameworkConfiguration = {}) {
     urlRerouteOnly,
     ...importEntryOpts
   } = frameworkConfiguration;
-  console.log(
-    frameworkConfiguration,
-    'frameworkConfigurationframeworkConfigurationframeworkConfiguration'
-  );
   if (prefetch) {
     doPrefetchStrategy(microApps, prefetch, importEntryOpts);
   }

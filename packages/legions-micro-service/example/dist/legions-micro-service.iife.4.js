@@ -4507,240 +4507,139 @@ var legionsMicroservice = (function (exports) {
 	  return MicroApps;
 	}();
 
-	var _typeof_1 = createCommonjsModule(function (module) {
-	function _typeof(obj) {
-	  "@babel/helpers - typeof";
+	var microApps$1 = []; // {name:'',entry:'url',container:'DOMid',appId:'',styleId:'',loading:true}
 
-	  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-	    module.exports = _typeof = function _typeof(obj) {
-	      return typeof obj;
+	var scriptResources$1 = {}; // {'entry':{scripts:[],scriptCache:[],sandbox:[],excludeSandboxFiles:[]}}
+
+	/* let isImportHTML = false; */
+
+	var externalOnloadScript$1 = []; // [{url:'',code:''}] 已加载过外部资源列表
+
+	var MicroApps$1 =
+	/** @class */
+	function () {
+	  function MicroApps() {}
+
+	  MicroApps.getStore = function () {
+	    return {
+	      apps: microApps$1,
+	      scriptResources: scriptResources$1,
+	      externalOnloadScript: externalOnloadScript$1
 	    };
-	  } else {
-	    module.exports = _typeof = function _typeof(obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	  };
+
+	  MicroApps.prototype.getApps = function () {
+	    return {
+	      apps: microApps$1,
+	      scriptResources: scriptResources$1,
+	      externalOnloadScript: externalOnloadScript$1
 	    };
-	  }
+	  };
 
-	  return _typeof(obj);
-	}
+	  MicroApps.prototype.isRegister = function (apps) {
+	    var unregisteredApps = microApps$1.filter(function (item) {
+	      return item.name === apps.name;
+	    });
 
-	module.exports = _typeof;
-	});
+	    if (unregisteredApps.length > 0) {
+	      return unregisteredApps;
+	    }
 
-	/**
-	 * This method returns `undefined`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 2.3.0
-	 * @category Util
-	 * @example
-	 *
-	 * _.times(2, _.noop);
-	 * // => [undefined, undefined]
-	 */
-	function noop() {
-	  // No operation performed.
-	}
+	    return null;
+	  };
 
-	var noop_1 = noop;
+	  MicroApps.prototype.register = function (apps) {
+	    if (Array.isArray(apps)) {
+	      var unregisteredApps = apps.filter(function (app) {
+	        return !microApps$1.some(function (registeredApp) {
+	          return registeredApp.name === app.name;
+	        });
+	      });
+	      microApps$1 = __spread(microApps$1, unregisteredApps);
+	    }
+	  };
+
+	  MicroApps.prototype.bootstrap = function (apps, importHtmlentryResult) {
+	    var _this = this;
+
+	    var that = this;
+	    var sourceUrl = apps['entry'];
+
+	    var isCheckRegister = function isCheckRegister() {
+	      var oldApps = _this.isRegister(apps);
+
+	      if (!oldApps) {
+	        microApps$1 = __spread(microApps$1, [apps]);
+	        syncMicroApps();
+	      }
+	    };
+
+	    var syncMicroApps = function syncMicroApps() {
+	      importHtmlentryResult.getExternalScripts().then(function (exports) {
+	        if (importHtmlentryResult.getScripts) {
+	          var scriptList = importHtmlentryResult.getScripts();
+	          var excludeFiles_1 = [];
+	          var _scripts = scriptList['scripts'];
+	          var scriptCache_1 = [];
+
+	          if (exports && Object.prototype.toString.call(exports) === '[object Array]') {
+	            exports.forEach(function (item) {
+	              scriptCache_1.push({
+	                key: item.scripts,
+	                code: item['scriptsText']
+	              });
+	            });
+	          }
+
+	          if (scriptList['excludeFiles'].hasOwnProperty(sourceUrl)) {
+	            scriptList['excludeFiles'][sourceUrl].forEach(function (item) {
+	              scriptCache_1.forEach(function (entity) {
+	                var _index = entity.key.indexOf(item);
+
+	                if (_index > -1) {
+	                  excludeFiles_1.push({
+	                    url: entity.key,
+	                    code: entity.code
+	                  });
+	                }
+	              });
+	            });
+	          }
+
+	          scriptResources$1[sourceUrl] = {
+	            scripts: scriptList['scripts'][sourceUrl],
+	            scriptCache: scriptCache_1,
+	            excludeSandboxFiles: excludeFiles_1,
+	            sandbox: [],
+	            styles: [],
+	            externalOnloadScriptPromise: []
+	          };
+
+	          if (_scripts.hasOwnProperty(sourceUrl)) {
+	            _scripts[sourceUrl].forEach(function (item) {
+	              excludeFiles_1.forEach(function (entity) {
+	                if (entity) {
+	                  var _index = entity.url.indexOf(item);
+
+	                  if (_index < 0) {
+	                    scriptResources$1[sourceUrl]['sandbox'].push(item);
+	                  }
+	                }
+	              });
+	            });
+	          }
+	        }
+	      });
+	    };
+
+	    isCheckRegister.call(that);
+	  };
+
+	  return MicroApps;
+	}();
 
 	/* single-spa@5.8.1 - ESM - prod */
 	var t=Object.freeze({__proto__:null,get start(){return xt},get ensureJQuerySupport(){return ft},get setBootstrapMaxTime(){return F},get setMountMaxTime(){return J},get setUnmountMaxTime(){return H},get setUnloadMaxTime(){return Q},get registerApplication(){return Pt},get unregisterApplication(){return Tt},get getMountedApps(){return Et},get getAppStatus(){return Ot},get unloadApplication(){return At},get checkActivityFunctions(){return bt},get getAppNames(){return yt},get pathToActiveWhen(){return _t},get navigateToUrl(){return nt},get triggerAppChange(){return Mt},get addErrorHandler(){return a},get removeErrorHandler(){return c},get mountRootParcel(){return C},get NOT_LOADED(){return l},get LOADING_SOURCE_CODE(){return p},get NOT_BOOTSTRAPPED(){return h},get BOOTSTRAPPING(){return m},get NOT_MOUNTED(){return d},get MOUNTING(){return v},get UPDATING(){return g},get LOAD_ERROR(){return y},get MOUNTED(){return w},get UNMOUNTING(){return E},get SKIP_BECAUSE_BROKEN(){return O}});function n(t){return (n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function e(t,n,e){return n in t?Object.defineProperty(t,n,{value:e,enumerable:!0,configurable:!0,writable:!0}):t[n]=e,t}var r=("undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{}).CustomEvent,o=function(){try{var t=new r("cat",{detail:{foo:"bar"}});return "cat"===t.type&&"bar"===t.detail.foo}catch(t){}return !1}()?r:"undefined"!=typeof document&&"function"==typeof document.createEvent?function(t,n){var e=document.createEvent("CustomEvent");return n?e.initCustomEvent(t,n.bubbles,n.cancelable,n.detail):e.initCustomEvent(t,!1,!1,void 0),e}:function(t,n){var e=document.createEventObject();return e.type=t,n?(e.bubbles=Boolean(n.bubbles),e.cancelable=Boolean(n.cancelable),e.detail=n.detail):(e.bubbles=!1,e.cancelable=!1,e.detail=void 0),e},i=[];function u(t,n,e){var r=f$7(t,n,e);i.length?i.forEach((function(t){return t(r)})):setTimeout((function(){throw r}));}function a(t){if("function"!=typeof t)throw Error(s(28,!1));i.push(t);}function c(t){if("function"!=typeof t)throw Error(s(29,!1));var n=!1;return i=i.filter((function(e){var r=e===t;return n=n||r,!r})),n}function s(t,n){for(var e=arguments.length,r=new Array(e>2?e-2:0),o=2;o<e;o++)r[o-2]=arguments[o];return "single-spa minified message #".concat(t,": ").concat(n?n+" ":"","See https://single-spa.js.org/error/?code=").concat(t).concat(r.length?"&arg=".concat(r.join("&arg=")):"")}function f$7(t,n,e){var r,o="".concat(N(n)," '").concat(T(n),"' died in status ").concat(n.status,": ");if(t instanceof Error){try{t.message=o+t.message;}catch(t){}r=t;}else {console.warn(s(30,!1,n.status,T(n)));try{r=Error(o+JSON.stringify(t));}catch(n){r=t;}}return r.appOrParcelName=T(n),n.status=e,r}var l="NOT_LOADED",p="LOADING_SOURCE_CODE",h="NOT_BOOTSTRAPPED",m="BOOTSTRAPPING",d="NOT_MOUNTED",v="MOUNTING",w="MOUNTED",g="UPDATING",E="UNMOUNTING",y="LOAD_ERROR",O="SKIP_BECAUSE_BROKEN";function P(t){return t.status===w}function b(t){try{return t.activeWhen(window.location)}catch(n){return u(n,t,O),!1}}function T(t){return t.name}function A(t){return Boolean(t.unmountThisParcel)}function N(t){return A(t)?"parcel":"application"}function S(){for(var t=arguments.length-1;t>0;t--)for(var n in arguments[t])"__proto__"!==n&&(arguments[t-1][n]=arguments[t][n]);return arguments[0]}function _(t,n){for(var e=0;e<t.length;e++)if(n(t[e]))return t[e];return null}function D(t){return t&&("function"==typeof t||(n=t,Array.isArray(n)&&!_(n,(function(t){return "function"!=typeof t}))));var n;}function U(t,n){var e=t[n]||[];0===(e=Array.isArray(e)?e:[e]).length&&(e=[function(){return Promise.resolve()}]);var r=N(t),o=T(t);return function(t){return e.reduce((function(e,i,u){return e.then((function(){var e=i(t);return j(e)?e:Promise.reject(s(15,!1,r,o,n,u))}))}),Promise.resolve())}}function j(t){return t&&"function"==typeof t.then&&"function"==typeof t.catch}function M(t,n){return Promise.resolve().then((function(){return t.status!==h?t:(t.status=m,t.bootstrap?V(t,"bootstrap").then(e).catch((function(e){if(n)throw f$7(e,t,O);return u(e,t,O),t})):Promise.resolve().then(e))}));function e(){return t.status=d,t}}function L(t,n){return Promise.resolve().then((function(){if(t.status!==w)return t;t.status=E;var e=Object.keys(t.parcels).map((function(n){return t.parcels[n].unmountThisParcel()}));return Promise.all(e).then(r,(function(e){return r().then((function(){var r=Error(e.message);if(n)throw f$7(r,t,O);u(r,t,O);}))})).then((function(){return t}));function r(){return V(t,"unmount").then((function(){t.status=d;})).catch((function(e){if(n)throw f$7(e,t,O);u(e,t,O);}))}}))}var R=!1,I=!1;function x(t,n){return Promise.resolve().then((function(){return t.status!==d?t:(R||(window.dispatchEvent(new o("single-spa:before-first-mount")),R=!0),V(t,"mount").then((function(){return t.status=w,I||(window.dispatchEvent(new o("single-spa:first-mount")),I=!0),t})).catch((function(e){return t.status=w,L(t,!0).then(r,r);function r(){if(n)throw f$7(e,t,O);return u(e,t,O),t}})))}))}var B=0,G={parcels:{}};function C(){return W.apply(G,arguments)}function W(t,e){var r=this;if(!t||"object"!==n(t)&&"function"!=typeof t)throw Error(s(2,!1));if(t.name&&"string"!=typeof t.name)throw Error(s(3,!1,n(t.name)));if("object"!==n(e))throw Error(s(4,!1,name,n(e)));if(!e.domElement)throw Error(s(5,!1,name));var o,i=B++,u="function"==typeof t,a=u?t:function(){return Promise.resolve(t)},c={id:i,parcels:{},status:u?p:h,customProps:e,parentName:T(r),unmountThisParcel:function(){if(c.status!==w)throw Error(s(6,!1,name,c.status));return L(c,!0).then((function(t){return c.parentName&&delete r.parcels[c.id],t})).then((function(t){return m(t),t})).catch((function(t){throw c.status=O,v(t),t}))}};r.parcels[i]=c;var l=a();if(!l||"function"!=typeof l.then)throw Error(s(7,!1));var m,v,E=(l=l.then((function(t){if(!t)throw Error(s(8,!1));var n=t.name||"parcel-".concat(i);if(Object.prototype.hasOwnProperty.call(t,"bootstrap")&&!D(t.bootstrap))throw Error(s(9,!1,n));if(!D(t.mount))throw Error(s(10,!1,n));if(!D(t.unmount))throw Error(s(11,!1,n));if(t.update&&!D(t.update))throw Error(s(12,!1,n));var e=U(t,"bootstrap"),r=U(t,"mount"),u=U(t,"unmount");c.status=h,c.name=n,c.bootstrap=e,c.mount=r,c.unmount=u,c.timeouts=q(t.timeouts),t.update&&(c.update=U(t,"update"),o.update=function(t){return c.customProps=t,$(function(t){return Promise.resolve().then((function(){if(t.status!==w)throw Error(s(32,!1,T(t)));return t.status=g,V(t,"update").then((function(){return t.status=w,t})).catch((function(n){throw f$7(n,t,O)}))}))}(c))});}))).then((function(){return M(c,!0)})),y=E.then((function(){return x(c,!0)})),P=new Promise((function(t,n){m=t,v=n;}));return o={mount:function(){return $(Promise.resolve().then((function(){if(c.status!==d)throw Error(s(13,!1,name,c.status));return r.parcels[i]=c,x(c)})))},unmount:function(){return $(c.unmountThisParcel())},getStatus:function(){return c.status},loadPromise:$(l),bootstrapPromise:$(E),mountPromise:$(y),unmountPromise:$(P)}}function $(t){return t.then((function(){return null}))}function k(e){var r=T(e),o="function"==typeof e.customProps?e.customProps(r,window.location):e.customProps;("object"!==n(o)||null===o||Array.isArray(o))&&(o={},console.warn(s(40,!1),r,o));var i=S({},o,{name:r,mountParcel:W.bind(e),singleSpa:t});return A(e)&&(i.unmountSelf=e.unmountThisParcel),i}var K={bootstrap:{millis:4e3,dieOnTimeout:!1,warningMillis:1e3},mount:{millis:3e3,dieOnTimeout:!1,warningMillis:1e3},unmount:{millis:3e3,dieOnTimeout:!1,warningMillis:1e3},unload:{millis:3e3,dieOnTimeout:!1,warningMillis:1e3},update:{millis:3e3,dieOnTimeout:!1,warningMillis:1e3}};function F(t,n,e){if("number"!=typeof t||t<=0)throw Error(s(16,!1));K.bootstrap={millis:t,dieOnTimeout:n,warningMillis:e||1e3};}function J(t,n,e){if("number"!=typeof t||t<=0)throw Error(s(17,!1));K.mount={millis:t,dieOnTimeout:n,warningMillis:e||1e3};}function H(t,n,e){if("number"!=typeof t||t<=0)throw Error(s(18,!1));K.unmount={millis:t,dieOnTimeout:n,warningMillis:e||1e3};}function Q(t,n,e){if("number"!=typeof t||t<=0)throw Error(s(19,!1));K.unload={millis:t,dieOnTimeout:n,warningMillis:e||1e3};}function V(t,n){var e=t.timeouts[n],r=e.warningMillis,o=N(t);return new Promise((function(i,u){var a=!1,c=!1;t[n](k(t)).then((function(t){a=!0,i(t);})).catch((function(t){a=!0,u(t);})),setTimeout((function(){return l(1)}),r),setTimeout((function(){return l(!0)}),e.millis);var f=s(31,!1,n,o,T(t),e.millis);function l(t){if(!a)if(!0===t)c=!0,e.dieOnTimeout?u(Error(f)):console.error(f);else if(!c){var n=t,o=n*r;console.warn(f),o+r<e.millis&&setTimeout((function(){return l(n+1)}),r);}}}))}function q(t){var n={};for(var e in K)n[e]=S({},K[e],t&&t[e]||{});return n}function z(t){return Promise.resolve().then((function(){return t.loadPromise?t.loadPromise:t.status!==l&&t.status!==y?t:(t.status=p,t.loadPromise=Promise.resolve().then((function(){var o=t.loadApp(k(t));if(!j(o))throw r=!0,Error(s(33,!1,T(t)));return o.then((function(r){var o;t.loadErrorTime=null,"object"!==n(e=r)&&(o=34),Object.prototype.hasOwnProperty.call(e,"bootstrap")&&!D(e.bootstrap)&&(o=35),D(e.mount)||(o=36),D(e.unmount)||(o=37);var i=N(e);if(o){var a;try{a=JSON.stringify(e);}catch(t){}return console.error(s(o,!1,i,T(t),a),e),u(void 0,t,O),t}return e.devtools&&e.devtools.overlays&&(t.devtools.overlays=S({},t.devtools.overlays,e.devtools.overlays)),t.status=h,t.bootstrap=U(e,"bootstrap"),t.mount=U(e,"mount"),t.unmount=U(e,"unmount"),t.unload=U(e,"unload"),t.timeouts=q(e.timeouts),delete t.loadPromise,t}))})).catch((function(n){var e;return delete t.loadPromise,r?e=O:(e=y,t.loadErrorTime=(new Date).getTime()),u(n,t,e),t})));var e,r;}))}var X,Y="undefined"!=typeof window,Z={hashchange:[],popstate:[]},tt=["hashchange","popstate"];function nt(t){var n;if("string"==typeof t)n=t;else if(this&&this.href)n=this.href;else {if(!(t&&t.currentTarget&&t.currentTarget.href&&t.preventDefault))throw Error(s(14,!1));n=t.currentTarget.href,t.preventDefault();}var e=ct(window.location.href),r=ct(n);0===n.indexOf("#")?window.location.hash=r.hash:e.host!==r.host&&r.host?window.location.href=n:r.pathname===e.pathname&&r.search===e.search?window.location.hash=r.hash:window.history.pushState(null,null,n);}function et(t){var n=this;if(t){var e=t[0].type;tt.indexOf(e)>=0&&Z[e].forEach((function(e){try{e.apply(n,t);}catch(t){setTimeout((function(){throw t}));}}));}}function rt(){Lt([],arguments);}function ot(t,n){return function(){var e=window.location.href,r=t.apply(this,arguments),o=window.location.href;return X&&e===o||window.dispatchEvent(it(window.history.state,n)),r}}function it(t,n){var e;try{e=new PopStateEvent("popstate",{state:t});}catch(n){(e=document.createEvent("PopStateEvent")).initPopStateEvent("popstate",!1,!1,t);}return e.singleSpa=!0,e.singleSpaTrigger=n,e}if(Y){window.addEventListener("hashchange",rt),window.addEventListener("popstate",rt);var ut=window.addEventListener,at=window.removeEventListener;window.addEventListener=function(t,n){if(!("function"==typeof n&&tt.indexOf(t)>=0)||_(Z[t],(function(t){return t===n})))return ut.apply(this,arguments);Z[t].push(n);},window.removeEventListener=function(t,n){if(!("function"==typeof n&&tt.indexOf(t)>=0))return at.apply(this,arguments);Z[t]=Z[t].filter((function(t){return t!==n}));},window.history.pushState=ot(window.history.pushState,"pushState"),window.history.replaceState=ot(window.history.replaceState,"replaceState"),window.singleSpaNavigate?console.warn(s(41,!1)):window.singleSpaNavigate=nt;}function ct(t){var n=document.createElement("a");return n.href=t,n}var st=!1;function ft(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:window.jQuery;if(t||window.$&&window.$.fn&&window.$.fn.jquery&&(t=window.$),t&&!st){var n=t.fn.on,e=t.fn.off;t.fn.on=function(t,e){return lt.call(this,n,window.addEventListener,t,e,arguments)},t.fn.off=function(t,n){return lt.call(this,e,window.removeEventListener,t,n,arguments)},st=!0;}}function lt(t,n,e,r,o){return "string"!=typeof e?t.apply(this,o):(e.split(/\s+/).forEach((function(t){tt.indexOf(t)>=0&&(n(t,r),e=e.replace(t,""));})),""===e.trim()?this:t.apply(this,o))}var pt={};function ht(t){return Promise.resolve().then((function(){var n=pt[T(t)];return n?t.status===l?(mt(t,n),t):"UNLOADING"===t.status?n.promise.then((function(){return t})):t.status!==d?t:(t.status="UNLOADING",V(t,"unload").then((function(){return mt(t,n),t})).catch((function(e){return function(t,n,e){delete pt[T(t)],delete t.bootstrap,delete t.mount,delete t.unmount,delete t.unload,u(e,t,O),n.reject(e);}(t,n,e),t}))):t}))}function mt(t,n){delete pt[T(t)],delete t.bootstrap,delete t.mount,delete t.unmount,delete t.unload,t.status=l,n.resolve();}function dt(t,n,e,r){pt[T(t)]={app:t,resolve:e,reject:r},Object.defineProperty(pt[T(t)],"promise",{get:n});}function vt(t){return pt[t]}var wt=[];function gt(){var t=[],n=[],e=[],r=[],o=(new Date).getTime();return wt.forEach((function(i){var u=i.status!==O&&b(i);switch(i.status){case y:u&&o-i.loadErrorTime>=200&&e.push(i);break;case l:case p:u&&e.push(i);break;case h:case d:!u&&vt(T(i))?t.push(i):u&&r.push(i);break;case w:u||n.push(i);}})),{appsToUnload:t,appsToUnmount:n,appsToLoad:e,appsToMount:r}}function Et(){return wt.filter(P).map(T)}function yt(){return wt.map(T)}function Ot(t){var n=_(wt,(function(n){return T(n)===t}));return n?n.status:null}function Pt(t,e,r,o){var i=function(t,e,r,o){var i,u={name:null,loadApp:null,activeWhen:null,customProps:null};return "object"===n(t)?(function(t){if(Array.isArray(t)||null===t)throw Error(s(39,!1));var e=["name","app","activeWhen","customProps"],r=Object.keys(t).reduce((function(t,n){return e.indexOf(n)>=0?t:t.concat(n)}),[]);if(0!==r.length)throw Error(s(38,!1,e.join(", "),r.join(", ")));if("string"!=typeof t.name||0===t.name.length)throw Error(s(20,!1));if("object"!==n(t.app)&&"function"!=typeof t.app)throw Error(s(20,!1));var o=function(t){return "string"==typeof t||"function"==typeof t};if(!(o(t.activeWhen)||Array.isArray(t.activeWhen)&&t.activeWhen.every(o)))throw Error(s(24,!1));if(!St(t.customProps))throw Error(s(22,!1))}(t),u.name=t.name,u.loadApp=t.app,u.activeWhen=t.activeWhen,u.customProps=t.customProps):(function(t,n,e,r){if("string"!=typeof t||0===t.length)throw Error(s(20,!1));if(!n)throw Error(s(23,!1));if("function"!=typeof e)throw Error(s(24,!1));if(!St(r))throw Error(s(22,!1))}(t,e,r,o),u.name=t,u.loadApp=e,u.activeWhen=r,u.customProps=o),u.loadApp="function"!=typeof(i=u.loadApp)?function(){return Promise.resolve(i)}:i,u.customProps=function(t){return t||{}}(u.customProps),u.activeWhen=function(t){var n=Array.isArray(t)?t:[t];return n=n.map((function(t){return "function"==typeof t?t:_t(t)})),function(t){return n.some((function(n){return n(t)}))}}(u.activeWhen),u}(t,e,r,o);if(-1!==yt().indexOf(i.name))throw Error(s(21,!1,i.name));wt.push(S({loadErrorTime:null,status:l,parcels:{},devtools:{overlays:{options:{},selectors:[]}}},i)),Y&&(ft(),Lt());}function bt(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:window.location;return wt.filter((function(n){return n.activeWhen(t)})).map(T)}function Tt(t){if(0===wt.filter((function(n){return T(n)===t})).length)throw Error(s(25,!1,t));return At(t).then((function(){var n=wt.map(T).indexOf(t);wt.splice(n,1);}))}function At(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{waitForUnmount:!1};if("string"!=typeof t)throw Error(s(26,!1));var e=_(wt,(function(n){return T(n)===t}));if(!e)throw Error(s(27,!1,t));var r,o=vt(T(e));if(n&&n.waitForUnmount){if(o)return o.promise;var i=new Promise((function(t,n){dt(e,(function(){return i}),t,n);}));return i}return o?(r=o.promise,Nt(e,o.resolve,o.reject)):r=new Promise((function(t,n){dt(e,(function(){return r}),t,n),Nt(e,t,n);})),r}function Nt(t,n,e){L(t).then(ht).then((function(){n(),setTimeout((function(){Lt();}));})).catch(e);}function St(t){return !t||"function"==typeof t||"object"===n(t)&&null!==t&&!Array.isArray(t)}function _t(t){var n=function(t){var n=0,e=!1,r="^";"/"!==t[0]&&(t="/"+t);for(var o=0;o<t.length;o++){var i=t[o];(!e&&":"===i||e&&"/"===i)&&u(o);}return u(t.length),new RegExp(r,"i");function u(o){var i=t.slice(n,o).replace(/[|\\{}()[\]^$+*?.]/g,"\\$&");r+=e?"[^/]+/?":i,o!==t.length||e||(r="/"===r.charAt(r.length-1)?"".concat(r,".*$"):"".concat(r,"([/#].*)?$")),e=!e,n=o;}}(t);return function(t){var e=t.href.replace(t.origin,"").replace(t.search,"").split("?")[0];return n.test(e)}}var Dt=!1,Ut=[],jt=Y&&window.location.href;function Mt(){return Lt()}function Lt(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[],n=arguments.length>1?arguments[1]:void 0;if(Dt)return new Promise((function(t,e){Ut.push({resolve:t,reject:e,eventArguments:n});}));var r,i=gt(),u=i.appsToUnload,a=i.appsToUnmount,c=i.appsToLoad,s=i.appsToMount,f=!1,p=jt,h=jt=window.location.href;return Bt()?(Dt=!0,r=u.concat(c,a,s),g()):(r=c,v());function m(){f=!0;}function v(){return Promise.resolve().then((function(){var t=c.map(z);return Promise.all(t).then(y).then((function(){return []})).catch((function(t){throw y(),t}))}))}function g(){return Promise.resolve().then((function(){if(window.dispatchEvent(new o(0===r.length?"single-spa:before-no-app-change":"single-spa:before-app-change",P(!0))),window.dispatchEvent(new o("single-spa:before-routing-event",P(!0,{cancelNavigation:m}))),f)return window.dispatchEvent(new o("single-spa:before-mount-routing-event",P(!0))),E(),void nt(p);var n=u.map(ht),e=a.map(L).map((function(t){return t.then(ht)})).concat(n),i=Promise.all(e);i.then((function(){window.dispatchEvent(new o("single-spa:before-mount-routing-event",P(!0)));}));var l=c.map((function(t){return z(t).then((function(t){return Rt(t,i)}))})),h=s.filter((function(t){return c.indexOf(t)<0})).map((function(t){return Rt(t,i)}));return i.catch((function(t){throw y(),t})).then((function(){return y(),Promise.all(l.concat(h)).catch((function(n){throw t.forEach((function(t){return t.reject(n)})),n})).then(E)}))}))}function E(){var n=Et();t.forEach((function(t){return t.resolve(n)}));try{var e=0===r.length?"single-spa:no-app-change":"single-spa:app-change";window.dispatchEvent(new o(e,P())),window.dispatchEvent(new o("single-spa:routing-event",P()));}catch(t){setTimeout((function(){throw t}));}if(Dt=!1,Ut.length>0){var i=Ut;Ut=[],Lt(i);}return n}function y(){t.forEach((function(t){et(t.eventArguments);})),et(n);}function P(){var t,o=arguments.length>0&&void 0!==arguments[0]&&arguments[0],i=arguments.length>1?arguments[1]:void 0,m={},v=(e(t={},w,[]),e(t,d,[]),e(t,l,[]),e(t,O,[]),t);o?(c.concat(s).forEach((function(t,n){E(t,w);})),u.forEach((function(t){E(t,l);})),a.forEach((function(t){E(t,d);}))):r.forEach((function(t){E(t);}));var g={detail:{newAppStatuses:m,appsByNewStatus:v,totalAppChanges:r.length,originalEvent:null==n?void 0:n[0],oldUrl:p,newUrl:h,navigationIsCanceled:f}};return i&&S(g.detail,i),g;function E(t,n){var e=T(t);n=n||Ot(e),m[e]=n,(v[n]=v[n]||[]).push(e);}}}function Rt(t,n){return b(t)?M(t).then((function(t){return n.then((function(){return b(t)?x(t):t}))})):n.then((function(){return t}))}var It=!1;function xt(t){var n;It=!0,t&&t.urlRerouteOnly&&(n=t.urlRerouteOnly,X=n),Y&&Lt();}function Bt(){return It}Y&&setTimeout((function(){It||console.warn(s(1,!1));}),5e3);var Gt={getRawAppData:function(){return [].concat(wt)},reroute:Lt,NOT_LOADED:l,toLoadPromise:z,toBootstrapPromise:M,unregisterApplication:Tt};Y&&window.__SINGLE_SPA_DEVTOOLS__&&(window.__SINGLE_SPA_DEVTOOLS__.exposedMethods=Gt);
-
-	var $includes = arrayIncludes.includes;
-
-
-
-	var USES_TO_LENGTH$4 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
-
-	// `Array.prototype.includes` method
-	// https://tc39.github.io/ecma262/#sec-array.prototype.includes
-	_export({ target: 'Array', proto: true, forced: !USES_TO_LENGTH$4 }, {
-	  includes: function includes(el /* , fromIndex = 0 */) {
-	    return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
-	  }
-	});
-
-	// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-	addToUnscopables('includes');
-
-	// `Date.now` method
-	// https://tc39.github.io/ecma262/#sec-date.now
-	_export({ target: 'Date', stat: true }, {
-	  now: function now() {
-	    return new Date().getTime();
-	  }
-	});
-
-	var MATCH = wellKnownSymbol('match');
-
-	// `IsRegExp` abstract operation
-	// https://tc39.github.io/ecma262/#sec-isregexp
-	var isRegexp = function (it) {
-	  var isRegExp;
-	  return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
-	};
-
-	var notARegexp = function (it) {
-	  if (isRegexp(it)) {
-	    throw TypeError("The method doesn't accept regular expressions");
-	  } return it;
-	};
-
-	var MATCH$1 = wellKnownSymbol('match');
-
-	var correctIsRegexpLogic = function (METHOD_NAME) {
-	  var regexp = /./;
-	  try {
-	    '/./'[METHOD_NAME](regexp);
-	  } catch (e) {
-	    try {
-	      regexp[MATCH$1] = false;
-	      return '/./'[METHOD_NAME](regexp);
-	    } catch (f) { /* empty */ }
-	  } return false;
-	};
-
-	// `String.prototype.includes` method
-	// https://tc39.github.io/ecma262/#sec-string.prototype.includes
-	_export({ target: 'String', proto: true, forced: !correctIsRegexpLogic('includes') }, {
-	  includes: function includes(searchString /* , position = 0 */) {
-	    return !!~String(requireObjectCoercible(this))
-	      .indexOf(notARegexp(searchString), arguments.length > 1 ? arguments[1] : undefined);
-	  }
-	});
-
-	var requestIdleCallback = window.requestIdleCallback || function requestIdleCallback(cb) {
-	  var start = Date.now();
-	  return setTimeout(function () {
-	    cb({
-	      didTimeout: false,
-	      timeRemaining: function timeRemaining() {
-	        return Math.max(0, 50 - (Date.now() - start));
-	      }
-	    });
-	  }, 1);
-	};
-
-	var isSlowNetwork = navigator.connection ? navigator.connection.saveData || navigator.connection.type !== 'wifi' && navigator.connection.type !== 'ethernet' && /(2|3)g/.test(navigator.connection.effectiveType) : false;
-	/**
-	 * prefetch assets, do nothing while in mobile network
-	 * @param entry
-	 * @param opts
-	 */
-
-	function prefetch(entry, opts) {
-	  var _this = this;
-
-	  if (!navigator.onLine || isSlowNetwork) {
-	    // Don't prefetch if in a slow network or offline
-	    return;
-	  }
-
-	  requestIdleCallback(function () {
-	    return __awaiter(_this, void 0, void 0, function () {
-	      var _a, getExternalScripts, getExternalStyleSheets;
-
-	      return __generator(this, function (_b) {
-	        switch (_b.label) {
-	          case 0:
-	            return [4
-	            /*yield*/
-	            , legionsImportHtmlEntry_umd_1(entry, opts)];
-
-	          case 1:
-	            _a = _b.sent(), getExternalScripts = _a.getExternalScripts, getExternalStyleSheets = _a.getExternalStyleSheets;
-	            requestIdleCallback(getExternalStyleSheets);
-	            requestIdleCallback(getExternalScripts);
-	            return [2
-	            /*return*/
-	            ];
-	        }
-	      });
-	    });
-	  });
-	}
-
-	function prefetchAfterFirstMounted(apps, opts) {
-	  window.addEventListener('single-spa:first-mount', function listener() {
-	    var notLoadedApps = apps.filter(function (app) {
-	      return Ot(app.name) === l;
-	    }); //@ts-ignore
-
-	    console.log(notLoadedApps, apps, 'notLoadedApps');
-	    notLoadedApps.forEach(function (_a) {
-	      var entry = _a.entry;
-	      return prefetch(entry, opts);
-	    });
-	    window.removeEventListener('single-spa:first-mount', listener);
-	  });
-	}
-
-	function prefetchImmediately(apps, opts) {
-
-	  apps.forEach(function (_a) {
-	    var entry = _a.entry;
-	    return prefetch(entry, opts);
-	  });
-	}
-	function doPrefetchStrategy(apps, prefetchStrategy, importEntryOpts) {
-	  var appsName2Apps = function appsName2Apps(names) {
-	    return apps.filter(function (app) {
-	      return names.includes(app.name);
-	    });
-	  };
-
-	  if (Array.isArray(prefetchStrategy)) {
-	    prefetchAfterFirstMounted(appsName2Apps(prefetchStrategy), importEntryOpts);
-	  } else {
-	    switch (prefetchStrategy) {
-	      case true:
-	        prefetchAfterFirstMounted(apps, importEntryOpts);
-	        break;
-
-	      case 'all':
-	        prefetchImmediately(apps, importEntryOpts);
-	        break;
-	    }
-	  }
-	}
-
-	var nativeGetOwnPropertyNames = objectGetOwnPropertyNames.f;
-
-	var toString$1 = {}.toString;
-
-	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
-	  ? Object.getOwnPropertyNames(window) : [];
-
-	var getWindowNames = function (it) {
-	  try {
-	    return nativeGetOwnPropertyNames(it);
-	  } catch (error) {
-	    return windowNames.slice();
-	  }
-	};
-
-	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-	var f$8 = function getOwnPropertyNames(it) {
-	  return windowNames && toString$1.call(it) == '[object Window]'
-	    ? getWindowNames(it)
-	    : nativeGetOwnPropertyNames(toIndexedObject(it));
-	};
-
-	var objectGetOwnPropertyNamesExternal = {
-		f: f$8
-	};
-
-	var nativeGetOwnPropertyNames$1 = objectGetOwnPropertyNamesExternal.f;
-
-	var FAILS_ON_PRIMITIVES = fails(function () { return !Object.getOwnPropertyNames(1); });
-
-	// `Object.getOwnPropertyNames` method
-	// https://tc39.github.io/ecma262/#sec-object.getownpropertynames
-	_export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES }, {
-	  getOwnPropertyNames: nativeGetOwnPropertyNames$1
-	});
 
 	var freezing = !fails(function () {
 	  return Object.isExtensible(Object.preventExtensions({}));
@@ -4912,6 +4811,820 @@ var legionsMicroservice = (function (exports) {
 	  return Constructor;
 	};
 
+	var defineProperty$3 = objectDefineProperty.f;
+
+
+
+
+
+
+
+
+	var fastKey = internalMetadata.fastKey;
+
+
+	var setInternalState$3 = internalState.set;
+	var internalStateGetterFor = internalState.getterFor;
+
+	var collectionStrong = {
+	  getConstructor: function (wrapper, CONSTRUCTOR_NAME, IS_MAP, ADDER) {
+	    var C = wrapper(function (that, iterable) {
+	      anInstance(that, C, CONSTRUCTOR_NAME);
+	      setInternalState$3(that, {
+	        type: CONSTRUCTOR_NAME,
+	        index: objectCreate(null),
+	        first: undefined,
+	        last: undefined,
+	        size: 0
+	      });
+	      if (!descriptors) that.size = 0;
+	      if (iterable != undefined) iterate_1(iterable, that[ADDER], that, IS_MAP);
+	    });
+
+	    var getInternalState = internalStateGetterFor(CONSTRUCTOR_NAME);
+
+	    var define = function (that, key, value) {
+	      var state = getInternalState(that);
+	      var entry = getEntry(that, key);
+	      var previous, index;
+	      // change existing entry
+	      if (entry) {
+	        entry.value = value;
+	      // create new entry
+	      } else {
+	        state.last = entry = {
+	          index: index = fastKey(key, true),
+	          key: key,
+	          value: value,
+	          previous: previous = state.last,
+	          next: undefined,
+	          removed: false
+	        };
+	        if (!state.first) state.first = entry;
+	        if (previous) previous.next = entry;
+	        if (descriptors) state.size++;
+	        else that.size++;
+	        // add to index
+	        if (index !== 'F') state.index[index] = entry;
+	      } return that;
+	    };
+
+	    var getEntry = function (that, key) {
+	      var state = getInternalState(that);
+	      // fast case
+	      var index = fastKey(key);
+	      var entry;
+	      if (index !== 'F') return state.index[index];
+	      // frozen object case
+	      for (entry = state.first; entry; entry = entry.next) {
+	        if (entry.key == key) return entry;
+	      }
+	    };
+
+	    redefineAll(C.prototype, {
+	      // 23.1.3.1 Map.prototype.clear()
+	      // 23.2.3.2 Set.prototype.clear()
+	      clear: function clear() {
+	        var that = this;
+	        var state = getInternalState(that);
+	        var data = state.index;
+	        var entry = state.first;
+	        while (entry) {
+	          entry.removed = true;
+	          if (entry.previous) entry.previous = entry.previous.next = undefined;
+	          delete data[entry.index];
+	          entry = entry.next;
+	        }
+	        state.first = state.last = undefined;
+	        if (descriptors) state.size = 0;
+	        else that.size = 0;
+	      },
+	      // 23.1.3.3 Map.prototype.delete(key)
+	      // 23.2.3.4 Set.prototype.delete(value)
+	      'delete': function (key) {
+	        var that = this;
+	        var state = getInternalState(that);
+	        var entry = getEntry(that, key);
+	        if (entry) {
+	          var next = entry.next;
+	          var prev = entry.previous;
+	          delete state.index[entry.index];
+	          entry.removed = true;
+	          if (prev) prev.next = next;
+	          if (next) next.previous = prev;
+	          if (state.first == entry) state.first = next;
+	          if (state.last == entry) state.last = prev;
+	          if (descriptors) state.size--;
+	          else that.size--;
+	        } return !!entry;
+	      },
+	      // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
+	      // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
+	      forEach: function forEach(callbackfn /* , that = undefined */) {
+	        var state = getInternalState(this);
+	        var boundFunction = functionBindContext(callbackfn, arguments.length > 1 ? arguments[1] : undefined, 3);
+	        var entry;
+	        while (entry = entry ? entry.next : state.first) {
+	          boundFunction(entry.value, entry.key, this);
+	          // revert to the last existing entry
+	          while (entry && entry.removed) entry = entry.previous;
+	        }
+	      },
+	      // 23.1.3.7 Map.prototype.has(key)
+	      // 23.2.3.7 Set.prototype.has(value)
+	      has: function has(key) {
+	        return !!getEntry(this, key);
+	      }
+	    });
+
+	    redefineAll(C.prototype, IS_MAP ? {
+	      // 23.1.3.6 Map.prototype.get(key)
+	      get: function get(key) {
+	        var entry = getEntry(this, key);
+	        return entry && entry.value;
+	      },
+	      // 23.1.3.9 Map.prototype.set(key, value)
+	      set: function set(key, value) {
+	        return define(this, key === 0 ? 0 : key, value);
+	      }
+	    } : {
+	      // 23.2.3.1 Set.prototype.add(value)
+	      add: function add(value) {
+	        return define(this, value = value === 0 ? 0 : value, value);
+	      }
+	    });
+	    if (descriptors) defineProperty$3(C.prototype, 'size', {
+	      get: function () {
+	        return getInternalState(this).size;
+	      }
+	    });
+	    return C;
+	  },
+	  setStrong: function (C, CONSTRUCTOR_NAME, IS_MAP) {
+	    var ITERATOR_NAME = CONSTRUCTOR_NAME + ' Iterator';
+	    var getInternalCollectionState = internalStateGetterFor(CONSTRUCTOR_NAME);
+	    var getInternalIteratorState = internalStateGetterFor(ITERATOR_NAME);
+	    // add .keys, .values, .entries, [@@iterator]
+	    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
+	    defineIterator(C, CONSTRUCTOR_NAME, function (iterated, kind) {
+	      setInternalState$3(this, {
+	        type: ITERATOR_NAME,
+	        target: iterated,
+	        state: getInternalCollectionState(iterated),
+	        kind: kind,
+	        last: undefined
+	      });
+	    }, function () {
+	      var state = getInternalIteratorState(this);
+	      var kind = state.kind;
+	      var entry = state.last;
+	      // revert to the last existing entry
+	      while (entry && entry.removed) entry = entry.previous;
+	      // get next entry
+	      if (!state.target || !(state.last = entry = entry ? entry.next : state.state.first)) {
+	        // or finish the iteration
+	        state.target = undefined;
+	        return { value: undefined, done: true };
+	      }
+	      // return step by kind
+	      if (kind == 'keys') return { value: entry.key, done: false };
+	      if (kind == 'values') return { value: entry.value, done: false };
+	      return { value: [entry.key, entry.value], done: false };
+	    }, IS_MAP ? 'entries' : 'values', !IS_MAP, true);
+
+	    // add [@@species], 23.1.2.2, 23.2.2.2
+	    setSpecies(CONSTRUCTOR_NAME);
+	  }
+	};
+
+	// `Map` constructor
+	// https://tc39.github.io/ecma262/#sec-map-objects
+	var es_map = collection('Map', function (init) {
+	  return function Map() { return init(this, arguments.length ? arguments[0] : undefined); };
+	}, collectionStrong);
+
+	var _typeof_1 = createCommonjsModule(function (module) {
+	function _typeof(obj) {
+	  "@babel/helpers - typeof";
+
+	  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+	    module.exports = _typeof = function _typeof(obj) {
+	      return typeof obj;
+	    };
+	  } else {
+	    module.exports = _typeof = function _typeof(obj) {
+	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	    };
+	  }
+
+	  return _typeof(obj);
+	}
+
+	module.exports = _typeof;
+	});
+
+	/**
+	 * This method returns `undefined`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 2.3.0
+	 * @category Util
+	 * @example
+	 *
+	 * _.times(2, _.noop);
+	 * // => [undefined, undefined]
+	 */
+	function noop() {
+	  // No operation performed.
+	}
+
+	var noop_1 = noop;
+
+	var $includes = arrayIncludes.includes;
+
+
+
+	var USES_TO_LENGTH$4 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
+
+	// `Array.prototype.includes` method
+	// https://tc39.github.io/ecma262/#sec-array.prototype.includes
+	_export({ target: 'Array', proto: true, forced: !USES_TO_LENGTH$4 }, {
+	  includes: function includes(el /* , fromIndex = 0 */) {
+	    return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
+	  }
+	});
+
+	// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+	addToUnscopables('includes');
+
+	// `Date.now` method
+	// https://tc39.github.io/ecma262/#sec-date.now
+	_export({ target: 'Date', stat: true }, {
+	  now: function now() {
+	    return new Date().getTime();
+	  }
+	});
+
+	var MATCH = wellKnownSymbol('match');
+
+	// `IsRegExp` abstract operation
+	// https://tc39.github.io/ecma262/#sec-isregexp
+	var isRegexp = function (it) {
+	  var isRegExp;
+	  return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
+	};
+
+	var notARegexp = function (it) {
+	  if (isRegexp(it)) {
+	    throw TypeError("The method doesn't accept regular expressions");
+	  } return it;
+	};
+
+	var MATCH$1 = wellKnownSymbol('match');
+
+	var correctIsRegexpLogic = function (METHOD_NAME) {
+	  var regexp = /./;
+	  try {
+	    '/./'[METHOD_NAME](regexp);
+	  } catch (e) {
+	    try {
+	      regexp[MATCH$1] = false;
+	      return '/./'[METHOD_NAME](regexp);
+	    } catch (f) { /* empty */ }
+	  } return false;
+	};
+
+	// `String.prototype.includes` method
+	// https://tc39.github.io/ecma262/#sec-string.prototype.includes
+	_export({ target: 'String', proto: true, forced: !correctIsRegexpLogic('includes') }, {
+	  includes: function includes(searchString /* , position = 0 */) {
+	    return !!~String(requireObjectCoercible(this))
+	      .indexOf(notARegexp(searchString), arguments.length > 1 ? arguments[1] : undefined);
+	  }
+	});
+
+	var requestIdleCallback = window.requestIdleCallback || function requestIdleCallback(cb) {
+	  var start = Date.now();
+	  return setTimeout(function () {
+	    cb({
+	      didTimeout: false,
+	      timeRemaining: function timeRemaining() {
+	        return Math.max(0, 50 - (Date.now() - start));
+	      }
+	    });
+	  }, 1);
+	};
+
+	var isSlowNetwork = navigator.connection ? navigator.connection.saveData || navigator.connection.type !== 'wifi' && navigator.connection.type !== 'ethernet' && /(2|3)g/.test(navigator.connection.effectiveType) : false;
+	/**
+	 * prefetch assets, do nothing while in mobile network
+	 * @param entry
+	 * @param opts
+	 */
+
+	function prefetch(entry, opts) {
+	  var _this = this;
+
+	  if (!navigator.onLine || isSlowNetwork) {
+	    // Don't prefetch if in a slow network or offline
+	    return;
+	  }
+
+	  requestIdleCallback(function () {
+	    return __awaiter(_this, void 0, void 0, function () {
+	      var _a, getExternalScripts, getExternalStyleSheets;
+
+	      return __generator(this, function (_b) {
+	        switch (_b.label) {
+	          case 0:
+	            return [4
+	            /*yield*/
+	            , legionsImportHtmlEntry_umd_1(entry, opts)];
+
+	          case 1:
+	            _a = _b.sent(), getExternalScripts = _a.getExternalScripts, getExternalStyleSheets = _a.getExternalStyleSheets;
+	            requestIdleCallback(getExternalStyleSheets);
+	            requestIdleCallback(getExternalScripts);
+	            return [2
+	            /*return*/
+	            ];
+	        }
+	      });
+	    });
+	  });
+	}
+
+	function prefetchAfterFirstMounted(apps, opts) {
+	  window.addEventListener('single-spa:first-mount', function listener() {
+	    var notLoadedApps = apps.filter(function (app) {
+	      return Ot(app.name) === l;
+	    }); //@ts-ignore
+
+	    notLoadedApps.forEach(function (_a) {
+	      var entry = _a.entry;
+	      return prefetch(entry, opts);
+	    });
+	    window.removeEventListener('single-spa:first-mount', listener);
+	  });
+	}
+
+	function prefetchImmediately(apps, opts) {
+
+	  apps.forEach(function (_a) {
+	    var entry = _a.entry;
+	    return prefetch(entry, opts);
+	  });
+	}
+	function doPrefetchStrategy(apps, prefetchStrategy, importEntryOpts) {
+	  var appsName2Apps = function appsName2Apps(names) {
+	    return apps.filter(function (app) {
+	      return names.includes(app.name);
+	    });
+	  };
+
+	  if (Array.isArray(prefetchStrategy)) {
+	    prefetchAfterFirstMounted(appsName2Apps(prefetchStrategy), importEntryOpts);
+	  } else {
+	    switch (prefetchStrategy) {
+	      case true:
+	        prefetchAfterFirstMounted(apps, importEntryOpts);
+	        break;
+
+	      case 'all':
+	        prefetchImmediately(apps, importEntryOpts);
+	        break;
+	    }
+	  }
+	}
+
+	var nativeGetOwnPropertyNames = objectGetOwnPropertyNames.f;
+
+	var toString$1 = {}.toString;
+
+	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
+	  ? Object.getOwnPropertyNames(window) : [];
+
+	var getWindowNames = function (it) {
+	  try {
+	    return nativeGetOwnPropertyNames(it);
+	  } catch (error) {
+	    return windowNames.slice();
+	  }
+	};
+
+	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+	var f$8 = function getOwnPropertyNames(it) {
+	  return windowNames && toString$1.call(it) == '[object Window]'
+	    ? getWindowNames(it)
+	    : nativeGetOwnPropertyNames(toIndexedObject(it));
+	};
+
+	var objectGetOwnPropertyNamesExternal = {
+		f: f$8
+	};
+
+	var nativeGetOwnPropertyNames$1 = objectGetOwnPropertyNamesExternal.f;
+
+	var FAILS_ON_PRIMITIVES = fails(function () { return !Object.getOwnPropertyNames(1); });
+
+	// `Object.getOwnPropertyNames` method
+	// https://tc39.github.io/ecma262/#sec-object.getownpropertynames
+	_export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES }, {
+	  getOwnPropertyNames: nativeGetOwnPropertyNames$1
+	});
+
+	// babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
+	// so we use an intermediate function.
+	function RE(s, f) {
+	  return RegExp(s, f);
+	}
+
+	var UNSUPPORTED_Y = fails(function () {
+	  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
+	  var re = RE('a', 'y');
+	  re.lastIndex = 2;
+	  return re.exec('abcd') != null;
+	});
+
+	var BROKEN_CARET = fails(function () {
+	  // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
+	  var re = RE('^r', 'gy');
+	  re.lastIndex = 2;
+	  return re.exec('str') != null;
+	});
+
+	var regexpStickyHelpers = {
+		UNSUPPORTED_Y: UNSUPPORTED_Y,
+		BROKEN_CARET: BROKEN_CARET
+	};
+
+	var nativeExec = RegExp.prototype.exec;
+	// This always refers to the native implementation, because the
+	// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+	// which loads this file before patching the method.
+	var nativeReplace = String.prototype.replace;
+
+	var patchedExec = nativeExec;
+
+	var UPDATES_LAST_INDEX_WRONG = (function () {
+	  var re1 = /a/;
+	  var re2 = /b*/g;
+	  nativeExec.call(re1, 'a');
+	  nativeExec.call(re2, 'a');
+	  return re1.lastIndex !== 0 || re2.lastIndex !== 0;
+	})();
+
+	var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
+
+	// nonparticipating capturing group, copied from es5-shim's String#split patch.
+	var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
+
+	var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
+
+	if (PATCH) {
+	  patchedExec = function exec(str) {
+	    var re = this;
+	    var lastIndex, reCopy, match, i;
+	    var sticky = UNSUPPORTED_Y$1 && re.sticky;
+	    var flags = regexpFlags.call(re);
+	    var source = re.source;
+	    var charsAdded = 0;
+	    var strCopy = str;
+
+	    if (sticky) {
+	      flags = flags.replace('y', '');
+	      if (flags.indexOf('g') === -1) {
+	        flags += 'g';
+	      }
+
+	      strCopy = String(str).slice(re.lastIndex);
+	      // Support anchored sticky behavior.
+	      if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
+	        source = '(?: ' + source + ')';
+	        strCopy = ' ' + strCopy;
+	        charsAdded++;
+	      }
+	      // ^(? + rx + ) is needed, in combination with some str slicing, to
+	      // simulate the 'y' flag.
+	      reCopy = new RegExp('^(?:' + source + ')', flags);
+	    }
+
+	    if (NPCG_INCLUDED) {
+	      reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
+	    }
+	    if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
+
+	    match = nativeExec.call(sticky ? reCopy : re, strCopy);
+
+	    if (sticky) {
+	      if (match) {
+	        match.input = match.input.slice(charsAdded);
+	        match[0] = match[0].slice(charsAdded);
+	        match.index = re.lastIndex;
+	        re.lastIndex += match[0].length;
+	      } else re.lastIndex = 0;
+	    } else if (UPDATES_LAST_INDEX_WRONG && match) {
+	      re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
+	    }
+	    if (NPCG_INCLUDED && match && match.length > 1) {
+	      // Fix browsers whose `exec` methods don't consistently return `undefined`
+	      // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
+	      nativeReplace.call(match[0], reCopy, function () {
+	        for (i = 1; i < arguments.length - 2; i++) {
+	          if (arguments[i] === undefined) match[i] = undefined;
+	        }
+	      });
+	    }
+
+	    return match;
+	  };
+	}
+
+	var regexpExec = patchedExec;
+
+	_export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
+	  exec: regexpExec
+	});
+
+	// TODO: Remove from `core-js@4` since it's moved to entry points
+
+
+
+
+
+
+
+	var SPECIES$5 = wellKnownSymbol('species');
+
+	var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
+	  // #replace needs built-in support for named groups.
+	  // #match works fine because it just return the exec results, even if it has
+	  // a "grops" property.
+	  var re = /./;
+	  re.exec = function () {
+	    var result = [];
+	    result.groups = { a: '7' };
+	    return result;
+	  };
+	  return ''.replace(re, '$<a>') !== '7';
+	});
+
+	// IE <= 11 replaces $0 with the whole match, as if it was $&
+	// https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
+	var REPLACE_KEEPS_$0 = (function () {
+	  return 'a'.replace(/./, '$0') === '$0';
+	})();
+
+	var REPLACE = wellKnownSymbol('replace');
+	// Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
+	var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
+	  if (/./[REPLACE]) {
+	    return /./[REPLACE]('a', '$0') === '';
+	  }
+	  return false;
+	})();
+
+	// Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
+	// Weex JS has frozen built-in prototypes, so use try / catch wrapper
+	var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
+	  var re = /(?:)/;
+	  var originalExec = re.exec;
+	  re.exec = function () { return originalExec.apply(this, arguments); };
+	  var result = 'ab'.split(re);
+	  return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
+	});
+
+	var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
+	  var SYMBOL = wellKnownSymbol(KEY);
+
+	  var DELEGATES_TO_SYMBOL = !fails(function () {
+	    // String methods call symbol-named RegEp methods
+	    var O = {};
+	    O[SYMBOL] = function () { return 7; };
+	    return ''[KEY](O) != 7;
+	  });
+
+	  var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
+	    // Symbol-named RegExp methods call .exec
+	    var execCalled = false;
+	    var re = /a/;
+
+	    if (KEY === 'split') {
+	      // We can't use real regex here since it causes deoptimization
+	      // and serious performance degradation in V8
+	      // https://github.com/zloirock/core-js/issues/306
+	      re = {};
+	      // RegExp[@@split] doesn't call the regex's exec method, but first creates
+	      // a new one. We need to return the patched regex when creating the new one.
+	      re.constructor = {};
+	      re.constructor[SPECIES$5] = function () { return re; };
+	      re.flags = '';
+	      re[SYMBOL] = /./[SYMBOL];
+	    }
+
+	    re.exec = function () { execCalled = true; return null; };
+
+	    re[SYMBOL]('');
+	    return !execCalled;
+	  });
+
+	  if (
+	    !DELEGATES_TO_SYMBOL ||
+	    !DELEGATES_TO_EXEC ||
+	    (KEY === 'replace' && !(
+	      REPLACE_SUPPORTS_NAMED_GROUPS &&
+	      REPLACE_KEEPS_$0 &&
+	      !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+	    )) ||
+	    (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
+	  ) {
+	    var nativeRegExpMethod = /./[SYMBOL];
+	    var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
+	      if (regexp.exec === regexpExec) {
+	        if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
+	          // The native String method already delegates to @@method (this
+	          // polyfilled function), leasing to infinite recursion.
+	          // We avoid it by directly calling the native @@method method.
+	          return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
+	        }
+	        return { done: true, value: nativeMethod.call(str, regexp, arg2) };
+	      }
+	      return { done: false };
+	    }, {
+	      REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
+	      REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+	    });
+	    var stringMethod = methods[0];
+	    var regexMethod = methods[1];
+
+	    redefine(String.prototype, KEY, stringMethod);
+	    redefine(RegExp.prototype, SYMBOL, length == 2
+	      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
+	      // 21.2.5.11 RegExp.prototype[@@split](string, limit)
+	      ? function (string, arg) { return regexMethod.call(string, this, arg); }
+	      // 21.2.5.6 RegExp.prototype[@@match](string)
+	      // 21.2.5.9 RegExp.prototype[@@search](string)
+	      : function (string) { return regexMethod.call(string, this); }
+	    );
+	  }
+
+	  if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
+	};
+
+	var charAt$1 = stringMultibyte.charAt;
+
+	// `AdvanceStringIndex` abstract operation
+	// https://tc39.github.io/ecma262/#sec-advancestringindex
+	var advanceStringIndex = function (S, index, unicode) {
+	  return index + (unicode ? charAt$1(S, index).length : 1);
+	};
+
+	// `RegExpExec` abstract operation
+	// https://tc39.github.io/ecma262/#sec-regexpexec
+	var regexpExecAbstract = function (R, S) {
+	  var exec = R.exec;
+	  if (typeof exec === 'function') {
+	    var result = exec.call(R, S);
+	    if (typeof result !== 'object') {
+	      throw TypeError('RegExp exec method returned something other than an Object or null');
+	    }
+	    return result;
+	  }
+
+	  if (classofRaw(R) !== 'RegExp') {
+	    throw TypeError('RegExp#exec called on incompatible receiver');
+	  }
+
+	  return regexpExec.call(R, S);
+	};
+
+	var max$1 = Math.max;
+	var min$2 = Math.min;
+	var floor$1 = Math.floor;
+	var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
+	var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
+
+	var maybeToString = function (it) {
+	  return it === undefined ? it : String(it);
+	};
+
+	// @@replace logic
+	fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
+	  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
+	  var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
+	  var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
+
+	  return [
+	    // `String.prototype.replace` method
+	    // https://tc39.github.io/ecma262/#sec-string.prototype.replace
+	    function replace(searchValue, replaceValue) {
+	      var O = requireObjectCoercible(this);
+	      var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
+	      return replacer !== undefined
+	        ? replacer.call(searchValue, O, replaceValue)
+	        : nativeReplace.call(String(O), searchValue, replaceValue);
+	    },
+	    // `RegExp.prototype[@@replace]` method
+	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
+	    function (regexp, replaceValue) {
+	      if (
+	        (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
+	        (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
+	      ) {
+	        var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
+	        if (res.done) return res.value;
+	      }
+
+	      var rx = anObject(regexp);
+	      var S = String(this);
+
+	      var functionalReplace = typeof replaceValue === 'function';
+	      if (!functionalReplace) replaceValue = String(replaceValue);
+
+	      var global = rx.global;
+	      if (global) {
+	        var fullUnicode = rx.unicode;
+	        rx.lastIndex = 0;
+	      }
+	      var results = [];
+	      while (true) {
+	        var result = regexpExecAbstract(rx, S);
+	        if (result === null) break;
+
+	        results.push(result);
+	        if (!global) break;
+
+	        var matchStr = String(result[0]);
+	        if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
+	      }
+
+	      var accumulatedResult = '';
+	      var nextSourcePosition = 0;
+	      for (var i = 0; i < results.length; i++) {
+	        result = results[i];
+
+	        var matched = String(result[0]);
+	        var position = max$1(min$2(toInteger(result.index), S.length), 0);
+	        var captures = [];
+	        // NOTE: This is equivalent to
+	        //   captures = result.slice(1).map(maybeToString)
+	        // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
+	        // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
+	        // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
+	        for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
+	        var namedCaptures = result.groups;
+	        if (functionalReplace) {
+	          var replacerArgs = [matched].concat(captures, position, S);
+	          if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
+	          var replacement = String(replaceValue.apply(undefined, replacerArgs));
+	        } else {
+	          replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
+	        }
+	        if (position >= nextSourcePosition) {
+	          accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
+	          nextSourcePosition = position + matched.length;
+	        }
+	      }
+	      return accumulatedResult + S.slice(nextSourcePosition);
+	    }
+	  ];
+
+	  // https://tc39.github.io/ecma262/#sec-getsubstitution
+	  function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
+	    var tailPos = position + matched.length;
+	    var m = captures.length;
+	    var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
+	    if (namedCaptures !== undefined) {
+	      namedCaptures = toObject(namedCaptures);
+	      symbols = SUBSTITUTION_SYMBOLS;
+	    }
+	    return nativeReplace.call(replacement, symbols, function (match, ch) {
+	      var capture;
+	      switch (ch.charAt(0)) {
+	        case '$': return '$';
+	        case '&': return matched;
+	        case '`': return str.slice(0, position);
+	        case "'": return str.slice(tailPos);
+	        case '<':
+	          capture = namedCaptures[ch.slice(1, -1)];
+	          break;
+	        default: // \d\d?
+	          var n = +ch;
+	          if (n === 0) return match;
+	          if (n > m) {
+	            var f = floor$1(n / 10);
+	            if (f === 0) return match;
+	            if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
+	            return match;
+	          }
+	          capture = captures[n - 1];
+	      }
+	      return capture === undefined ? '' : capture;
+	    });
+	  }
+	});
+
 	var getWeakData = internalMetadata.getWeakData;
 
 
@@ -4921,8 +5634,8 @@ var legionsMicroservice = (function (exports) {
 
 
 
-	var setInternalState$3 = internalState.set;
-	var internalStateGetterFor = internalState.getterFor;
+	var setInternalState$4 = internalState.set;
+	var internalStateGetterFor$1 = internalState.getterFor;
 	var find = arrayIteration.find;
 	var findIndex = arrayIteration.findIndex;
 	var id$1 = 0;
@@ -4968,7 +5681,7 @@ var legionsMicroservice = (function (exports) {
 	  getConstructor: function (wrapper, CONSTRUCTOR_NAME, IS_MAP, ADDER) {
 	    var C = wrapper(function (that, iterable) {
 	      anInstance(that, C, CONSTRUCTOR_NAME);
-	      setInternalState$3(that, {
+	      setInternalState$4(that, {
 	        type: CONSTRUCTOR_NAME,
 	        id: id$1++,
 	        frozen: undefined
@@ -4976,7 +5689,7 @@ var legionsMicroservice = (function (exports) {
 	      if (iterable != undefined) iterate_1(iterable, that[ADDER], that, IS_MAP);
 	    });
 
-	    var getInternalState = internalStateGetterFor(CONSTRUCTOR_NAME);
+	    var getInternalState = internalStateGetterFor$1(CONSTRUCTOR_NAME);
 
 	    var define = function (that, key, value) {
 	      var state = getInternalState(that);
@@ -5893,6 +6606,44 @@ var legionsMicroservice = (function (exports) {
 	  var constructable = fn.prototype && fn.prototype.constructor === fn && Object.getOwnPropertyNames(fn.prototype).length > 1 || constructableFunctionRegex.test(fn.toString()) || classRegex.test(fn.toString());
 	  constructableMap.set(fn, constructable);
 	  return constructable;
+	}
+	/**
+	 * copy from https://developer.mozilla.org/zh-CN/docs/Using_XPath
+	 * @param el
+	 * @param document
+	 */
+
+	function getXPathForElement(el, document) {
+	  // not support that if el not existed in document yet(such as it not append to document before it mounted)
+	  if (!document.body.contains(el)) {
+	    return undefined;
+	  }
+
+	  var xpath = '';
+	  var pos;
+	  var tmpEle;
+	  var element = el;
+
+	  while (element !== document.documentElement) {
+	    pos = 0;
+	    tmpEle = element;
+
+	    while (tmpEle) {
+	      if (tmpEle.nodeType === 1 && tmpEle.nodeName === element.nodeName) {
+	        // If it is ELEMENT_NODE of the same name
+	        pos += 1;
+	      }
+
+	      tmpEle = tmpEle.previousSibling;
+	    }
+
+	    xpath = "*[name()='" + element.nodeName + "' and namespace-uri()='" + (element.namespaceURI === null ? '' : element.namespaceURI) + "'][" + pos + "]/" + xpath;
+	    element = element.parentNode;
+	  }
+
+	  xpath = "/*[name()='" + document.documentElement.nodeName + "' and namespace-uri()='" + (element.namespaceURI === null ? '' : element.namespaceURI) + "']/" + xpath;
+	  xpath = xpath.replace(/\/$/, '');
+	  return xpath;
 	}
 
 	// `Array.prototype.{ reduce, reduceRight }` methods implementation
@@ -7483,7 +8234,7 @@ var legionsMicroservice = (function (exports) {
 
 	var _Stack = Stack;
 
-	var defineProperty$3 = (function() {
+	var defineProperty$4 = (function() {
 	  try {
 	    var func = _getNative(Object, 'defineProperty');
 	    func({}, '', {});
@@ -7491,7 +8242,7 @@ var legionsMicroservice = (function (exports) {
 	  } catch (e) {}
 	}());
 
-	var _defineProperty = defineProperty$3;
+	var _defineProperty = defineProperty$4;
 
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -8329,9 +9080,9 @@ var legionsMicroservice = (function (exports) {
 	var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('slice');
 	var USES_TO_LENGTH$6 = arrayMethodUsesToLength('slice', { ACCESSORS: true, 0: 0, 1: 2 });
 
-	var SPECIES$5 = wellKnownSymbol('species');
+	var SPECIES$6 = wellKnownSymbol('species');
 	var nativeSlice = [].slice;
-	var max$1 = Math.max;
+	var max$2 = Math.max;
 
 	// `Array.prototype.slice` method
 	// https://tc39.github.io/ecma262/#sec-array.prototype.slice
@@ -8350,408 +9101,17 @@ var legionsMicroservice = (function (exports) {
 	      if (typeof Constructor == 'function' && (Constructor === Array || isArray(Constructor.prototype))) {
 	        Constructor = undefined;
 	      } else if (isObject(Constructor)) {
-	        Constructor = Constructor[SPECIES$5];
+	        Constructor = Constructor[SPECIES$6];
 	        if (Constructor === null) Constructor = undefined;
 	      }
 	      if (Constructor === Array || Constructor === undefined) {
 	        return nativeSlice.call(O, k, fin);
 	      }
 	    }
-	    result = new (Constructor === undefined ? Array : Constructor)(max$1(fin - k, 0));
+	    result = new (Constructor === undefined ? Array : Constructor)(max$2(fin - k, 0));
 	    for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
 	    result.length = n;
 	    return result;
-	  }
-	});
-
-	// babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
-	// so we use an intermediate function.
-	function RE(s, f) {
-	  return RegExp(s, f);
-	}
-
-	var UNSUPPORTED_Y = fails(function () {
-	  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
-	  var re = RE('a', 'y');
-	  re.lastIndex = 2;
-	  return re.exec('abcd') != null;
-	});
-
-	var BROKEN_CARET = fails(function () {
-	  // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
-	  var re = RE('^r', 'gy');
-	  re.lastIndex = 2;
-	  return re.exec('str') != null;
-	});
-
-	var regexpStickyHelpers = {
-		UNSUPPORTED_Y: UNSUPPORTED_Y,
-		BROKEN_CARET: BROKEN_CARET
-	};
-
-	var nativeExec = RegExp.prototype.exec;
-	// This always refers to the native implementation, because the
-	// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
-	// which loads this file before patching the method.
-	var nativeReplace = String.prototype.replace;
-
-	var patchedExec = nativeExec;
-
-	var UPDATES_LAST_INDEX_WRONG = (function () {
-	  var re1 = /a/;
-	  var re2 = /b*/g;
-	  nativeExec.call(re1, 'a');
-	  nativeExec.call(re2, 'a');
-	  return re1.lastIndex !== 0 || re2.lastIndex !== 0;
-	})();
-
-	var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
-
-	// nonparticipating capturing group, copied from es5-shim's String#split patch.
-	var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
-
-	var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
-
-	if (PATCH) {
-	  patchedExec = function exec(str) {
-	    var re = this;
-	    var lastIndex, reCopy, match, i;
-	    var sticky = UNSUPPORTED_Y$1 && re.sticky;
-	    var flags = regexpFlags.call(re);
-	    var source = re.source;
-	    var charsAdded = 0;
-	    var strCopy = str;
-
-	    if (sticky) {
-	      flags = flags.replace('y', '');
-	      if (flags.indexOf('g') === -1) {
-	        flags += 'g';
-	      }
-
-	      strCopy = String(str).slice(re.lastIndex);
-	      // Support anchored sticky behavior.
-	      if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
-	        source = '(?: ' + source + ')';
-	        strCopy = ' ' + strCopy;
-	        charsAdded++;
-	      }
-	      // ^(? + rx + ) is needed, in combination with some str slicing, to
-	      // simulate the 'y' flag.
-	      reCopy = new RegExp('^(?:' + source + ')', flags);
-	    }
-
-	    if (NPCG_INCLUDED) {
-	      reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
-	    }
-	    if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
-
-	    match = nativeExec.call(sticky ? reCopy : re, strCopy);
-
-	    if (sticky) {
-	      if (match) {
-	        match.input = match.input.slice(charsAdded);
-	        match[0] = match[0].slice(charsAdded);
-	        match.index = re.lastIndex;
-	        re.lastIndex += match[0].length;
-	      } else re.lastIndex = 0;
-	    } else if (UPDATES_LAST_INDEX_WRONG && match) {
-	      re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
-	    }
-	    if (NPCG_INCLUDED && match && match.length > 1) {
-	      // Fix browsers whose `exec` methods don't consistently return `undefined`
-	      // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
-	      nativeReplace.call(match[0], reCopy, function () {
-	        for (i = 1; i < arguments.length - 2; i++) {
-	          if (arguments[i] === undefined) match[i] = undefined;
-	        }
-	      });
-	    }
-
-	    return match;
-	  };
-	}
-
-	var regexpExec = patchedExec;
-
-	_export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
-	  exec: regexpExec
-	});
-
-	// TODO: Remove from `core-js@4` since it's moved to entry points
-
-
-
-
-
-
-
-	var SPECIES$6 = wellKnownSymbol('species');
-
-	var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
-	  // #replace needs built-in support for named groups.
-	  // #match works fine because it just return the exec results, even if it has
-	  // a "grops" property.
-	  var re = /./;
-	  re.exec = function () {
-	    var result = [];
-	    result.groups = { a: '7' };
-	    return result;
-	  };
-	  return ''.replace(re, '$<a>') !== '7';
-	});
-
-	// IE <= 11 replaces $0 with the whole match, as if it was $&
-	// https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
-	var REPLACE_KEEPS_$0 = (function () {
-	  return 'a'.replace(/./, '$0') === '$0';
-	})();
-
-	var REPLACE = wellKnownSymbol('replace');
-	// Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
-	var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
-	  if (/./[REPLACE]) {
-	    return /./[REPLACE]('a', '$0') === '';
-	  }
-	  return false;
-	})();
-
-	// Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
-	// Weex JS has frozen built-in prototypes, so use try / catch wrapper
-	var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
-	  var re = /(?:)/;
-	  var originalExec = re.exec;
-	  re.exec = function () { return originalExec.apply(this, arguments); };
-	  var result = 'ab'.split(re);
-	  return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
-	});
-
-	var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
-	  var SYMBOL = wellKnownSymbol(KEY);
-
-	  var DELEGATES_TO_SYMBOL = !fails(function () {
-	    // String methods call symbol-named RegEp methods
-	    var O = {};
-	    O[SYMBOL] = function () { return 7; };
-	    return ''[KEY](O) != 7;
-	  });
-
-	  var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
-	    // Symbol-named RegExp methods call .exec
-	    var execCalled = false;
-	    var re = /a/;
-
-	    if (KEY === 'split') {
-	      // We can't use real regex here since it causes deoptimization
-	      // and serious performance degradation in V8
-	      // https://github.com/zloirock/core-js/issues/306
-	      re = {};
-	      // RegExp[@@split] doesn't call the regex's exec method, but first creates
-	      // a new one. We need to return the patched regex when creating the new one.
-	      re.constructor = {};
-	      re.constructor[SPECIES$6] = function () { return re; };
-	      re.flags = '';
-	      re[SYMBOL] = /./[SYMBOL];
-	    }
-
-	    re.exec = function () { execCalled = true; return null; };
-
-	    re[SYMBOL]('');
-	    return !execCalled;
-	  });
-
-	  if (
-	    !DELEGATES_TO_SYMBOL ||
-	    !DELEGATES_TO_EXEC ||
-	    (KEY === 'replace' && !(
-	      REPLACE_SUPPORTS_NAMED_GROUPS &&
-	      REPLACE_KEEPS_$0 &&
-	      !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-	    )) ||
-	    (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
-	  ) {
-	    var nativeRegExpMethod = /./[SYMBOL];
-	    var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
-	      if (regexp.exec === regexpExec) {
-	        if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
-	          // The native String method already delegates to @@method (this
-	          // polyfilled function), leasing to infinite recursion.
-	          // We avoid it by directly calling the native @@method method.
-	          return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
-	        }
-	        return { done: true, value: nativeMethod.call(str, regexp, arg2) };
-	      }
-	      return { done: false };
-	    }, {
-	      REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
-	      REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-	    });
-	    var stringMethod = methods[0];
-	    var regexMethod = methods[1];
-
-	    redefine(String.prototype, KEY, stringMethod);
-	    redefine(RegExp.prototype, SYMBOL, length == 2
-	      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
-	      // 21.2.5.11 RegExp.prototype[@@split](string, limit)
-	      ? function (string, arg) { return regexMethod.call(string, this, arg); }
-	      // 21.2.5.6 RegExp.prototype[@@match](string)
-	      // 21.2.5.9 RegExp.prototype[@@search](string)
-	      : function (string) { return regexMethod.call(string, this); }
-	    );
-	  }
-
-	  if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
-	};
-
-	var charAt$1 = stringMultibyte.charAt;
-
-	// `AdvanceStringIndex` abstract operation
-	// https://tc39.github.io/ecma262/#sec-advancestringindex
-	var advanceStringIndex = function (S, index, unicode) {
-	  return index + (unicode ? charAt$1(S, index).length : 1);
-	};
-
-	// `RegExpExec` abstract operation
-	// https://tc39.github.io/ecma262/#sec-regexpexec
-	var regexpExecAbstract = function (R, S) {
-	  var exec = R.exec;
-	  if (typeof exec === 'function') {
-	    var result = exec.call(R, S);
-	    if (typeof result !== 'object') {
-	      throw TypeError('RegExp exec method returned something other than an Object or null');
-	    }
-	    return result;
-	  }
-
-	  if (classofRaw(R) !== 'RegExp') {
-	    throw TypeError('RegExp#exec called on incompatible receiver');
-	  }
-
-	  return regexpExec.call(R, S);
-	};
-
-	var max$2 = Math.max;
-	var min$2 = Math.min;
-	var floor$1 = Math.floor;
-	var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
-	var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
-
-	var maybeToString = function (it) {
-	  return it === undefined ? it : String(it);
-	};
-
-	// @@replace logic
-	fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
-	  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
-	  var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
-	  var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
-
-	  return [
-	    // `String.prototype.replace` method
-	    // https://tc39.github.io/ecma262/#sec-string.prototype.replace
-	    function replace(searchValue, replaceValue) {
-	      var O = requireObjectCoercible(this);
-	      var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
-	      return replacer !== undefined
-	        ? replacer.call(searchValue, O, replaceValue)
-	        : nativeReplace.call(String(O), searchValue, replaceValue);
-	    },
-	    // `RegExp.prototype[@@replace]` method
-	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
-	    function (regexp, replaceValue) {
-	      if (
-	        (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
-	        (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
-	      ) {
-	        var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
-	        if (res.done) return res.value;
-	      }
-
-	      var rx = anObject(regexp);
-	      var S = String(this);
-
-	      var functionalReplace = typeof replaceValue === 'function';
-	      if (!functionalReplace) replaceValue = String(replaceValue);
-
-	      var global = rx.global;
-	      if (global) {
-	        var fullUnicode = rx.unicode;
-	        rx.lastIndex = 0;
-	      }
-	      var results = [];
-	      while (true) {
-	        var result = regexpExecAbstract(rx, S);
-	        if (result === null) break;
-
-	        results.push(result);
-	        if (!global) break;
-
-	        var matchStr = String(result[0]);
-	        if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-	      }
-
-	      var accumulatedResult = '';
-	      var nextSourcePosition = 0;
-	      for (var i = 0; i < results.length; i++) {
-	        result = results[i];
-
-	        var matched = String(result[0]);
-	        var position = max$2(min$2(toInteger(result.index), S.length), 0);
-	        var captures = [];
-	        // NOTE: This is equivalent to
-	        //   captures = result.slice(1).map(maybeToString)
-	        // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
-	        // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
-	        // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
-	        for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
-	        var namedCaptures = result.groups;
-	        if (functionalReplace) {
-	          var replacerArgs = [matched].concat(captures, position, S);
-	          if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
-	          var replacement = String(replaceValue.apply(undefined, replacerArgs));
-	        } else {
-	          replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
-	        }
-	        if (position >= nextSourcePosition) {
-	          accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
-	          nextSourcePosition = position + matched.length;
-	        }
-	      }
-	      return accumulatedResult + S.slice(nextSourcePosition);
-	    }
-	  ];
-
-	  // https://tc39.github.io/ecma262/#sec-getsubstitution
-	  function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
-	    var tailPos = position + matched.length;
-	    var m = captures.length;
-	    var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
-	    if (namedCaptures !== undefined) {
-	      namedCaptures = toObject(namedCaptures);
-	      symbols = SUBSTITUTION_SYMBOLS;
-	    }
-	    return nativeReplace.call(replacement, symbols, function (match, ch) {
-	      var capture;
-	      switch (ch.charAt(0)) {
-	        case '$': return '$';
-	        case '&': return matched;
-	        case '`': return str.slice(0, position);
-	        case "'": return str.slice(tailPos);
-	        case '<':
-	          capture = namedCaptures[ch.slice(1, -1)];
-	          break;
-	        default: // \d\d?
-	          var n = +ch;
-	          if (n === 0) return match;
-	          if (n > m) {
-	            var f = floor$1(n / 10);
-	            if (f === 0) return match;
-	            if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
-	            return match;
-	          }
-	          capture = captures[n - 1];
-	      }
-	      return capture === undefined ? '' : capture;
-	    });
 	  }
 	});
 
@@ -9115,16 +9475,16 @@ var legionsMicroservice = (function (exports) {
 	}
 
 	var nativeAssign = Object.assign;
-	var defineProperty$4 = Object.defineProperty;
+	var defineProperty$5 = Object.defineProperty;
 
 	// `Object.assign` method
 	// https://tc39.github.io/ecma262/#sec-object.assign
 	var objectAssign = !nativeAssign || fails(function () {
 	  // should have correct order of operations (Edge bug)
-	  if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$4({}, 'a', {
+	  if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$5({}, 'a', {
 	    enumerable: true,
 	    get: function () {
-	      defineProperty$4(this, 'b', {
+	      defineProperty$5(this, 'b', {
 	        value: 3,
 	        enumerable: false
 	      });
@@ -9966,11 +10326,11 @@ var legionsMicroservice = (function (exports) {
 		f: f$9
 	};
 
-	var defineProperty$5 = objectDefineProperty.f;
+	var defineProperty$6 = objectDefineProperty.f;
 
 	var defineWellKnownSymbol = function (NAME) {
 	  var Symbol = path.Symbol || (path.Symbol = {});
-	  if (!has(Symbol, NAME)) defineProperty$5(Symbol, NAME, {
+	  if (!has(Symbol, NAME)) defineProperty$6(Symbol, NAME, {
 	    value: wellKnownSymbolWrapped.f(NAME)
 	  });
 	};
@@ -9981,7 +10341,7 @@ var legionsMicroservice = (function (exports) {
 	var SYMBOL = 'Symbol';
 	var PROTOTYPE$1 = 'prototype';
 	var TO_PRIMITIVE = wellKnownSymbol('toPrimitive');
-	var setInternalState$4 = internalState.set;
+	var setInternalState$5 = internalState.set;
 	var getInternalState$3 = internalState.getterFor(SYMBOL);
 	var ObjectPrototype$1 = Object[PROTOTYPE$1];
 	var $Symbol = global_1.Symbol;
@@ -10015,7 +10375,7 @@ var legionsMicroservice = (function (exports) {
 
 	var wrap$1 = function (tag, description) {
 	  var symbol = AllSymbols[tag] = objectCreate($Symbol[PROTOTYPE$1]);
-	  setInternalState$4(symbol, {
+	  setInternalState$5(symbol, {
 	    type: SYMBOL,
 	    tag: tag,
 	    description: description
@@ -10251,7 +10611,7 @@ var legionsMicroservice = (function (exports) {
 
 	hiddenKeys[HIDDEN] = true;
 
-	var defineProperty$6 = objectDefineProperty.f;
+	var defineProperty$7 = objectDefineProperty.f;
 
 
 	var NativeSymbol = global_1.Symbol;
@@ -10278,7 +10638,7 @@ var legionsMicroservice = (function (exports) {
 	  var symbolToString$1 = symbolPrototype.toString;
 	  var native = String(NativeSymbol('test')) == 'Symbol(test)';
 	  var regexp = /^Symbol\((.*)\)[^)]+$/;
-	  defineProperty$6(symbolPrototype, 'description', {
+	  defineProperty$7(symbolPrototype, 'description', {
 	    configurable: true,
 	    get: function description() {
 	      var symbol = isObject(this) ? this.valueOf() : this;
@@ -10345,258 +10705,6 @@ var legionsMicroservice = (function (exports) {
 	    return A;
 	  }
 	});
-
-	var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('splice');
-	var USES_TO_LENGTH$8 = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
-
-	var max$3 = Math.max;
-	var min$3 = Math.min;
-	var MAX_SAFE_INTEGER$3 = 0x1FFFFFFFFFFFFF;
-	var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
-
-	// `Array.prototype.splice` method
-	// https://tc39.github.io/ecma262/#sec-array.prototype.splice
-	// with adding support of @@species
-	_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_TO_LENGTH$8 }, {
-	  splice: function splice(start, deleteCount /* , ...items */) {
-	    var O = toObject(this);
-	    var len = toLength(O.length);
-	    var actualStart = toAbsoluteIndex(start, len);
-	    var argumentsLength = arguments.length;
-	    var insertCount, actualDeleteCount, A, k, from, to;
-	    if (argumentsLength === 0) {
-	      insertCount = actualDeleteCount = 0;
-	    } else if (argumentsLength === 1) {
-	      insertCount = 0;
-	      actualDeleteCount = len - actualStart;
-	    } else {
-	      insertCount = argumentsLength - 2;
-	      actualDeleteCount = min$3(max$3(toInteger(deleteCount), 0), len - actualStart);
-	    }
-	    if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$3) {
-	      throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
-	    }
-	    A = arraySpeciesCreate(O, actualDeleteCount);
-	    for (k = 0; k < actualDeleteCount; k++) {
-	      from = actualStart + k;
-	      if (from in O) createProperty(A, k, O[from]);
-	    }
-	    A.length = actualDeleteCount;
-	    if (insertCount < actualDeleteCount) {
-	      for (k = actualStart; k < len - actualDeleteCount; k++) {
-	        from = k + actualDeleteCount;
-	        to = k + insertCount;
-	        if (from in O) O[to] = O[from];
-	        else delete O[to];
-	      }
-	      for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
-	    } else if (insertCount > actualDeleteCount) {
-	      for (k = len - actualDeleteCount; k > actualStart; k--) {
-	        from = k + actualDeleteCount - 1;
-	        to = k + insertCount - 1;
-	        if (from in O) O[to] = O[from];
-	        else delete O[to];
-	      }
-	    }
-	    for (k = 0; k < insertCount; k++) {
-	      O[k + actualStart] = arguments[k + 2];
-	    }
-	    O.length = len - actualDeleteCount + insertCount;
-	    return A;
-	  }
-	});
-
-	var defineProperty$7 = objectDefineProperty.f;
-
-
-
-
-
-
-
-
-	var fastKey = internalMetadata.fastKey;
-
-
-	var setInternalState$5 = internalState.set;
-	var internalStateGetterFor$1 = internalState.getterFor;
-
-	var collectionStrong = {
-	  getConstructor: function (wrapper, CONSTRUCTOR_NAME, IS_MAP, ADDER) {
-	    var C = wrapper(function (that, iterable) {
-	      anInstance(that, C, CONSTRUCTOR_NAME);
-	      setInternalState$5(that, {
-	        type: CONSTRUCTOR_NAME,
-	        index: objectCreate(null),
-	        first: undefined,
-	        last: undefined,
-	        size: 0
-	      });
-	      if (!descriptors) that.size = 0;
-	      if (iterable != undefined) iterate_1(iterable, that[ADDER], that, IS_MAP);
-	    });
-
-	    var getInternalState = internalStateGetterFor$1(CONSTRUCTOR_NAME);
-
-	    var define = function (that, key, value) {
-	      var state = getInternalState(that);
-	      var entry = getEntry(that, key);
-	      var previous, index;
-	      // change existing entry
-	      if (entry) {
-	        entry.value = value;
-	      // create new entry
-	      } else {
-	        state.last = entry = {
-	          index: index = fastKey(key, true),
-	          key: key,
-	          value: value,
-	          previous: previous = state.last,
-	          next: undefined,
-	          removed: false
-	        };
-	        if (!state.first) state.first = entry;
-	        if (previous) previous.next = entry;
-	        if (descriptors) state.size++;
-	        else that.size++;
-	        // add to index
-	        if (index !== 'F') state.index[index] = entry;
-	      } return that;
-	    };
-
-	    var getEntry = function (that, key) {
-	      var state = getInternalState(that);
-	      // fast case
-	      var index = fastKey(key);
-	      var entry;
-	      if (index !== 'F') return state.index[index];
-	      // frozen object case
-	      for (entry = state.first; entry; entry = entry.next) {
-	        if (entry.key == key) return entry;
-	      }
-	    };
-
-	    redefineAll(C.prototype, {
-	      // 23.1.3.1 Map.prototype.clear()
-	      // 23.2.3.2 Set.prototype.clear()
-	      clear: function clear() {
-	        var that = this;
-	        var state = getInternalState(that);
-	        var data = state.index;
-	        var entry = state.first;
-	        while (entry) {
-	          entry.removed = true;
-	          if (entry.previous) entry.previous = entry.previous.next = undefined;
-	          delete data[entry.index];
-	          entry = entry.next;
-	        }
-	        state.first = state.last = undefined;
-	        if (descriptors) state.size = 0;
-	        else that.size = 0;
-	      },
-	      // 23.1.3.3 Map.prototype.delete(key)
-	      // 23.2.3.4 Set.prototype.delete(value)
-	      'delete': function (key) {
-	        var that = this;
-	        var state = getInternalState(that);
-	        var entry = getEntry(that, key);
-	        if (entry) {
-	          var next = entry.next;
-	          var prev = entry.previous;
-	          delete state.index[entry.index];
-	          entry.removed = true;
-	          if (prev) prev.next = next;
-	          if (next) next.previous = prev;
-	          if (state.first == entry) state.first = next;
-	          if (state.last == entry) state.last = prev;
-	          if (descriptors) state.size--;
-	          else that.size--;
-	        } return !!entry;
-	      },
-	      // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
-	      // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
-	      forEach: function forEach(callbackfn /* , that = undefined */) {
-	        var state = getInternalState(this);
-	        var boundFunction = functionBindContext(callbackfn, arguments.length > 1 ? arguments[1] : undefined, 3);
-	        var entry;
-	        while (entry = entry ? entry.next : state.first) {
-	          boundFunction(entry.value, entry.key, this);
-	          // revert to the last existing entry
-	          while (entry && entry.removed) entry = entry.previous;
-	        }
-	      },
-	      // 23.1.3.7 Map.prototype.has(key)
-	      // 23.2.3.7 Set.prototype.has(value)
-	      has: function has(key) {
-	        return !!getEntry(this, key);
-	      }
-	    });
-
-	    redefineAll(C.prototype, IS_MAP ? {
-	      // 23.1.3.6 Map.prototype.get(key)
-	      get: function get(key) {
-	        var entry = getEntry(this, key);
-	        return entry && entry.value;
-	      },
-	      // 23.1.3.9 Map.prototype.set(key, value)
-	      set: function set(key, value) {
-	        return define(this, key === 0 ? 0 : key, value);
-	      }
-	    } : {
-	      // 23.2.3.1 Set.prototype.add(value)
-	      add: function add(value) {
-	        return define(this, value = value === 0 ? 0 : value, value);
-	      }
-	    });
-	    if (descriptors) defineProperty$7(C.prototype, 'size', {
-	      get: function () {
-	        return getInternalState(this).size;
-	      }
-	    });
-	    return C;
-	  },
-	  setStrong: function (C, CONSTRUCTOR_NAME, IS_MAP) {
-	    var ITERATOR_NAME = CONSTRUCTOR_NAME + ' Iterator';
-	    var getInternalCollectionState = internalStateGetterFor$1(CONSTRUCTOR_NAME);
-	    var getInternalIteratorState = internalStateGetterFor$1(ITERATOR_NAME);
-	    // add .keys, .values, .entries, [@@iterator]
-	    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
-	    defineIterator(C, CONSTRUCTOR_NAME, function (iterated, kind) {
-	      setInternalState$5(this, {
-	        type: ITERATOR_NAME,
-	        target: iterated,
-	        state: getInternalCollectionState(iterated),
-	        kind: kind,
-	        last: undefined
-	      });
-	    }, function () {
-	      var state = getInternalIteratorState(this);
-	      var kind = state.kind;
-	      var entry = state.last;
-	      // revert to the last existing entry
-	      while (entry && entry.removed) entry = entry.previous;
-	      // get next entry
-	      if (!state.target || !(state.last = entry = entry ? entry.next : state.state.first)) {
-	        // or finish the iteration
-	        state.target = undefined;
-	        return { value: undefined, done: true };
-	      }
-	      // return step by kind
-	      if (kind == 'keys') return { value: entry.key, done: false };
-	      if (kind == 'values') return { value: entry.value, done: false };
-	      return { value: [entry.key, entry.value], done: false };
-	    }, IS_MAP ? 'entries' : 'values', !IS_MAP, true);
-
-	    // add [@@species], 23.1.2.2, 23.2.2.2
-	    setSpecies(CONSTRUCTOR_NAME);
-	  }
-	};
-
-	// `Map` constructor
-	// https://tc39.github.io/ecma262/#sec-map-objects
-	var es_map = collection('Map', function (init) {
-	  return function Map() { return init(this, arguments.length ? arguments[0] : undefined); };
-	}, collectionStrong);
 
 	// `Object.defineProperty` method
 	// https://tc39.github.io/ecma262/#sec-object.defineproperty
@@ -10845,11 +10953,9 @@ var legionsMicroservice = (function (exports) {
 	    /** 沙箱是否在运行中 */
 
 	    this.sandboxRunning = true;
-	    var multiMode = props.multiMode;
 
 	    if (!window.Proxy) {
 	      console.warn('proxy sandbox is not support by current browser');
-	      /* this.sandboxDisabled = true; */
 	    }
 	    /*  else {
 	    PROXY = window.Proxy;
@@ -10883,8 +10989,6 @@ var legionsMicroservice = (function (exports) {
 	  };
 
 	  ProxySandbox.prototype.createProxySandbox = function () {
-	    var _this = this;
-
 	    var
 	    /* propertyAdded, originalValues,  */
 	    updatedValueSet = this.updatedValueSet;
@@ -10896,70 +11000,6 @@ var legionsMicroservice = (function (exports) {
 	        propertiesWithGetter = _a.propertiesWithGetter; // 生成一份伪造的window
 
 
-	    var originalAddEventListener = window.addEventListener;
-	    var originalRemoveEventListener = window.removeEventListener;
-	    var originalSetInerval = window.setInterval;
-	    var originalSetTimeout = window.setTimeout; // hijack addEventListener
-
-	    /* fakeWindow.addEventListener = function (eventName, fn) {
-	      var rest = [];
-
-	      for (var _i = 2; _i < arguments.length; _i++) {
-	        rest[_i - 2] = arguments[_i];
-	      }
-
-	      var listeners = _this.eventListeners[eventName] || [];
-	      listeners.push(fn);
-	      return originalAddEventListener.apply(rawWindow, __spread([eventName, fn], rest));
-	    }; // hijack removeEventListener
-
-
-	    fakeWindow.removeEventListener = function (eventName, fn) {
-	      var rest = [];
-
-	      for (var _i = 2; _i < arguments.length; _i++) {
-	        rest[_i - 2] = arguments[_i];
-	      }
-
-	      var listeners = _this.eventListeners[eventName] || [];
-
-	      if (listeners.includes(fn)) {
-	        listeners.splice(listeners.indexOf(fn), 1);
-	      }
-
-	      return originalRemoveEventListener.apply(rawWindow, __spread([eventName, fn], rest));
-	    }; // hijack setTimeout
-
-
-	    fakeWindow.setTimeout = function () {
-	      var args = [];
-
-	      for (var _i = 0; _i < arguments.length; _i++) {
-	        args[_i] = arguments[_i];
-	      }
-
-	      var timerId = originalSetTimeout.apply(void 0, __spread(args));
-
-	      _this.timeoutIds.push(timerId);
-
-	      return timerId;
-	    }; // hijack setInterval
-
-
-	    fakeWindow.setInterval = function () {
-	      var args = [];
-
-	      for (var _i = 0; _i < arguments.length; _i++) {
-	        args[_i] = arguments[_i];
-	      }
-
-	      var intervalId = originalSetInerval.apply(void 0, __spread(args));
-
-	      _this.intervalIds.push(intervalId);
-
-	      return intervalId;
-	    }; */
-
 	    var descriptorTargetMap = new Map();
 
 	    var hasOwnProperty = function hasOwnProperty(key) {
@@ -10970,22 +11010,6 @@ var legionsMicroservice = (function (exports) {
 	      set: function set(target, p, value) {
 	        if (self.sandboxRunning) {
 	          // eslint-disable-next-line no-prototype-builtins
-
-	          /* if (!rawWindow.hasOwnProperty(p)) {
-	            // 如果在原始window 不存在，则在沙箱中添加
-	            // recorde value added in sandbox
-	            propertyAdded[p] = value;
-	            // eslint-disable-next-line no-prototype-builtins
-	          } else if (!originalValues.hasOwnProperty(p)) {
-	            // 如果在原始window 存在，则记录原始值
-	            // if it is already been setted in orignal window, record it's original value
-	            originalValues[p] = rawWindow[p];
-	          } */
-	          // set new value to original window in case of jsonp, js bundle which will be execute outof sandbox
-
-	          /* if (!multiMode) {
-	            rawWindow[p] = value;
-	          } */
 	          if (variableWhiteList.indexOf(p) !== -1) {
 	            // @ts-ignore
 	            rawWindow[p] = value;
@@ -11111,6 +11135,66 @@ var legionsMicroservice = (function (exports) {
 
 	  return ProxySandbox;
 	}();
+
+	var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('splice');
+	var USES_TO_LENGTH$8 = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
+
+	var max$3 = Math.max;
+	var min$3 = Math.min;
+	var MAX_SAFE_INTEGER$3 = 0x1FFFFFFFFFFFFF;
+	var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
+
+	// `Array.prototype.splice` method
+	// https://tc39.github.io/ecma262/#sec-array.prototype.splice
+	// with adding support of @@species
+	_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_TO_LENGTH$8 }, {
+	  splice: function splice(start, deleteCount /* , ...items */) {
+	    var O = toObject(this);
+	    var len = toLength(O.length);
+	    var actualStart = toAbsoluteIndex(start, len);
+	    var argumentsLength = arguments.length;
+	    var insertCount, actualDeleteCount, A, k, from, to;
+	    if (argumentsLength === 0) {
+	      insertCount = actualDeleteCount = 0;
+	    } else if (argumentsLength === 1) {
+	      insertCount = 0;
+	      actualDeleteCount = len - actualStart;
+	    } else {
+	      insertCount = argumentsLength - 2;
+	      actualDeleteCount = min$3(max$3(toInteger(deleteCount), 0), len - actualStart);
+	    }
+	    if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$3) {
+	      throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
+	    }
+	    A = arraySpeciesCreate(O, actualDeleteCount);
+	    for (k = 0; k < actualDeleteCount; k++) {
+	      from = actualStart + k;
+	      if (from in O) createProperty(A, k, O[from]);
+	    }
+	    A.length = actualDeleteCount;
+	    if (insertCount < actualDeleteCount) {
+	      for (k = actualStart; k < len - actualDeleteCount; k++) {
+	        from = k + actualDeleteCount;
+	        to = k + insertCount;
+	        if (from in O) O[to] = O[from];
+	        else delete O[to];
+	      }
+	      for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
+	    } else if (insertCount > actualDeleteCount) {
+	      for (k = len - actualDeleteCount; k > actualStart; k--) {
+	        from = k + actualDeleteCount - 1;
+	        to = k + insertCount - 1;
+	        if (from in O) O[to] = O[from];
+	        else delete O[to];
+	      }
+	    }
+	    for (k = 0; k < insertCount; k++) {
+	      O[k + actualStart] = arguments[k + 2];
+	    }
+	    O.length = len - actualDeleteCount + insertCount;
+	    return A;
+	  }
+	});
 
 	function hijack() {
 	  // FIXME umi unmount feature request
@@ -11551,7 +11635,6 @@ var legionsMicroservice = (function (exports) {
 
 	  var mountingFreers = [];
 	  var sideEffectsRebuilders = [];
-	  console.log(sandbox, 'createSandboxcreateSandbox');
 	  var bootstrappingFreers = hijackAtBootstrapping(appName, sandbox.sandbox);
 	  return {
 	    proxy: sandbox.sandbox,
@@ -11583,9 +11666,9 @@ var legionsMicroservice = (function (exports) {
 	          // render 沙箱启动时开始劫持各类全局监听，尽量不要在应用初始化阶段有 事件监听/定时器 等副作用
 
 	          if (window.Proxy) {
-	            
-			  }
-			  mountingFreers.push.apply(mountingFreers, __spread(hijackAtMounting(appName, sandbox.sandbox)));
+	            // 在不支持Proxy浏览器环境，比如IE11及以下，执行此行代码会导致切换应用时，执行异常，暂时还未查出原因，先临时这样处理
+	            mountingFreers.push.apply(mountingFreers, __spread(hijackAtMounting(appName, sandbox.sandbox)));
+	          }
 	          /* ------------------------------------------ 3. 重置一些初始化时的副作用 ------------------------------------------*/
 	          // 存在 rebuilder 则表明有些副作用需要重建
 
@@ -11616,9 +11699,6 @@ var legionsMicroservice = (function (exports) {
 	          sideEffectsRebuilders = __spread(bootstrappingFreers, mountingFreers).map(function (free) {
 	            return free();
 	          });
-	          /*  mountingFreers.forEach(free => sideEffectsRebuilders.push(free()));
-	          mountingFreers = []; */
-			  mountingFreers = [];
 	          sandbox.inactive();
 	          return [2
 	          /*return*/
@@ -11790,8 +11870,6 @@ var legionsMicroservice = (function (exports) {
 	}
 
 	function getLifecyclesFromExports(scriptExports, appName, global) {
-	  console.log(appName, 'appName', global['react15-home'], validateExportLifecycle(scriptExports));
-
 	  if (validateExportLifecycle(scriptExports)) {
 	    return scriptExports;
 	  } //@ts-ignore
@@ -11813,7 +11891,7 @@ var legionsMicroservice = (function (exports) {
 	  }
 
 	  return __awaiter(this, void 0, void 0, function () {
-	    var entry, appName, appInstanceId, _a, singular, _b, sandbox, excludeAssetFilter, importEntryOpts, _c, template, execScripts, assetPublicPath, appContent, strictStyleIsolation, scopedCSS, initialAppWrapperElement, initialContainer, legacyRender, render, global, mountSandbox, unmountSandbox, sandboxInstance, _d, _e, beforeUnmount, _f, afterUnmount, _g, afterMount, _h, beforeMount, _j, beforeLoad, scriptExports, _k, bootstrap, mount, unmount, update, _l, onGlobalStateChange, setGlobalState, offGlobalStateChange, syncAppWrapperElement2Sandbox, parcelConfigGetter;
+	    var entry, appName, appInstanceId, _a, singular, _b, sandbox, excludeAssetFilter, importEntryOpts, _c, template, execScripts, assetPublicPath, getExternalScripts, getScripts, appContent, strictStyleIsolation, scopedCSS, initialAppWrapperElement, initialContainer, legacyRender, render, global, mountSandbox, unmountSandbox, sandboxInstance, _d, _e, beforeUnmount, _f, afterUnmount, _g, afterMount, _h, beforeMount, _j, beforeLoad, scriptExports, _k, bootstrap, mount, unmount, update, _l, onGlobalStateChange, setGlobalState, offGlobalStateChange, syncAppWrapperElement2Sandbox, parcelConfigGetter;
 
 	    var _this = this;
 
@@ -11829,8 +11907,15 @@ var legionsMicroservice = (function (exports) {
 	          , legionsImportHtmlEntry_umd_1(entry, importEntryOpts)];
 
 	        case 1:
-	          _c = _m.sent(), template = _c.template, execScripts = _c.execScripts, assetPublicPath = _c.assetPublicPath;
-	          console.log(execScripts, 'execScripts');
+	          _c = _m.sent(), template = _c.template, execScripts = _c.execScripts, assetPublicPath = _c.assetPublicPath, getExternalScripts = _c.getExternalScripts, getScripts = _c.getScripts;
+	          new MicroApps$1().bootstrap({
+	            container: app['container'],
+	            entry: app.entry,
+	            name: appName
+	          }, {
+	            getExternalScripts: getExternalScripts,
+	            getScripts: getScripts
+	          });
 	          return [4
 	          /*yield*/
 	          , validateSingularMode(singular, app)];
@@ -12128,17 +12213,17 @@ var legionsMicroservice = (function (exports) {
 
 	var frameworkConfiguration = {};
 	var frameworkStartedDefer = new Deferred();
-	var microApps$1 = [];
+	var microApps$2 = [];
 	function registerMicroApps(apps, lifeCycles) {
 	  var _this = this; // Each app only needs to be registered once
 
 
 	  var unregisteredApps = apps.filter(function (app) {
-	    return !microApps$1.some(function (registeredApp) {
+	    return !microApps$2.some(function (registeredApp) {
 	      return registeredApp.name === app.name;
 	    });
 	  });
-	  microApps$1 = __spread(microApps$1, unregisteredApps);
+	  microApps$2 = __spread(microApps$2, unregisteredApps);
 	  unregisteredApps.forEach(function (app) {
 	    var name = app.name,
 	        activeRule = app.activeRule,
@@ -12205,6 +12290,115 @@ var legionsMicroservice = (function (exports) {
 	    });
 	  });
 	}
+	var appConfigPromiseGetterMap = new Map();
+	function loadMicroApp(app, configuration, lifeCycles) {
+	  var _this = this;
+
+	  var props = app.props,
+	      name = app.name;
+
+	  var getContainerXpath = function getContainerXpath(container) {
+	    var containerElement = getContainer(container);
+
+	    if (containerElement) {
+	      return getXPathForElement(containerElement, document);
+	    }
+
+	    return undefined;
+	  };
+
+	  var wrapParcelConfigForRemount = function wrapParcelConfigForRemount(config) {
+	    return __assign(__assign({}, config), {
+	      // empty bootstrap hook which should not run twice while it calling from cached micro app
+	      bootstrap: function bootstrap() {
+	        return Promise.resolve();
+	      }
+	    });
+	  };
+	  /**
+	   * using name + container xpath as the micro app instance id,
+	   * it means if you rendering a micro app to a dom which have been rendered before,
+	   * the micro app would not load and evaluate its lifecycles again
+	   */
+
+
+	  var memorizedLoadingFn = function memorizedLoadingFn() {
+	    return __awaiter(_this, void 0, void 0, function () {
+	      var $$cacheLifecycleByAppName, container, parcelConfigGetterPromise, _a, xpath, parcelConfigGetterPromise, _b, parcelConfigObjectGetterPromise, xpath;
+
+	      return __generator(this, function (_c) {
+	        switch (_c.label) {
+	          case 0:
+	            $$cacheLifecycleByAppName = (configuration !== null && configuration !== void 0 ? configuration : frameworkConfiguration).$$cacheLifecycleByAppName;
+	            container = 'container' in app ? app.container : undefined;
+	            if (!container) return [3
+	            /*break*/
+	            , 4];
+	            if (!$$cacheLifecycleByAppName) return [3
+	            /*break*/
+	            , 2];
+	            parcelConfigGetterPromise = appConfigPromiseGetterMap.get(name);
+	            if (!parcelConfigGetterPromise) return [3
+	            /*break*/
+	            , 2];
+	            _a = wrapParcelConfigForRemount;
+	            return [4
+	            /*yield*/
+	            , parcelConfigGetterPromise];
+
+	          case 1:
+	            return [2
+	            /*return*/
+	            , _a.apply(void 0, [_c.sent()(container)])];
+
+	          case 2:
+	            xpath = getContainerXpath(container);
+	            if (!xpath) return [3
+	            /*break*/
+	            , 4];
+	            parcelConfigGetterPromise = appConfigPromiseGetterMap.get(name + "-" + xpath);
+	            if (!parcelConfigGetterPromise) return [3
+	            /*break*/
+	            , 4];
+	            _b = wrapParcelConfigForRemount;
+	            return [4
+	            /*yield*/
+	            , parcelConfigGetterPromise];
+
+	          case 3:
+	            return [2
+	            /*return*/
+	            , _b.apply(void 0, [_c.sent()(container)])];
+
+	          case 4:
+	            parcelConfigObjectGetterPromise = loadApp(app, configuration !== null && configuration !== void 0 ? configuration : frameworkConfiguration, lifeCycles);
+
+	            if (container) {
+	              if ($$cacheLifecycleByAppName) {
+	                appConfigPromiseGetterMap.set(name, parcelConfigObjectGetterPromise);
+	              } else {
+	                xpath = getContainerXpath(container);
+	                if (xpath) appConfigPromiseGetterMap.set(name + "-" + xpath, parcelConfigObjectGetterPromise);
+	              }
+	            }
+
+	            return [4
+	            /*yield*/
+	            , parcelConfigObjectGetterPromise];
+
+	          case 5:
+	            return [2
+	            /*return*/
+	            , _c.sent()(container)];
+	        }
+	      });
+	    });
+	  };
+
+	  return C(memorizedLoadingFn, __assign({
+	    domElement: document.createElement('div')
+	  }, props));
+	}
 	function start(opts) {
 	  if (opts === void 0) {
 	    opts = {};
@@ -12222,10 +12416,8 @@ var legionsMicroservice = (function (exports) {
 	      urlRerouteOnly = frameworkConfiguration.urlRerouteOnly,
 	      importEntryOpts = __rest(frameworkConfiguration, ["prefetch", "sandbox", "singular", "urlRerouteOnly"]);
 
-	  console.log(frameworkConfiguration, 'frameworkConfigurationframeworkConfigurationframeworkConfiguration');
-
 	  if (prefetch) {
-	    doPrefetchStrategy(microApps$1, prefetch, importEntryOpts);
+	    doPrefetchStrategy(microApps$2, prefetch, importEntryOpts);
 	  }
 
 	  if (sandbox) {
@@ -12253,7 +12445,6 @@ var legionsMicroservice = (function (exports) {
 	  // can not use addEventListener once option for ie support
 	  window.addEventListener('single-spa:no-app-change', function listener() {
 	    var mountedApps = Et();
-	    console.log(mountedApps, 'mountedApps');
 
 	    if (!mountedApps.length) {
 	      nt(defaultAppLink);
@@ -12264,6 +12455,9 @@ var legionsMicroservice = (function (exports) {
 	}
 
 	exports.MicroApps = MicroApps;
+	exports.MountedMicroApps = MicroApps$1;
+	exports.getMountedApps = Et;
+	exports.loadMicroApp = loadMicroApp;
 	exports.registerMicroApps = registerMicroApps;
 	exports.setDefaultMountApp = setDefaultMountApp;
 	exports.start = start;

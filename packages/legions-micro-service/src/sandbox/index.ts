@@ -28,7 +28,6 @@ export function createSandbox(appName: string) {
   let mountingFreers: Freer[] = [];
 
   let sideEffectsRebuilders: Rebuilder[] = [];
-  console.log(sandbox, 'createSandboxcreateSandbox');
   const bootstrappingFreers = hijackAtBootstrapping(appName, sandbox.sandbox);
   return {
     proxy: sandbox.sandbox,
@@ -58,7 +57,7 @@ export function createSandbox(appName: string) {
       /* ------------------------------------------ 2. 开启全局变量补丁 ------------------------------------------*/
       // render 沙箱启动时开始劫持各类全局监听，尽量不要在应用初始化阶段有 事件监听/定时器 等副作用
       if (window.Proxy) {
-        // 在不支持Proxy浏览器环境，比如IE11及以下，执行代码会导致切换应用时，执行异常，暂时还未查出原因，先临时这样处理
+        // 在不支持Proxy浏览器环境，比如IE11及以下，执行此行代码会导致切换应用时，执行异常，暂时还未查出原因，先临时这样处理
         mountingFreers.push(...hijackAtMounting(appName, sandbox.sandbox));
       }
 

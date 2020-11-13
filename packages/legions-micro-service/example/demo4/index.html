@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>qiankun multiple demo</title>
+        <style>
+            body {
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        <button id="unmount">unmount</button>
+        <button id="mount">mount</button>
+
+
+        <div id="react15">react loading...</div>
+        <div id="react16">vue loading...</div>
+
+        <script>
+            function push(subapp) {
+                window.location.hash = subapp
+                /* history.pushState(null, subapp, subapp) */
+            }
+            var script = document.createElement('script');
+            script.src = 'http://192.168.100.141:8080/dist/legions-micro-service.iife.4.js';
+            document.getElementsByTagName('head')[0].appendChild(script)
+            script.onload = script.onreadystatechange = function () {
+                if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
+                    setTimeout(function () {
+                        if (window['legionsMicroservice']) {
+                            var sourceUrl = 'http://192.168.100.141:8081/home/#/';
+                            var appId = 'app';
+                            var styleId = 'react-scm-style';
+                            var options = {
+                                excludeFiles: [],
+                                isMerge: true
+                            };
+
+                            var app;
+
+                            function mount() {
+                                app = legionsMicroservice.loadMicroApp({
+                                    name: 'react15-home',
+                                    entry: 'http://192.168.100.141:8081/home/#/',
+                                    container: '#react15'
+                                }, {
+                                    sandbox: {
+                                        experimentalStyleIsolation: true
+                                    }
+                                }, );
+                            }
+
+                            function unmount() {
+                                app.unmount();
+                            }
+                            document.querySelector('#mount').addEventListener('click', mount);
+                            document.querySelector('#unmount').addEventListener('click', unmount);
+                            legionsMicroservice.loadMicroApp({
+                                name: 'react16-home',
+                                entry: 'http://192.168.100.141:8082/home',
+                                container: '#react16'
+                            });
+
+                            console.log(legionsMicroservice.MountedMicroApps.getStore());
+                           
+                        }
+                    }, 100);
+                }
+            };
+        </script>
+    </body>
+
+</html>

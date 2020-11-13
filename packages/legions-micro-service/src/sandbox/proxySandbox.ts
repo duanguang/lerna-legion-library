@@ -143,10 +143,8 @@ export default class ProxySandbox {
   sandboxRunning: boolean = true;
 
   constructor(props: SandboxProps = { name: '' }) {
-    const { multiMode } = props;
     if (!window.Proxy) {
       console.warn('proxy sandbox is not support by current browser');
-      /* this.sandboxDisabled = true; */
     } /*  else {
       PROXY = window.Proxy;
     } */
@@ -185,7 +183,6 @@ export default class ProxySandbox {
     const self = this;
     const rawWindow = window;
     const { fakeWindow, propertiesWithGetter } = createFakeWindow(rawWindow); // 生成一份伪造的window
-
     const descriptorTargetMap = new Map<PropertyKey, SymbolTarget>();
     const hasOwnProperty = (key: PropertyKey) =>
       fakeWindow.hasOwnProperty(key) || rawWindow.hasOwnProperty(key);
@@ -193,20 +190,6 @@ export default class ProxySandbox {
       set(target: FakeWindow, p: PropertyKey, value: any): boolean {
         if (self.sandboxRunning) {
           // eslint-disable-next-line no-prototype-builtins
-          /* if (!rawWindow.hasOwnProperty(p)) {
-            // 如果在原始window 不存在，则在沙箱中添加
-            // recorde value added in sandbox
-            propertyAdded[p] = value;
-            // eslint-disable-next-line no-prototype-builtins
-          } else if (!originalValues.hasOwnProperty(p)) {
-            // 如果在原始window 存在，则记录原始值
-            // if it is already been setted in orignal window, record it's original value
-            originalValues[p] = rawWindow[p];
-          } */
-          // set new value to original window in case of jsonp, js bundle which will be execute outof sandbox
-          /* if (!multiMode) {
-            rawWindow[p] = value;
-          } */
           if (variableWhiteList.indexOf(p) !== -1) {
             // @ts-ignore
             rawWindow[p] = value;

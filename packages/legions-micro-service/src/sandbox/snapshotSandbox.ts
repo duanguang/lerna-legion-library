@@ -32,7 +32,7 @@ export default class SnapshotSandbox {
   constructor(name: string) {
     this.name = name;
     this.sandbox = window;
-    this.type = SandBoxType.Snapshot;
+      this.type = SandBoxType.Snapshot;
   }
 
   active() {
