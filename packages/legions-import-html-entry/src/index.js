@@ -28,7 +28,7 @@ function getDomain(url) {
   }
 }
 function getExecutableScript(scriptText, proxy) {
-  window.proxy = proxy;
+  /* window.proxy = proxy; */
   var isIE = window.ActiveXObject || 'ActiveXObject' in window;
   if (isIE) {
     return (
@@ -37,6 +37,18 @@ function getExecutableScript(scriptText, proxy) {
       '\n}).bind(window.proxy)(window.proxy, window.proxy);'
     );
   }
+  // 通过这种方式获取全局 window，因为 script 也是在全局作用域下运行的，所以我们通过 window.proxy 绑定时也必须确保绑定到全局 window 上
+  // 否则在嵌套场景下， window.proxy 设置的是内层应用的 window，而代码其实是在全局作用域运行的，会导致闭包里的 window.proxy 取的是最外层的微应用的 proxy
+  var globalWindow = (0, eval)('window');
+  globalWindow.proxy = proxy;
+  var strictGlobal = false;
+  /* return strictGlobal
+    ? ';(function(window, self){with(window){;' +
+        scriptText +
+        '\n}}).bind(window.proxy)(window.proxy, window.proxy);'
+    : ';(function(window, self){;' +
+        scriptText +
+        '\n}).bind(window.proxy)(window.proxy, window.proxy);'; */
   return (
     ';(function(window, self){with(window){;' +
     scriptText +
@@ -112,12 +124,28 @@ function getExternalScripts(scripts) {
   );
 }
 
-function execScripts(entryMain, scripts, proxy, keys) {
+/**
+ *
+ *
+ * @param {*} entryMain 主JS脚本资源链接
+ * @param {*} scripts ['JS脚本资源']
+ * @param {*} [proxy=window]
+ * @param {*} keys 模块URL ，一般是指入口资源链接
+ * @returns
+ */
+export function execScripts(entryMain, scripts, proxy = window, keys) {
   return getExternalScripts(scripts).then(function (scriptsText) {
-    proxy = window;
-    window.proxy = proxy;
-    var geval = eval;
+    /* proxy = window; */ //entryMain 主JS脚本资源链接
+    window.proxy = proxy; //scriptsText=[{scripts:'JS资源URL',scriptsText:'JS资源代码字符‘}]
+    /* var geval = eval; */
     var entry = [];
+    var strictGlobal = false;
+    var geval = function (inlineScript) {
+      const rawCode = inlineScript;
+      const code = getExecutableScript(rawCode, proxy, strictGlobal);
+
+      (0, eval)(code);
+    };
     function isExcludeFile(scriptSrc) {
       if (excludeFilesCache[keys] && excludeFilesCache[keys].length) {
         for (var i = 0; i < excludeFilesCache[keys].length; i++) {
@@ -155,7 +183,7 @@ function execScripts(entryMain, scripts, proxy, keys) {
       } else {
         entry.push(inlineScript);
       }
-      noteGlobalProps();
+      noteGlobalProps(proxy);
       /*  var exports = proxy[getGlobalProp()] || {};
       resolve(exports); */
 
@@ -181,7 +209,11 @@ function execScripts(entryMain, scripts, proxy, keys) {
           if (isExcludeFile(scriptSrc)) {
             /* geval(''+inlineScript+'\n'); */
           } else {
-            geval(getExecutableScript(inlineScript, proxy));
+            /* geval(getExecutableScript(inlineScript, proxy)); */ // 躺平坑在启用
+            geval('' + inlineScript + '\n');
+            var exports =
+              proxy[getGlobalProp(strictGlobal ? proxy : window)] || {};
+            resolve(exports);
           }
         } catch (e) {
           console.error(
@@ -190,16 +222,14 @@ function execScripts(entryMain, scripts, proxy, keys) {
           /* console.error(e); */
           throw e;
         }
-
-        var exports = proxy[getGlobalProp(proxy)] || {};
-        resolve(exports);
       } else {
         if (typeof inlineScript === 'string') {
           try {
             if (isExcludeFile(scriptSrc)) {
               /* geval(''+inlineScript+'\n'); */
             } else {
-              geval(getExecutableScript(inlineScript, proxy));
+              /*  geval(getExecutableScript(inlineScript, proxy)); */
+              geval('' + inlineScript + '\n');
             }
 
             /* geval(';(function(window){;'+inlineScript+'\n}).bind(window.proxy)(window.proxy);'); */
@@ -222,20 +252,23 @@ function execScripts(entryMain, scripts, proxy, keys) {
         var isIE = window.ActiveXObject || 'ActiveXObject' in window;
         if (isIE) {
           if (IEVersion() < 11) {
-            geval(getExecutableScript(entry.join(' '), proxy));
+            /* geval(getExecutableScript(entry.join(' '), proxy)); */
             /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
             /* geval(';(function(window){;'+entry.join(' ')+'\n})(window.proxy);'); */
+            geval(entry.join(' '));
           } else {
-            geval(getExecutableScript(entry.join(' '), proxy));
+            /* geval(getExecutableScript(entry.join(' '),proxy)); */
+            geval(entry.join(' '));
             /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
           }
           /* var exports = proxy[getGlobalProp(proxy)] || {}; */
-          resolve(proxy);
+          resolve(strictGlobal ? proxy : window);
         } else {
-          /* compileCode(''+entry.join(' ')+'').bind(window.proxy)(window.proxy); */
-          geval(getExecutableScript(entry.join(' '), proxy));
+          geval(entry.join(' '));
+          /* geval(getExecutableScript(entry.join(' '), proxy)); */
           // geval(';(function(window){;'+entry.join(' ')+'\n})(window);');
-          var exports = proxy[getGlobalProp(proxy)] || {};
+          var exports =
+            proxy[getGlobalProp(strictGlobal ? proxy : window)] || {};
           resolve(exports);
         }
       } catch (e) {

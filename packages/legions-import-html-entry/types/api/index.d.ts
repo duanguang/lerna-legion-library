@@ -42,7 +42,7 @@ export function execScripts<T>(
   entry: string | null,
   scripts: string[],
   proxy: Window,
-  opts?: ExecScriptsOpts
+  keys?: string
 ): Promise<T>;
 
 export function importHTML(
