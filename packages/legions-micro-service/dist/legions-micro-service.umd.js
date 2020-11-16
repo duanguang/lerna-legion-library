@@ -4,10 +4,20 @@
   * @license MIT
   */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.legionsMicroService = {}));
-}(this, (function (exports) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('legions-import-html-entry'), require('single-spa'), require('lodash/noop'), require('lodash/isFunction'), require('lodash/snakeCase'), require('lodash/forEach'), require('lodash/concat'), require('lodash/mergeWith'), require('lodash/cloneDeep'), require('reflect-metadata')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'legions-import-html-entry', 'single-spa', 'lodash/noop', 'lodash/isFunction', 'lodash/snakeCase', 'lodash/forEach', 'lodash/concat', 'lodash/mergeWith', 'lodash/cloneDeep', 'reflect-metadata'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.legionsMicroService = {}, global.legionsImportHtmlEntry, global.singleSpa, global.noop, global.isFunction, global.snakeCase, global.forEach, global.concat, global.mergeWith, global.cloneDeep));
+}(this, (function (exports, legionsImportHtmlEntry, singleSpa, noop, isFunction, snakeCase, forEach, concat, mergeWith, cloneDeep) { 'use strict';
+
+    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+    var noop__default = /*#__PURE__*/_interopDefaultLegacy(noop);
+    var isFunction__default = /*#__PURE__*/_interopDefaultLegacy(isFunction);
+    var snakeCase__default = /*#__PURE__*/_interopDefaultLegacy(snakeCase);
+    var forEach__default = /*#__PURE__*/_interopDefaultLegacy(forEach);
+    var concat__default = /*#__PURE__*/_interopDefaultLegacy(concat);
+    var mergeWith__default = /*#__PURE__*/_interopDefaultLegacy(mergeWith);
+    var cloneDeep__default = /*#__PURE__*/_interopDefaultLegacy(cloneDeep);
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -23,6 +33,67 @@
     OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
     PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
+
+    var __assign = function() {
+        __assign = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign.apply(this, arguments);
+    };
+
+    function __rest(s, e) {
+        var t = {};
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+            t[p] = s[p];
+        if (s != null && typeof Object.getOwnPropertySymbols === "function")
+            for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+                if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                    t[p[i]] = s[p[i]];
+            }
+        return t;
+    }
+
+    function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
+
+    function __generator(thisArg, body) {
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while (_) try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0: case 1: t = op; break;
+                    case 4: _.label++; return { value: op[1], done: false };
+                    case 5: _.label++; y = op[1]; op = [0]; continue;
+                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop(); continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    }
 
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
@@ -99,7 +170,7 @@
 
     var microApps = []; // {name:'',entry:'url',container:'DOMid',appId:'',styleId:'',loading:true}
     var scriptResources = {}; // {'entry':{scripts:[],scriptCache:[],sandbox:[],excludeSandboxFiles:[]}}
-    var isImportHTML = false;
+    /* let isImportHTML = false; */
     var externalOnloadScript = []; // [{url:'',code:''}] 已加载过外部资源列表
     var isPassCheckBrowser = false;
     var currentEnvironment = 'normal'; // 'normal'|'sandbox'  正常环境或沙盒
@@ -113,17 +184,16 @@
            * @memberof MicroApps
            */
         function MicroApps(options) {
-            this.importHTML = "https://qa-zy.hoolinks.com/static/plugin/import-html-entry.min.js?version=" + new Date().getTime();
             this.importHTMLOptions = {
                 excludeFiles: [],
                 isMerge: false,
             };
             if (options && isObject(options)) {
-                if (options['importHTML']) {
-                    this.importHTML = options['importHTML'];
-                    //@ts-ignore
-                    delete options['importHTML'];
-                }
+                /* if (options['importHTML']) {
+                  this.importHTML = options['importHTML'];
+                  //@ts-ignore
+                  delete options['importHTML'];
+                } */
                 this.importHTMLOptions = {
                     excludeFiles: options['excludeFiles'] || [],
                     isMerge: options['isMerge'] || false,
@@ -157,9 +227,6 @@
             if (Array.isArray(apps)) {
                 var unregisteredApps = apps.filter(function (app) { return !microApps.some(function (registeredApp) { return registeredApp.name === app.name; }); });
                 microApps = __spread(microApps, unregisteredApps);
-                /* unregisteredApps.forEach((app) => {
-                          this.mounted(app)
-                      }) */
             }
         };
         MicroApps.prototype.addRender = function (app) {
@@ -216,8 +283,7 @@
                     renderStyles(scriptResources[sourceUrl]['styles']);
                     return;
                 }
-                //@ts-ignore
-                importHTML(sourceUrl, 
+                legionsImportHtmlEntry.importHTML(sourceUrl, 
                 /* {
                         excludeFiles:['vendor.dll.js'],
                         isMerge:false,
@@ -361,256 +427,1919 @@
                 !document.getElementById(style.id) && document.body.appendChild(style);
                 !document.getElementById(app.id) && document.body.appendChild(app);
             }
-            if (window['importHTML'] && isImportHTML) {
-                main.call(that);
-            }
-            else {
-                if (window['importHTML']) {
-                    var scripts = document.getElementsByTagName('script');
-                    for (var i = 0; i < scripts.length; i++) {
-                        var script_1 = scripts[i];
-                        if (script_1 &&
-                            script_1.getAttribute('src') &&
-                            //@ts-ignore
-                            script_1
-                                .getAttribute('src')
-                                .indexOf('https://hoolinks.com/static/common/plugins/import-html-entry.js') > -1) {
-                            var url = script_1.getAttribute('src');
-                            // @ts-ignore
-                            script_1.parentNode.removeChild(script_1);
-                            delete window['importHTML'];
-                        }
-                    }
-                }
-                var script = document.createElement('script');
-                script.src = this.importHTML;
-                document.getElementsByTagName('head')[0].appendChild(script);
-                /* document.body.appendChild(script); */
-                /** 等待js加载完毕后执行主体脚本 */
-                //@ts-ignore
-                script.onload = script.onreadystatechange = function () {
-                    //@ts-ignore
-                    if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
-                        isImportHTML = true;
-                        main.call(that);
-                    }
-                };
-            }
+            main.call(that);
         };
         return MicroApps;
     }());
 
-    /**
-     * es6-proxy-polyfill
-     * @version 2.1.0
-     * @author Ambit-Tsai <ambit_tsai@qq.com>
-     * @license Apache-2.0
-     * @see {@link https://github.com/ambit-tsai/es6-proxy-polyfill#readme}
-     */
-    var t="[[ProxyTarget]]",n="[[Get]]",r="[[Set]]",e="[[Call]]",o=Object.defineProperty,i=Object.defineProperties,u=Object.getPrototypeOf,c=Object.getOwnPropertyDescriptor,a=!!i&&s(i),f$1=a?Object.__proto__?u:function(t){return "function"==typeof t?t.__proto__||{}:u(t)}:function(t){return _isVbObject(t)&&_getVbInternalOf(t).__proto__||{}};function s(t){return "function"==typeof t&&/\[native code\]/.test(t.toString())}function p(t,n){if(this instanceof p)return l(new y(t,n));h("Constructor Proxy requires 'new'");}function l(f){var s=f[t];return "function"==typeof s?function(n){var r=n[t];function o(){return this instanceof o?n["[[Construct]]"](arguments,o):n[e](this,arguments)}if(o.prototype=r.prototype,a){var c=j(n),f=O(u(r),c);for(var s in g(o,f),c=x(r,n))d(o,s)&&delete c[s];i(o,c);}else P(o,r);return o}(f):s instanceof Array?function(e){var i,f,s=e[t];a&&((i=j(e)).concat.get=function(){var t=e[n]("concat",this);return t===Array.prototype.concat?t.bind(s):t},f=O(u(s),i));return (i=x(s,e)).length.set=function(n){var i=n-s.length;e[r]("length",n,this),i&&function(n,r,e){var i=e[t];if(n>0)for(var u=i.length,a=u-n;a<u;++a){var f=c(r,a);f?o(i,a,f):i[a]=undefined,f=w(i,a,e),o(r,a,f);}else for(var s=(a=i.length)-n;a<s;++a)delete r[a];}(i,this,e);},O(f,i)}(f):function(n){var r,e,o=n[t];a&&(r=j(n),e=O(u(o),r));return r=x(o,n),O(e,r)}(f)}function y(n,r){v(n)&&v(r)||h("Cannot create proxy with a non-object as target or handler"),"REVOKED"===(f$1(n).__PROXY__||f$1(r).__PROXY__)&&h("Cannot create proxy with a revoked proxy as target or handler"),this[t]=n,this["[[ProxyHandler]]"]=r;}function _(t,n){t||h("Cannot perform '"+n+"' on a proxy that has been revoked");}function h(t){throw new TypeError(t)}function v(t){return !!t&&("object"==typeof t||"function"==typeof t)}function d(t,n){return Object.prototype.hasOwnProperty.call(t,n)}p.revocable=function(n,r){this instanceof p.revocable&&h("Proxy.revocable is not a constructor");var e=new y(n,r),o=l(e);return {proxy:o,revoke:function(){e[t]=undefined,e["[[ProxyHandler]]"]=undefined,a||(f$1(o).__PROXY__="REVOKED");}}},y.prototype[n]=function(n,r){var e=this["[[ProxyHandler]]"];return _(e,"get"),null==e.get?this[t][n]:"function"==typeof e.get?e.get(this[t],n,r):void h("Trap 'get' is not a function: "+e.get)},y.prototype[r]=function(n,r,e){var o=this["[[ProxyHandler]]"];if(_(o,"set"),null==o.set)this[t][n]=r;else if("function"==typeof o.set){o.set(this[t],n,r,e)||h("Trap 'set' returned false for property '"+n+"'");}else h("Trap 'set' is not a function: "+o.set);},y.prototype[e]=function(n,r){var e=this["[[ProxyHandler]]"];return _(e,"apply"),null==e.apply?this[t].apply(n,r):"function"==typeof e.apply?e.apply(this[t],n,r):void h("Trap 'apply' is not a function: "+e.apply)},y.prototype["[[Construct]]"]=function(n,r){var e,o=this["[[ProxyHandler]]"];if(_(o,"construct"),null==o.construct?e=function(t,n){for(var r=[],e=0,o=n.length;e<o;++e)r.push("args["+e+"]");return new Function("Ctor","args","return new Ctor("+r.join(", ")+")")(t,n)}(this[t],n):"function"==typeof o.construct?e=o.construct(this[t],n,r):h("Trap 'construct' is not a function: "+o.construct),v(e))return e;h("Trap 'construct' returned non-object: "+e);};var b=Object.getOwnPropertyNames||function(t){var n=[];for(var r in t)d(t,r)&&n.push(r);return n},g=s(Object.setPrototypeOf)?Object.setPrototypeOf:Object.__proto__?function(t,n){return t.__proto__=n,t}:function(t,n){return o(t,"__proto__",{value:n})},O=a?Object.create:function(t,n){var r=i({},n);if(_isVbObject(r)){var e={__PROXY__:undefined};_getVbInternalOf(r).__proto__=e;}return r},P=Object.assign||function(t,n){for(var r in n)d(n,r)&&(t[r]=n[r]);return t};function j(n){for(var r={},e=n[t];e=u(e);){var o=x(e,n);P(r,o);}return r.__PROXY__={get:function(){return n[t]?undefined:"REVOKED"}},r}function x(t,n){for(var r=b(t),e={},o=r.length-1;o>=0;--o)e[r[o]]=w(t,r[o],n);return e}function w(t,e,o){var i=c(t,e);return {get:function(){return o[n](e,this)},set:function(t){o[r](e,t,this);},enumerable:i.enumerable,configurable:i.configurable}}var C="undefined"==typeof Proxy?p:Proxy;
+    var microApps$1 = []; // {name:'',entry:'url',container:'DOMid',appId:'',styleId:'',loading:true}
+    var scriptResources$1 = {}; // {'entry':{scripts:[],scriptCache:[],sandbox:[],excludeSandboxFiles:[]}}
+    /* let isImportHTML = false; */
+    var externalOnloadScript$1 = []; // [{url:'',code:''}] 已加载过外部资源列表
+    var MicroApps$1 = /** @class */ (function () {
+        function MicroApps() {
+        }
+        MicroApps.getStore = function () {
+            return {
+                apps: microApps$1,
+                scriptResources: scriptResources$1,
+                externalOnloadScript: externalOnloadScript$1,
+            };
+        };
+        MicroApps.prototype.getApps = function () {
+            return {
+                apps: microApps$1,
+                scriptResources: scriptResources$1,
+                externalOnloadScript: externalOnloadScript$1,
+            };
+        };
+        MicroApps.prototype.isRegister = function (apps) {
+            var unregisteredApps = microApps$1.filter(function (item) { return item.name === apps.name; });
+            if (unregisteredApps.length > 0) {
+                return unregisteredApps;
+            }
+            return null;
+        };
+        MicroApps.prototype.register = function (apps) {
+            if (Array.isArray(apps)) {
+                var unregisteredApps = apps.filter(function (app) { return !microApps$1.some(function (registeredApp) { return registeredApp.name === app.name; }); });
+                microApps$1 = __spread(microApps$1, unregisteredApps);
+            }
+        };
+        MicroApps.prototype.bootstrap = function (apps, importHtmlentryResult) {
+            var _this = this;
+            var that = this;
+            var sourceUrl = apps['entry'];
+            var isCheckRegister = function () {
+                var oldApps = _this.isRegister(apps);
+                if (!oldApps) {
+                    microApps$1 = __spread(microApps$1, [apps]);
+                    syncMicroApps();
+                }
+            };
+            var syncMicroApps = function () {
+                importHtmlentryResult.getExternalScripts().then(function (exports) {
+                    if (importHtmlentryResult.getScripts) {
+                        var scriptList = importHtmlentryResult.getScripts();
+                        var excludeFiles_1 = [];
+                        var _scripts = scriptList['scripts'];
+                        var scriptCache_1 = [];
+                        if (exports &&
+                            Object.prototype.toString.call(exports) === '[object Array]') {
+                            exports.forEach(function (item) {
+                                scriptCache_1.push({
+                                    key: item.scripts,
+                                    code: item['scriptsText'],
+                                });
+                            });
+                        }
+                        if (scriptList['excludeFiles'].hasOwnProperty(sourceUrl)) {
+                            scriptList['excludeFiles'][sourceUrl].forEach(function (item) {
+                                scriptCache_1.forEach(function (entity) {
+                                    var _index = entity.key.indexOf(item);
+                                    if (_index > -1) {
+                                        excludeFiles_1.push({ url: entity.key, code: entity.code });
+                                    }
+                                });
+                            });
+                        }
+                        scriptResources$1[sourceUrl] = {
+                            scripts: scriptList['scripts'][sourceUrl],
+                            scriptCache: scriptCache_1,
+                            excludeSandboxFiles: excludeFiles_1,
+                            sandbox: [],
+                            styles: [],
+                            externalOnloadScriptPromise: [],
+                        };
+                        if (_scripts.hasOwnProperty(sourceUrl)) {
+                            _scripts[sourceUrl].forEach(function (item) {
+                                excludeFiles_1.forEach(function (entity) {
+                                    if (entity) {
+                                        var _index = entity.url.indexOf(item);
+                                        if (_index < 0) {
+                                            scriptResources$1[sourceUrl]['sandbox'].push(item);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
+            };
+            isCheckRegister.call(that);
+        };
+        return MicroApps;
+    }());
 
-    // check window contructor function， like Object Array
-    function isConstructor(fn) {
-        // generator function and has own prototype properties
-        var hasConstructor = fn.prototype &&
+    var requestIdleCallback = window.requestIdleCallback ||
+        function requestIdleCallback(cb) {
+            var start = Date.now();
+            return setTimeout(function () {
+                cb({
+                    didTimeout: false,
+                    timeRemaining: function () {
+                        return Math.max(0, 50 - (Date.now() - start));
+                    },
+                });
+            }, 1);
+        };
+    var isSlowNetwork = navigator.connection
+        ? navigator.connection.saveData ||
+            (navigator.connection.type !== 'wifi' &&
+                navigator.connection.type !== 'ethernet' &&
+                /(2|3)g/.test(navigator.connection.effectiveType))
+        : false;
+    /**
+     * prefetch assets, do nothing while in mobile network
+     * @param entry
+     * @param opts
+     */
+    function prefetch(entry, opts) {
+        var _this = this;
+        if (!navigator.onLine || isSlowNetwork) {
+            // Don't prefetch if in a slow network or offline
+            return;
+        }
+        requestIdleCallback(function () { return __awaiter(_this, void 0, void 0, function () {
+            var _a, getExternalScripts, getExternalStyleSheets;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, legionsImportHtmlEntry.importHTML(entry, opts)];
+                    case 1:
+                        _a = _b.sent(), getExternalScripts = _a.getExternalScripts, getExternalStyleSheets = _a.getExternalStyleSheets;
+                        requestIdleCallback(getExternalStyleSheets);
+                        requestIdleCallback(getExternalScripts);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    }
+    function prefetchAfterFirstMounted(apps, opts) {
+        window.addEventListener('single-spa:first-mount', function listener() {
+            var notLoadedApps = apps.filter(function (app) { return singleSpa.getAppStatus(app.name) === singleSpa.NOT_LOADED; });
+            //@ts-ignore
+            if (process.env.NODE_ENV !== 'production') {
+                var mountedApps = singleSpa.getMountedApps();
+                console.log("[legions] prefetch starting after " + mountedApps + " mounted...", notLoadedApps);
+            }
+            notLoadedApps.forEach(function (_a) {
+                var entry = _a.entry;
+                return prefetch(entry, opts);
+            });
+            window.removeEventListener('single-spa:first-mount', listener);
+        });
+    }
+    function prefetchImmediately(apps, opts) {
+        //@ts-ignore
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('[legions] prefetch starting for apps...', apps);
+        }
+        apps.forEach(function (_a) {
+            var entry = _a.entry;
+            return prefetch(entry, opts);
+        });
+    }
+    function doPrefetchStrategy(apps, prefetchStrategy, importEntryOpts) {
+        var appsName2Apps = function (names) {
+            return apps.filter(function (app) { return names.includes(app.name); });
+        };
+        if (Array.isArray(prefetchStrategy)) {
+            prefetchAfterFirstMounted(appsName2Apps(prefetchStrategy), importEntryOpts);
+        }
+        else {
+            switch (prefetchStrategy) {
+                case true:
+                    prefetchAfterFirstMounted(apps, importEntryOpts);
+                    break;
+                case 'all':
+                    prefetchImmediately(apps, importEntryOpts);
+                    break;
+            }
+        }
+    }
+
+    function sleep(ms) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve) { return setTimeout(resolve, ms); })];
+            });
+        });
+    }
+    /**
+     * run a callback after next tick
+     * @param cb
+     */
+    function nextTick(cb) {
+        Promise.resolve().then(cb);
+    }
+    function toArray(array) {
+        return Array.isArray(array) ? array : [array];
+    }
+    function getDefaultTplWrapper(id, name) {
+        return function (tpl) {
+            return "<div id=\"" + getWrapperId(id) + "\" data-name=\"" + name + "\">" + tpl + "</div>";
+        };
+    }
+    function getWrapperId(id) {
+        return "__legions_microapp_wrapper_for_" + snakeCase__default['default'](id) + "__";
+    }
+    function isEnableScopedCSS(sandbox) {
+        if (typeof sandbox !== 'object') {
+            return false;
+        }
+        if (sandbox.strictStyleIsolation) {
+            return false;
+        }
+        return !!sandbox.experimentalStyleIsolation;
+    }
+    var Deferred = /** @class */ (function () {
+        function Deferred() {
+            var _this = this;
+            this.promise = new Promise(function (resolve, reject) {
+                _this.resolve = resolve;
+                _this.reject = reject;
+            });
+        }
+        return Deferred;
+    }());
+    var supportsUserTiming = typeof performance !== 'undefined' &&
+        typeof performance.mark === 'function' &&
+        typeof performance.clearMarks === 'function' &&
+        typeof performance.measure === 'function' &&
+        typeof performance.clearMeasures === 'function';
+    function performanceMark(markName) {
+        if (supportsUserTiming) {
+            performance.mark(markName);
+        }
+    }
+    function performanceMeasure(measureName, markName) {
+        if (supportsUserTiming &&
+            performance.getEntriesByName(markName, 'mark').length) {
+            performance.measure(measureName, markName);
+            performance.clearMarks(markName);
+            performance.clearMeasures(measureName);
+        }
+    }
+    function getContainer(container) {
+        return typeof container === 'string'
+            ? document.querySelector(container)
+            : container;
+    }
+    /** 校验子应用导出的 生命周期 对象是否正确 */
+    function validateExportLifecycle(exports) {
+        var _a = exports !== null && exports !== void 0 ? exports : {}, bootstrap = _a.bootstrap, mount = _a.mount, unmount = _a.unmount;
+        return isFunction__default['default'](bootstrap) && isFunction__default['default'](mount) && isFunction__default['default'](unmount);
+    }
+    var SandBoxType;
+    (function (SandBoxType) {
+        SandBoxType["Proxy"] = "Proxy";
+        /** 暂时不用 */
+        SandBoxType["Snapshot"] = "Snapshot";
+        SandBoxType["LegacyProxy"] = "LegacyProxy";
+    })(SandBoxType || (SandBoxType = {}));
+    var naughtySafari = typeof document.all === 'function' && typeof document.all === 'undefined';
+    var isCallable = naughtySafari
+        ? function (fn) { return typeof fn === 'function' && typeof fn !== 'undefined'; }
+        : function (fn) { return typeof fn === 'function'; };
+    var boundedMap = new WeakMap();
+    function isBoundedFunction(fn) {
+        if (boundedMap.has(fn)) {
+            return boundedMap.get(fn);
+        }
+        /*
+         indexOf is faster than startsWith
+         see https://jsperf.com/string-startswith/72
+         */
+        var bounded = fn.name.indexOf('bound ') === 0 && !fn.hasOwnProperty('prototype');
+        boundedMap.set(fn, bounded);
+        return bounded;
+    }
+    var constructableMap = new WeakMap();
+    function isConstructable(fn) {
+        if (constructableMap.has(fn)) {
+            return constructableMap.get(fn);
+        }
+        var constructableFunctionRegex = /^function\b\s[A-Z].*/;
+        var classRegex = /^class\b/;
+        // 有 prototype 并且 prototype 上有定义一系列非 constructor 属性，则可以认为是一个构造函数
+        var constructable = (fn.prototype &&
             fn.prototype.constructor === fn &&
-            Object.getOwnPropertyNames(fn.prototype).length > 1;
-        // unnecessary to call toString if it has contructor function
-        var functionStr = !hasConstructor && fn.toString();
-        var upperCaseRegex = /^function\s+[A-Z]/;
-        return (hasConstructor ||
-            // upper case
-            upperCaseRegex.test(functionStr) ||
-            // ES6 class, window function do not have this case
-            functionStr.slice(0, 5) === 'class');
+            Object.getOwnPropertyNames(fn.prototype).length > 1) ||
+            constructableFunctionRegex.test(fn.toString()) ||
+            classRegex.test(fn.toString());
+        constructableMap.set(fn, constructable);
+        return constructable;
     }
-    // get function from original window, such as scrollTo, parseInt
-    function isWindowFunction(func) {
-        return func && typeof func === 'function' && !isConstructor(func);
+    /**
+     * copy from https://developer.mozilla.org/zh-CN/docs/Using_XPath
+     * @param el
+     * @param document
+     */
+    function getXPathForElement(el, document) {
+        // not support that if el not existed in document yet(such as it not append to document before it mounted)
+        if (!document.body.contains(el)) {
+            return undefined;
+        }
+        var xpath = '';
+        var pos;
+        var tmpEle;
+        var element = el;
+        while (element !== document.documentElement) {
+            pos = 0;
+            tmpEle = element;
+            while (tmpEle) {
+                if (tmpEle.nodeType === 1 && tmpEle.nodeName === element.nodeName) {
+                    // If it is ELEMENT_NODE of the same name
+                    pos += 1;
+                }
+                tmpEle = tmpEle.previousSibling;
+            }
+            xpath = "*[name()='" + element.nodeName + "' and namespace-uri()='" + (element.namespaceURI === null ? '' : element.namespaceURI) + "'][" + pos + "]/" + xpath;
+            element = element.parentNode;
+        }
+        xpath = "/*[name()='" + document.documentElement.nodeName + "' and namespace-uri()='" + (element.namespaceURI === null ? '' : element.namespaceURI) + "']/" + xpath;
+        xpath = xpath.replace(/\/$/, '');
+        return xpath;
     }
-    var Sandbox = /** @class */ (function () {
-        function Sandbox(props) {
-            if (props === void 0) { props = {}; }
-            this.multiMode = false;
+
+    var RuleType;
+    (function (RuleType) {
+        // type: rule will be rewrote
+        RuleType[RuleType["STYLE"] = 1] = "STYLE";
+        RuleType[RuleType["MEDIA"] = 4] = "MEDIA";
+        RuleType[RuleType["SUPPORTS"] = 12] = "SUPPORTS";
+        // type: value will be kept
+        RuleType[RuleType["IMPORT"] = 3] = "IMPORT";
+        RuleType[RuleType["FONT_FACE"] = 5] = "FONT_FACE";
+        RuleType[RuleType["PAGE"] = 6] = "PAGE";
+        RuleType[RuleType["KEYFRAMES"] = 7] = "KEYFRAMES";
+        RuleType[RuleType["KEYFRAME"] = 8] = "KEYFRAME";
+    })(RuleType || (RuleType = {}));
+    var arrayify = function (list) {
+        return [].slice.call(list, 0);
+    };
+    var rawDocumentBodyAppend = HTMLBodyElement.prototype.appendChild;
+    var QiankunCSSRewriteAttr = 'data-legions';
+    var ScopedCSS = /** @class */ (function () {
+        function ScopedCSS() {
+            var styleNode = document.createElement('style');
+            rawDocumentBodyAppend.call(document.body, styleNode);
+            this.swapNode = styleNode;
+            this.sheet = styleNode.sheet;
+            this.sheet.disabled = true;
+        }
+        ScopedCSS.prototype.process = function (styleNode, prefix) {
+            var _this = this;
+            var _a;
+            if (prefix === void 0) { prefix = ''; }
+            if (styleNode.textContent !== '') {
+                var textNode = document.createTextNode(styleNode.textContent || '');
+                this.swapNode.appendChild(textNode);
+                var sheet = this.swapNode.sheet; // type is missing
+                var rules = arrayify((_a = sheet === null || sheet === void 0 ? void 0 : sheet.cssRules) !== null && _a !== void 0 ? _a : []);
+                var css = this.rewrite(rules, prefix);
+                // eslint-disable-next-line no-param-reassign
+                styleNode.textContent = css;
+                // cleanup
+                this.swapNode.removeChild(textNode);
+                return;
+            }
+            var mutator = new MutationObserver(function (mutations) {
+                var _a;
+                for (var i = 0; i < mutations.length; i += 1) {
+                    var mutation = mutations[i];
+                    if (ScopedCSS.ModifiedTag in styleNode) {
+                        return;
+                    }
+                    if (mutation.type === 'childList') {
+                        var sheet = styleNode.sheet;
+                        var rules = arrayify((_a = sheet === null || sheet === void 0 ? void 0 : sheet.cssRules) !== null && _a !== void 0 ? _a : []);
+                        var css = _this.rewrite(rules, prefix);
+                        // eslint-disable-next-line no-param-reassign
+                        styleNode.textContent = css;
+                        // eslint-disable-next-line no-param-reassign
+                        styleNode[ScopedCSS.ModifiedTag] = true;
+                    }
+                }
+            });
+            // since observer will be deleted when node be removed
+            // we dont need create a cleanup function manually
+            // see https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/disconnect
+            mutator.observe(styleNode, { childList: true });
+        };
+        ScopedCSS.prototype.rewrite = function (rules, prefix) {
+            var _this = this;
+            if (prefix === void 0) { prefix = ''; }
+            var css = '';
+            rules.forEach(function (rule) {
+                switch (rule.type) {
+                    case RuleType.STYLE:
+                        css += _this.ruleStyle(rule, prefix);
+                        break;
+                    case RuleType.MEDIA:
+                        css += _this.ruleMedia(rule, prefix);
+                        break;
+                    case RuleType.SUPPORTS:
+                        css += _this.ruleSupport(rule, prefix);
+                        break;
+                    default:
+                        css += "" + rule.cssText;
+                        break;
+                }
+            });
+            return css;
+        };
+        // handle case:
+        // .app-main {}
+        // html, body {}
+        // eslint-disable-next-line class-methods-use-this
+        ScopedCSS.prototype.ruleStyle = function (rule, prefix) {
+            var rootSelectorRE = /((?:[^\w\-.#]|^)(body|html|:root))/gm;
+            var rootCombinationRE = /(html[^\w{[]+)/gm;
+            var selector = rule.selectorText.trim();
+            var cssText = rule.cssText;
+            // handle html { ... }
+            // handle body { ... }
+            // handle :root { ... }
+            if (selector === 'html' || selector === 'body' || selector === ':root') {
+                return cssText.replace(rootSelectorRE, prefix);
+            }
+            // handle html body { ... }
+            // handle html > body { ... }
+            if (rootCombinationRE.test(rule.selectorText)) {
+                var siblingSelectorRE = /(html[^\w{]+)(\+|~)/gm;
+                // since html + body is a non-standard rule for html
+                // transformer will ignore it
+                if (!siblingSelectorRE.test(rule.selectorText)) {
+                    cssText = cssText.replace(rootCombinationRE, '');
+                }
+            }
+            // handle grouping selector, a,span,p,div { ... }
+            cssText = cssText.replace(/^[\s\S]+{/, function (selectors) {
+                return selectors.replace(/(^|,\n?)([^,]+)/g, function (item, p, s) {
+                    // handle div,body,span { ... }
+                    if (rootSelectorRE.test(item)) {
+                        return item.replace(rootSelectorRE, function (m) {
+                            // do not discard valid previous character, such as body,html or *:not(:root)
+                            var whitePrevChars = [',', '('];
+                            if (m && whitePrevChars.includes(m[0])) {
+                                return "" + m[0] + prefix;
+                            }
+                            // replace root selector with prefix
+                            return prefix;
+                        });
+                    }
+                    return "" + p + prefix + " " + s.replace(/^ */, '');
+                });
+            });
+            return cssText;
+        };
+        // handle case:
+        // @media screen and (max-width: 300px) {}
+        ScopedCSS.prototype.ruleMedia = function (rule, prefix) {
+            var css = this.rewrite(arrayify(rule.cssRules), prefix);
+            return "@media " + rule.conditionText + " {" + css + "}";
+        };
+        // handle case:
+        // @supports (display: grid) {}
+        ScopedCSS.prototype.ruleSupport = function (rule, prefix) {
+            var css = this.rewrite(arrayify(rule.cssRules), prefix);
+            return "@supports " + rule.conditionText + " {" + css + "}";
+        };
+        ScopedCSS.ModifiedTag = 'Symbol(style-modified-qiankun)';
+        return ScopedCSS;
+    }());
+    var processor;
+    var process$1 = function (appWrapper, stylesheetElement, appName) {
+        // lazy singleton pattern
+        if (!processor) {
+            processor = new ScopedCSS();
+        }
+        if (stylesheetElement.tagName === 'LINK') {
+            console.warn('Feature: sandbox.experimentalStyleIsolation is not support for link element yet.');
+        }
+        var mountDOM = appWrapper;
+        if (!mountDOM) {
+            return;
+        }
+        var tag = (mountDOM.tagName || '').toLowerCase();
+        if (tag && stylesheetElement.tagName === 'STYLE') {
+            var prefix = tag + "[" + QiankunCSSRewriteAttr + "=\"" + appName + "\"]";
+            processor.process(stylesheetElement, prefix);
+        }
+    };
+
+    var rawPublicPath = window.__INJECTED_PUBLIC_PATH_BY_LEGIONS__;
+    function getAddOn(global, publicPath) {
+        if (publicPath === void 0) { publicPath = '/'; }
+        var hasMountedOnce = false;
+        return {
+            beforeLoad: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        // eslint-disable-next-line no-param-reassign
+                        global.__INJECTED_PUBLIC_PATH_BY_LEGIONS__ = publicPath;
+                        return [2 /*return*/];
+                    });
+                });
+            },
+            beforeMount: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        if (hasMountedOnce) {
+                            // eslint-disable-next-line no-param-reassign
+                            global.__INJECTED_PUBLIC_PATH_BY_LEGIONS__ = publicPath;
+                        }
+                        return [2 /*return*/];
+                    });
+                });
+            },
+            beforeUnmount: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        if (rawPublicPath === undefined) {
+                            // eslint-disable-next-line no-param-reassign
+                            delete global.__INJECTED_PUBLIC_PATH_BY_LEGIONS__;
+                        }
+                        else {
+                            // eslint-disable-next-line no-param-reassign
+                            global.__INJECTED_PUBLIC_PATH_BY_LEGIONS__ = rawPublicPath;
+                        }
+                        hasMountedOnce = true;
+                        return [2 /*return*/];
+                    });
+                });
+            },
+        };
+    }
+
+    function getAddOn$1(global) {
+        return {
+            beforeLoad: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        // eslint-disable-next-line no-param-reassign
+                        global.__POWERED_BY_LEGIONS__ = true;
+                        return [2 /*return*/];
+                    });
+                });
+            },
+            beforeMount: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        // eslint-disable-next-line no-param-reassign
+                        global.__POWERED_BY_LEGIONS__ = true;
+                        return [2 /*return*/];
+                    });
+                });
+            },
+            beforeUnmount: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        // eslint-disable-next-line no-param-reassign
+                        delete global.__POWERED_BY_LEGIONS__;
+                        return [2 /*return*/];
+                    });
+                });
+            },
+        };
+    }
+
+    function getAddOns(global, publicPath) {
+        return mergeWith__default['default']({}, getAddOn$1(global), getAddOn(global, publicPath), function (v1, v2) { return concat__default['default'](v1 !== null && v1 !== void 0 ? v1 : [], v2 !== null && v2 !== void 0 ? v2 : []); });
+    }
+
+    var globalState = {};
+    var deps = {};
+    // 触发全局监听
+    function emitGlobal(state, prevState) {
+        Object.keys(deps).forEach(function (id) {
+            if (deps[id] instanceof Function) {
+                deps[id](cloneDeep__default['default'](state), cloneDeep__default['default'](prevState));
+            }
+        });
+    }
+    function getMicroAppStateActions(id, isMaster) {
+        return {
+            /**
+             * onGlobalStateChange 全局依赖监听
+             *
+             * 收集 setState 时所需要触发的依赖
+             *
+             * 限制条件：每个子应用只有一个激活状态的全局监听，新监听覆盖旧监听，若只是监听部分属性，请使用 onGlobalStateChange
+             *
+             * 这么设计是为了减少全局监听滥用导致的内存爆炸
+             *
+             * 依赖数据结构为：
+             * {
+             *   {id}: callback
+             * }
+             *
+             * @param callback
+             * @param fireImmediately
+             */
+            onGlobalStateChange: function (callback, fireImmediately) {
+                if (!(callback instanceof Function)) {
+                    console.error('[legions] callback must be function!');
+                    return;
+                }
+                if (deps[id]) {
+                    console.warn("[legions] '" + id + "' global listener already exists before this, new listener will overwrite it.");
+                }
+                deps[id] = callback;
+                var cloneState = cloneDeep__default['default'](globalState);
+                if (fireImmediately) {
+                    callback(cloneState, cloneState);
+                }
+            },
+            /**
+             * setGlobalState 更新 store 数据
+             *
+             * 1. 对输入 state 的第一层属性做校验，只有初始化时声明过的第一层（bucket）属性才会被更改
+             * 2. 修改 store 并触发全局监听
+             *
+             * @param state
+             */
+            setGlobalState: function (state) {
+                if (state === void 0) { state = {}; }
+                if (state === globalState) {
+                    console.warn('[legions] state has not changed！');
+                    return false;
+                }
+                var changeKeys = [];
+                var prevGlobalState = cloneDeep__default['default'](globalState);
+                globalState = cloneDeep__default['default'](Object.keys(state).reduce(function (_globalState, changeKey) {
+                    var _a;
+                    if (isMaster || _globalState.hasOwnProperty(changeKey)) {
+                        changeKeys.push(changeKey);
+                        return Object.assign(_globalState, (_a = {},
+                            _a[changeKey] = state[changeKey],
+                            _a));
+                    }
+                    console.warn("[legions] '" + changeKey + "' not declared when init state\uFF01");
+                    return _globalState;
+                }, globalState));
+                if (changeKeys.length === 0) {
+                    console.warn('[legions] state has not changed！');
+                    return false;
+                }
+                emitGlobal(globalState, prevGlobalState);
+                return true;
+            },
+            // 注销该应用下的依赖
+            offGlobalStateChange: function () {
+                delete deps[id];
+                return true;
+            },
+        };
+    }
+
+    var documentAttachProxyMap = new WeakMap();
+    var functionBoundedValueMap = new WeakMap();
+    function getTargetValue(target, value) {
+        /*
+            仅绑定 isCallable && !isBoundedFunction && !isConstructable 的函数对象，如 window.console、window.atob 这类。目前没有完美的检测方式，这里通过 prototype 中是否还有可枚举的拓展方法的方式来判断
+            @warning 这里不要随意替换成别的判断方式，因为可能触发一些 edge case（比如在 lodash.isFunction 在 iframe 上下文中可能由于调用了 top window 对象触发的安全异常）
+           */
+        if (isCallable(value) &&
+            !isBoundedFunction(value) &&
+            !isConstructable(value)) {
+            var cachedBoundValue = functionBoundedValueMap.get(value);
+            if (cachedBoundValue) {
+                return cachedBoundValue;
+            }
+            var boundValue = value.bind(target);
+            // some callable function has custom fields, we need to copy the enumerable props to boundValue. such as moment function.
+            // use for..in rather than Object.keys.forEach for performance reason
+            // eslint-disable-next-line guard-for-in,no-restricted-syntax
+            for (var key in value) {
+                // 当函数上面存在属性时，需要遍历所有属性
+                boundValue[key] = value[key];
+            }
+            // copy prototype, for performance reason, we use in operator to check rather than hasOwnProperty
+            if ('prototype' in value)
+                boundValue.prototype = value.prototype; // 原型拷贝
+            functionBoundedValueMap.set(value, boundValue);
+            return boundValue;
+        }
+        return value;
+    }
+
+    /**
+     * copy from https://www.npmjs.com/package/qiankun
+     */
+    var activeSandboxCount = 0;
+    /**
+     * fastest(at most time) unique array method
+     * @see https://jsperf.com/array-filter-unique/30
+     */
+    function uniq(array) {
+        return array.filter(function filter(element) {
+            return element in this ? false : (this[element] = true);
+        }, {});
+    }
+    var unscopables = {
+        undefined: true,
+        Array: true,
+        Object: true,
+        String: true,
+        Boolean: true,
+        Math: true,
+        eval: true,
+        Number: true,
+        Symbol: true,
+        parseFloat: true,
+        Float32Array: true,
+    };
+    var rawObjectDefineProperty = Object.defineProperty;
+    var variableWhiteListInDev = 
+    //@ts-ignore
+    process.env.NODE_ENV === 'development'
+        ? ['__REACT_ERROR_OVERLAY_GLOBAL_HOOK__']
+        : [];
+    var variableWhiteList = __spread([
+        'System',
+        '__cjsWrapper'
+    ], variableWhiteListInDev);
+    function createFakeWindow(global) {
+        // map always has the fastest performance in has check scenario
+        // see https://jsperf.com/array-indexof-vs-set-has/23
+        var propertiesWithGetter = new Map();
+        var fakeWindow = {};
+        /*
+         copy the non-configurable property of global to fakeWindow
+         see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/getOwnPropertyDescriptor
+         > A property cannot be reported as non-configurable, if it does not exists as an own property of the target object or if it exists as a configurable own property of the target object.
+         */
+        Object.getOwnPropertyNames(global)
+            .filter(function (p) {
+            var descriptor = Object.getOwnPropertyDescriptor(global, p);
+            return !(descriptor === null || descriptor === void 0 ? void 0 : descriptor.configurable);
+        })
+            .forEach(function (p) {
+            var descriptor = Object.getOwnPropertyDescriptor(global, p);
+            if (descriptor) {
+                var hasGetter = Object.prototype.hasOwnProperty.call(descriptor, 'get');
+                /*
+                 make top/self/window property configurable and writable, otherwise it will cause TypeError while get trap return.
+                 see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/get
+                 > The value reported for a property must be the same as the value of the corresponding target object property if the target object property is a non-writable, non-configurable data property.
+                 */
+                if (p === 'top' ||
+                    p === 'parent' ||
+                    p === 'self' ||
+                    p === 'window' ||
+                    //@ts-ignore
+                    (process.env.NODE_ENV === 'test' &&
+                        (p === 'mockTop' || p === 'mockSafariTop'))) {
+                    descriptor.configurable = true;
+                    /*
+                     The descriptor of window.window/window.top/window.self in Safari/FF are accessor descriptors, we need to avoid adding a data descriptor while it was
+                     Example:
+                      Safari/FF: Object.getOwnPropertyDescriptor(window, 'top') -> {get: function, set: undefined, enumerable: true, configurable: false}
+                      Chrome: Object.getOwnPropertyDescriptor(window, 'top') -> {value: Window, writable: false, enumerable: true, configurable: false}
+                     */
+                    if (!hasGetter) {
+                        descriptor.writable = true;
+                    }
+                }
+                if (hasGetter)
+                    propertiesWithGetter.set(p, true);
+                // freeze the descriptor to avoid being modified by zone.js
+                // see https://github.com/angular/zone.js/blob/a5fe09b0fac27ac5df1fa746042f96f05ccb6a00/lib/browser/define-property.ts#L71
+                rawObjectDefineProperty(fakeWindow, p, Object.freeze(descriptor));
+            }
+        });
+        return {
+            fakeWindow: fakeWindow,
+            propertiesWithGetter: propertiesWithGetter,
+        };
+    }
+    // check window contructor function， like Object Array
+    var ProxySandbox = /** @class */ (function () {
+        function ProxySandbox(props) {
+            if (props === void 0) { props = { name: '' }; }
             this.eventListeners = {};
             this.timeoutIds = [];
             this.intervalIds = [];
-            this.propertyAdded = {};
-            this.originalValues = {};
-            var multiMode = props.multiMode;
+            /* private propertyAdded = {};
+          
+            private originalValues = {}; */
+            /** window 值变更记录 */
+            this.updatedValueSet = new Set();
+            /** 沙箱的名字 */
+            this.name = '';
+            /** 沙箱的类型 */
+            this.type = SandBoxType.Proxy;
+            /** 沙箱是否在运行中 */
+            this.sandboxRunning = true;
             if (!window.Proxy) {
                 console.warn('proxy sandbox is not support by current browser');
-                this.sandboxDisabled = true;
-            }
-            // enable multiMode in case of create mulit sandbox in same time
-            //@ts-ignore
-            this.multiMode = multiMode;
+            } /*  else {
+              PROXY = window.Proxy;
+            } */
             //@ts-ignore
             this.sandbox = null;
+            this.name = props.name;
+            this.createProxySandbox();
         }
-        Sandbox.prototype.createProxySandbox = function () {
+        ProxySandbox.prototype.active = function () {
+            if (!this.sandboxRunning)
+                activeSandboxCount++;
+            this.sandboxRunning = true;
+        };
+        ProxySandbox.prototype.inactive = function () {
             var _this = this;
-            var _a = this, propertyAdded = _a.propertyAdded, originalValues = _a.originalValues, multiMode = _a.multiMode;
-            var proxyWindow = Object.create(null);
-            var originalWindow = window;
-            var originalAddEventListener = window.addEventListener;
-            var originalRemoveEventListener = window.removeEventListener;
-            var originalSetInerval = window.setInterval;
-            var originalSetTimeout = window.setTimeout;
-            // hijack addEventListener
-            proxyWindow.addEventListener = function (eventName, fn) {
-                var rest = [];
-                for (var _i = 2; _i < arguments.length; _i++) {
-                    rest[_i - 2] = arguments[_i];
-                }
-                var listeners = _this.eventListeners[eventName] || [];
-                listeners.push(fn);
-                return originalAddEventListener.apply(originalWindow, __spread([
-                    eventName,
-                    fn
-                ], rest));
+            //@ts-ignore
+            if (process.env.NODE_ENV !== 'production') {
+                console.info("[legions:sandbox] " + this.name + " modified global properties restore...", __spread(this.updatedValueSet.keys()));
+            }
+            if (--activeSandboxCount === 0) {
+                variableWhiteList.forEach(function (p) {
+                    if (_this.sandbox.hasOwnProperty(p)) {
+                        // @ts-ignore
+                        delete window[p];
+                    }
+                });
+            }
+            this.sandboxRunning = false;
+        };
+        ProxySandbox.prototype.createProxySandbox = function () {
+            var 
+            /* propertyAdded, originalValues,  */
+            updatedValueSet = this.updatedValueSet;
+            var self = this;
+            var rawWindow = window;
+            var _a = createFakeWindow(rawWindow), fakeWindow = _a.fakeWindow, propertiesWithGetter = _a.propertiesWithGetter; // 生成一份伪造的window
+            var descriptorTargetMap = new Map();
+            var hasOwnProperty = function (key) {
+                return fakeWindow.hasOwnProperty(key) || rawWindow.hasOwnProperty(key);
             };
-            // hijack removeEventListener
-            proxyWindow.removeEventListener = function (eventName, fn) {
-                var rest = [];
-                for (var _i = 2; _i < arguments.length; _i++) {
-                    rest[_i - 2] = arguments[_i];
-                }
-                var listeners = _this.eventListeners[eventName] || [];
-                if (listeners.includes(fn)) {
-                    listeners.splice(listeners.indexOf(fn), 1);
-                }
-                return originalRemoveEventListener.apply(originalWindow, __spread([
-                    eventName,
-                    fn
-                ], rest));
-            };
-            // hijack setTimeout
-            proxyWindow.setTimeout = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                var timerId = originalSetTimeout.apply(void 0, __spread(args));
-                _this.timeoutIds.push(timerId);
-                return timerId;
-            };
-            // hijack setInterval
-            proxyWindow.setInterval = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                var intervalId = originalSetInerval.apply(void 0, __spread(args));
-                _this.intervalIds.push(intervalId);
-                return intervalId;
-            };
-            var sandbox = new C(proxyWindow, {
+            var sandbox = new window.Proxy(fakeWindow, {
                 set: function (target, p, value) {
-                    // eslint-disable-next-line no-prototype-builtins
-                    if (!originalWindow.hasOwnProperty(p)) {
-                        // recorde value added in sandbox
-                        propertyAdded[p] = value;
+                    if (self.sandboxRunning) {
                         // eslint-disable-next-line no-prototype-builtins
+                        if (variableWhiteList.indexOf(p) !== -1) {
+                            // @ts-ignore
+                            rawWindow[p] = value;
+                        }
+                        // eslint-disable-next-line no-param-reassign
+                        //@ts-ignore
+                        target[p] = value;
+                        updatedValueSet.add(p);
                     }
-                    else if (!originalValues.hasOwnProperty(p)) {
-                        // if it is already been setted in orignal window, record it's original value
-                        originalValues[p] = originalWindow[p];
-                    }
-                    // set new value to original window in case of jsonp, js bundle which will be execute outof sandbox
-                    if (!multiMode) {
-                        originalWindow[p] = value;
-                    }
-                    // eslint-disable-next-line no-param-reassign
-                    target[p] = value;
                     return true;
                 },
                 get: function (target, p) {
                     if (p === Symbol.unscopables) {
-                        return undefined;
+                        // 加固，防止逃逸
+                        return unscopables;
                     }
-                    //@ts-ignore
-                    if (['top', 'window', 'self', 'globalThis'].includes(p)) {
+                    // see https://github.com/eligrey/FileSaver.js/blob/master/src/FileSaver.js#L13
+                    if (p === 'window' || p === 'self') {
                         return sandbox;
+                    }
+                    if (p === 'top' || p === 'parent') {
+                        // if your master app in an iframe context, allow these props escape the sandbox
+                        if (rawWindow === rawWindow.parent) {
+                            return sandbox;
+                        }
+                        return rawWindow[p];
                     }
                     // proxy hasOwnProperty, in case of proxy.hasOwnProperty value represented as originalWindow.hasOwnProperty
                     if (p === 'hasOwnProperty') {
                         // eslint-disable-next-line no-prototype-builtins
-                        return function (key) {
-                            return !!target[key] || originalWindow.hasOwnProperty(key);
-                        };
+                        /* return (key: PropertyKey) =>
+                          //@ts-ignore
+                          !!target[key] || rawWindow.hasOwnProperty(key); */
+                        return hasOwnProperty;
                     }
-                    var targetValue = target[p];
-                    if (targetValue) {
-                        // case of addEventListener, removeEventListener, setTimeout, setInterval setted in sandbox
-                        return targetValue;
+                    // mark the symbol to document while accessing as document.createElement could know is invoked by which sandbox for dynamic append patcher
+                    if (p === 'document') {
+                        documentAttachProxyMap.set(document, sandbox);
+                        // remove the mark in next tick, thus we can identify whether it in micro app or not
+                        // this approach is just a workaround, it could not cover all the complex scenarios, such as the micro app runs in the same task context with master in som case
+                        // fixme if you have any other good ideas
+                        nextTick(function () { return documentAttachProxyMap.delete(document); });
+                        return document;
                     }
-                    else {
-                        var value = originalWindow[p];
-                        if (isWindowFunction(value)) {
-                            // fix Illegal invocation
-                            return value.bind(originalWindow);
-                        }
-                        else {
-                            // case of window.clientWidth、new window.Object()
-                            return value;
-                        }
-                    }
+                    var value = propertiesWithGetter.has(p)
+                        ? rawWindow[p]
+                        : target[p] || rawWindow[p];
+                    return getTargetValue(rawWindow, value);
                 },
                 has: function (target, p) {
-                    return p in target || p in originalWindow;
+                    return p in unscopables || p in target || p in rawWindow;
+                },
+                getOwnPropertyDescriptor: function (target, p) {
+                    /*
+                     as the descriptor of top/self/window/mockTop in raw window are configurable but not in proxy target, we need to get it from target to avoid TypeError
+                     see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/getOwnPropertyDescriptor
+                     > A property cannot be reported as non-configurable, if it does not exists as an own property of the target object or if it exists as a configurable own property of the target object.
+                     */
+                    if (target.hasOwnProperty(p)) {
+                        var descriptor = Object.getOwnPropertyDescriptor(target, p);
+                        descriptorTargetMap.set(p, 'target');
+                        return descriptor;
+                    }
+                    if (rawWindow.hasOwnProperty(p)) {
+                        var descriptor = Object.getOwnPropertyDescriptor(rawWindow, p);
+                        descriptorTargetMap.set(p, 'rawWindow');
+                        // A property cannot be reported as non-configurable, if it does not exists as an own property of the target object
+                        if (descriptor && !descriptor.configurable) {
+                            descriptor.configurable = true;
+                        }
+                        return descriptor;
+                    }
+                    return undefined;
+                },
+                // trap to support iterator with sandbox
+                ownKeys: function (target) {
+                    return uniq(Reflect.ownKeys(rawWindow).concat(Reflect.ownKeys(target)));
+                },
+                defineProperty: function (target, p, attributes) {
+                    var from = descriptorTargetMap.get(p);
+                    /*
+                     Descriptor must be defined to native window while it comes from native window via Object.getOwnPropertyDescriptor(window, p),
+                     otherwise it would cause a TypeError with illegal invocation.
+                     */
+                    switch (from) {
+                        case 'rawWindow':
+                            return Reflect.defineProperty(rawWindow, p, attributes);
+                        default:
+                            return Reflect.defineProperty(target, p, attributes);
+                    }
+                },
+                deleteProperty: function (target, p) {
+                    if (target.hasOwnProperty(p)) {
+                        // @ts-ignore
+                        delete target[p];
+                        updatedValueSet.delete(p);
+                        return true;
+                    }
+                    return true;
                 },
             });
             this.sandbox = sandbox;
         };
-        Sandbox.prototype.getSandbox = function () {
+        ProxySandbox.prototype.getSandbox = function () {
             return this.sandbox;
         };
-        Sandbox.prototype.execScriptInSandbox = function (script) {
-            if (!this.sandboxDisabled) {
-                // create sandbox before exec script
-                if (!this.sandbox) {
-                    this.createProxySandbox();
-                }
-                try {
-                    var execScript = "with (sandbox) {;" + script + "\n}";
-                    // eslint-disable-next-line no-new-func
-                    var code = new Function('sandbox', execScript).bind(this.sandbox);
-                    // run code with sandbox
-                    code(this.sandbox);
-                }
-                catch (error) {
-                    console.error("error occurs when execute script in sandbox: " + error);
-                    throw error;
-                }
-            }
-        };
-        Sandbox.prototype.clear = function () {
-            var _this = this;
-            if (!this.sandboxDisabled) {
-                // remove event listeners
-                Object.keys(this.eventListeners).forEach(function (eventName) {
-                    (_this.eventListeners[eventName] || []).forEach(function (listener) {
-                        window.removeEventListener(eventName, listener);
-                    });
-                });
-                // clear timeout
-                this.timeoutIds.forEach(function (id) { return window.clearTimeout(id); });
-                this.intervalIds.forEach(function (id) { return window.clearInterval(id); });
-                // recover original values
-                Object.keys(this.originalValues).forEach(function (key) {
-                    window[key] = _this.originalValues[key];
-                });
-                Object.keys(this.propertyAdded).forEach(function (key) {
-                    delete window[key];
-                });
-            }
-        };
-        return Sandbox;
+        return ProxySandbox;
     }());
 
+    function hijack() {
+        // FIXME umi unmount feature request
+        // @see http://gitlab.alipay-inc.com/bigfish/bigfish/issues/1154
+        var rawHistoryListen = function () {
+            var _ = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                _[_i] = arguments[_i];
+            }
+            return noop__default['default'];
+        };
+        var historyListeners = [];
+        var historyUnListens = [];
+        if (window.g_history &&
+            isFunction__default['default'](window.g_history.listen)) {
+            rawHistoryListen = window.g_history.listen.bind(window.g_history);
+            window.g_history.listen = function (listener) {
+                historyListeners.push(listener);
+                var unListen = rawHistoryListen(listener);
+                historyUnListens.push(unListen);
+                return function () {
+                    unListen();
+                    historyUnListens.splice(historyUnListens.indexOf(unListen), 1);
+                    historyListeners.splice(historyListeners.indexOf(listener), 1);
+                };
+            };
+        }
+        return function free() {
+            var rebuild = noop__default['default'];
+            /*
+             还存在余量 listener 表明未被卸载，存在两种情况
+             1. 应用在 unmout 时未正确卸载 listener
+             2. listener 是应用 mount 之前绑定的，
+             第二种情况下应用在下次 mount 之前需重新绑定该 listener
+             */
+            if (historyListeners.length) {
+                rebuild = function () {
+                    // 必须使用 window.g_history.listen 的方式重新绑定 listener，从而能保证 rebuild 这部分也能被捕获到，否则在应用卸载后无法正确的移除这部分副作用
+                    historyListeners.forEach(function (listener) {
+                        return window.g_history.listen(listener);
+                    });
+                };
+            }
+            // 卸载余下的 listener
+            historyUnListens.forEach(function (unListen) { return unListen(); });
+            // restore
+            if (window.g_history &&
+                isFunction__default['default'](window.g_history.listen)) {
+                window.g_history.listen = rawHistoryListen;
+            }
+            return rebuild;
+        };
+    }
+
+    function hijack$1() {
+        var rawWindowInterval = window.setInterval.bind(window);
+        var rawWindowTimeout = window.setTimeout.bind(window);
+        var timerIds = [];
+        var intervalIds = [];
+        window.setInterval = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            // @ts-ignore
+            var intervalId = rawWindowInterval.apply(void 0, __spread(args));
+            intervalIds.push(intervalId);
+            return intervalId;
+        };
+        window.setTimeout = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            // @ts-ignore
+            var timerId = rawWindowTimeout.apply(void 0, __spread(args));
+            timerIds.push(timerId);
+            return timerId;
+        };
+        return function free() {
+            var _this = this;
+            window.setInterval = rawWindowInterval;
+            window.setTimeout = rawWindowTimeout;
+            timerIds.forEach(function (id) { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: 
+                        // 延迟 timeout 的清理，因为可能会有动画还没完成
+                        return [4 /*yield*/, sleep(500)];
+                        case 1:
+                            // 延迟 timeout 的清理，因为可能会有动画还没完成
+                            _a.sent();
+                            window.clearTimeout(id);
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            intervalIds.forEach(function (id) {
+                window.clearInterval(id);
+            });
+            return noop__default['default'];
+        };
+    }
+
+    function hijack$2() {
+        var listenerMap = new Map();
+        var rawAddEventListener = window.addEventListener;
+        var rawRemoveEventListener = window.removeEventListener;
+        window.addEventListener = function (type, listener, options) {
+            var listeners = listenerMap.get(type) || [];
+            listenerMap.set(type, __spread(listeners, [listener]));
+            return rawAddEventListener.call(window, type, listener, options);
+        };
+        window.removeEventListener = function (type, listener, options) {
+            var storedTypeListeners = listenerMap.get(type);
+            if (storedTypeListeners &&
+                storedTypeListeners.length &&
+                storedTypeListeners.indexOf(listener) !== -1) {
+                storedTypeListeners.splice(storedTypeListeners.indexOf(listener), 1);
+            }
+            return rawRemoveEventListener.call(window, type, listener, options);
+        };
+        return function free() {
+            listenerMap.forEach(function (listeners, type) {
+                return listeners.forEach(function (listener) { return window.removeEventListener(type, listener); });
+            });
+            window.addEventListener = rawAddEventListener.bind(window);
+            window.removeEventListener = rawRemoveEventListener.bind(window);
+            return noop__default['default'];
+        };
+    }
+
+    /**
+     * @author Kuitos
+     * @since 2019-10-21
+     */
+    var styledComponentSymbol = Symbol('styled-component');
+    var rawHeadAppendChild = HTMLHeadElement.prototype.appendChild;
+    var rawHeadRemoveChild = HTMLHeadElement.prototype.removeChild;
+    var rawAppendChild = HTMLElement.prototype.appendChild;
+    var rawRemoveChild = HTMLElement.prototype.removeChild;
+    var SCRIPT_TAG_NAME = 'SCRIPT';
+    var LINK_TAG_NAME = 'LINK';
+    var STYLE_TAG_NAME = 'STYLE';
+    /**
+     * Check if a style element is a styled-component liked.
+     * A styled-components liked element is which not have textContext but keep the rules in its styleSheet.cssRules.
+     * Such as the style element generated by styled-components and emotion.
+     * @param element
+     */
+    function isStyledComponentsLike(element) {
+        var _a, _b;
+        return (!element.textContent &&
+            (((_a = element.sheet) === null || _a === void 0 ? void 0 : _a.cssRules.length) || ((_b = getCachedRules(element)) === null || _b === void 0 ? void 0 : _b.length)));
+    }
+    function getCachedRules(element) {
+        return element[styledComponentSymbol];
+    }
+    function setCachedRules(element, cssRules) {
+        Object.defineProperty(element, styledComponentSymbol, {
+            value: cssRules,
+            configurable: true,
+            enumerable: false,
+        });
+    }
+    function assertElementExist(appName, element) {
+        if (!element)
+            throw new Error("[legions] " + appName + " wrapper with id " + getWrapperId(appName) + " not ready!");
+    }
+    function getWrapperElement(appName) {
+        return document.getElementById(getWrapperId(appName));
+    }
+    /**
+     * Just hijack dynamic head append, that could avoid accidentally hijacking the insertion of elements except in head.
+     * Such a case: ReactDOM.createPortal(<style>.test{color:blue}</style>, container),
+     * this could made we append the style element into app wrapper but it will cause an error while the react portal unmounting, as ReactDOM could not find the style in body children list.
+     * @param appName
+     * @param proxy
+     * @param mounting
+     */
+    function hijack$3(appName, proxy, mounting) {
+        if (mounting === void 0) { mounting = true; }
+        var dynamicStyleSheetElements = [];
+        HTMLHeadElement.prototype.appendChild = function appendChild(newChild) {
+            var element = newChild;
+            if (element.tagName) {
+                switch (element.tagName) {
+                    case LINK_TAG_NAME:
+                    case STYLE_TAG_NAME: {
+                        var stylesheetElement = newChild;
+                        // check if the currently specified application is active
+                        // While we switch page from qiankun app to a normal react routing page, the normal one may load stylesheet dynamically while page rendering,
+                        // but the url change listener must to wait until the current call stack is flushed.
+                        // This scenario may cause we record the stylesheet from react routing page dynamic injection,
+                        // and remove them after the url change triggered and qiankun app is unmouting
+                        // see https://github.com/ReactTraining/history/blob/master/modules/createHashHistory.js#L222-L230
+                        var activated = singleSpa.checkActivityFunctions(window.location).some(function (name) { return name === appName; });
+                        // only hijack dynamic style injection when app activated
+                        if (activated) {
+                            dynamicStyleSheetElements.push(stylesheetElement);
+                            var appWrapper = getWrapperElement(appName);
+                            assertElementExist(appName, appWrapper);
+                            return rawAppendChild.call(appWrapper, stylesheetElement);
+                        }
+                        return rawHeadAppendChild.call(this, element);
+                    }
+                    case SCRIPT_TAG_NAME: {
+                        var _a = element, src = _a.src, text = _a.text;
+                        if (src) {
+                            legionsImportHtmlEntry.execScripts(null, [src], proxy).then(function () {
+                                // we need to invoke the onload event manually to notify the event listener that the script was completed
+                                // here are the two typical ways of dynamic script loading
+                                // 1. element.onload callback way, which webpack and loadjs used, see https://github.com/muicss/loadjs/blob/master/src/loadjs.js#L138
+                                // 2. addEventListener way, which toast-loader used, see https://github.com/pyrsmk/toast/blob/master/src/Toast.ts#L64
+                                var loadEvent = new CustomEvent('load'); // 自定义事件名称
+                                if (isFunction__default['default'](element.onload)) {
+                                    element.onload(loadEvent);
+                                }
+                                else {
+                                    element.dispatchEvent(loadEvent);
+                                }
+                            }, function () {
+                                var errorEvent = new CustomEvent('error');
+                                if (isFunction__default['default'](element.onerror)) {
+                                    element.onerror(errorEvent);
+                                }
+                                else {
+                                    element.dispatchEvent(errorEvent);
+                                }
+                            });
+                            var dynamicScriptCommentElement = document.createComment("dynamic script " + src + " replaced by qiankun");
+                            var appWrapper_1 = getWrapperElement(appName);
+                            assertElementExist(appName, appWrapper_1);
+                            return rawAppendChild.call(appWrapper_1, dynamicScriptCommentElement);
+                        }
+                        legionsImportHtmlEntry.execScripts(null, ["<script>" + text + "</script>"], proxy).then(element.onload, element.onerror);
+                        var dynamicInlineScriptCommentElement = document.createComment('dynamic inline script replaced by qiankun');
+                        var appWrapper = getWrapperElement(appName);
+                        assertElementExist(appName, appWrapper);
+                        return rawAppendChild.call(appWrapper, dynamicInlineScriptCommentElement);
+                    }
+                }
+            }
+            return rawHeadAppendChild.call(this, element);
+        };
+        HTMLHeadElement.prototype.removeChild = function removeChild(child) {
+            var appWrapper = getWrapperElement(appName);
+            if (appWrapper === null || appWrapper === void 0 ? void 0 : appWrapper.contains(child)) {
+                return rawRemoveChild.call(appWrapper, child);
+            }
+            return rawHeadRemoveChild.call(this, child);
+        };
+        return function free() {
+            HTMLHeadElement.prototype.appendChild = rawHeadAppendChild;
+            HTMLHeadElement.prototype.removeChild = rawHeadRemoveChild;
+            dynamicStyleSheetElements.forEach(function (stylesheetElement) {
+                /*
+                   With a styled-components generated style element, we need to record its cssRules for restore next re-mounting time.
+                   We're doing this because the sheet of style element is going to be cleaned automatically by browser after the style element dom removed from document.
+                   see https://www.w3.org/TR/cssom-1/#associated-css-style-sheet
+                   */
+                if (stylesheetElement instanceof HTMLStyleElement &&
+                    isStyledComponentsLike(stylesheetElement)) {
+                    if (stylesheetElement.sheet) {
+                        // record the original css rules of the style element for restore
+                        setCachedRules(stylesheetElement, stylesheetElement.sheet.cssRules);
+                    }
+                }
+                // As now the sub app content all wrapped with a special id container,
+                // the dynamic style sheet would be removed automatically while unmoutting
+            });
+            return function rebuild() {
+                dynamicStyleSheetElements.forEach(function (stylesheetElement) {
+                    // re-append the dynamic stylesheet to sub-app container
+                    var appWrapper = getWrapperElement(appName);
+                    assertElementExist(appName, appWrapper);
+                    // Using document.head.appendChild ensures that appendChild calls
+                    // can also directly use the HTMLHeadElement.prototype.appendChild method which is overwritten at mounting phase
+                    document.head.appendChild.call(appWrapper, stylesheetElement);
+                    /*
+                    get the stored css rules from styled-components generated element, and the re-insert rules for them.
+                    note that we must do this after style element had been added to document, which stylesheet would be associated to the document automatically.
+                    check the spec https://www.w3.org/TR/cssom-1/#associated-css-style-sheet
+                     */
+                    if (stylesheetElement instanceof HTMLStyleElement &&
+                        isStyledComponentsLike(stylesheetElement)) {
+                        var cssRules = getCachedRules(stylesheetElement);
+                        if (cssRules) {
+                            // eslint-disable-next-line no-plusplus
+                            for (var i = 0; i < cssRules.length; i++) {
+                                var cssRule = cssRules[i];
+                                stylesheetElement.sheet.insertRule(cssRule.cssText);
+                            }
+                        }
+                    }
+                });
+                // As the hijacker will be invoked every mounting phase, we could release the cache for gc after rebuilding
+                if (mounting) {
+                    dynamicStyleSheetElements = [];
+                }
+            };
+        };
+    }
+
+    function hijackAtMounting(appName, proxy) {
+        return [
+            hijack$1(),
+            hijack$2(),
+            hijack(),
+            hijack$3(appName, proxy),
+        ];
+    }
+    function hijackAtBootstrapping(appName, proxy) {
+        return [
+            //@ts-ignore
+            process.env.NODE_ENV === 'production'
+                ? hijack$3(appName, proxy, false)
+                : function () { return function () { return noop__default['default']; }; },
+        ];
+    }
+
+    /**
+     * copy from https://www.npmjs.com/package/qiankun
+     */
+    function iter(obj, callbackFn) {
+        // eslint-disable-next-line guard-for-in, no-restricted-syntax
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                callbackFn(prop);
+            }
+        }
+    }
+    /**
+     * 基于 diff 方式实现的沙箱，用于不支持 Proxy 的低版本浏览器
+     */
+    var SnapshotSandbox = /** @class */ (function () {
+        function SnapshotSandbox(name) {
+            this.sandboxRunning = true;
+            this.modifyPropsMap = {};
+            this.name = name;
+            this.sandbox = window;
+            this.type = SandBoxType.Snapshot;
+        }
+        SnapshotSandbox.prototype.active = function () {
+            var _this = this;
+            // 记录当前快照
+            this.windowSnapshot = {};
+            iter(window, function (prop) {
+                _this.windowSnapshot[prop] = window[prop];
+            });
+            // 恢复之前的变更
+            Object.keys(this.modifyPropsMap).forEach(function (p) {
+                window[p] = _this.modifyPropsMap[p];
+            });
+            this.sandboxRunning = true;
+        };
+        SnapshotSandbox.prototype.inactive = function () {
+            var _this = this;
+            this.modifyPropsMap = {};
+            iter(window, function (prop) {
+                if (window[prop] !== _this.windowSnapshot[prop]) {
+                    // 记录变更，恢复环境
+                    _this.modifyPropsMap[prop] = window[prop];
+                    window[prop] = _this.windowSnapshot[prop];
+                }
+            });
+            //@ts-ignore
+            if (process.env.NODE_ENV !== 'production') {
+                console.info("[legions:sandbox] " + this.name + " origin window restore...", Object.keys(this.modifyPropsMap));
+            }
+            this.sandboxRunning = false;
+        };
+        return SnapshotSandbox;
+    }());
+
+    function createSandbox(appName) {
+        var sandbox;
+        if (window.Proxy) {
+            sandbox = new ProxySandbox({ name: appName });
+        }
+        else {
+            sandbox = new SnapshotSandbox(appName);
+        }
+        // mounting freers are one-off and should be re-init at every mounting time
+        var mountingFreers = [];
+        var sideEffectsRebuilders = [];
+        var bootstrappingFreers = hijackAtBootstrapping(appName, sandbox.sandbox);
+        return {
+            proxy: sandbox.sandbox,
+            /**
+             * 沙箱被 mount
+             * 可能是从 bootstrap 状态进入的 mount
+             * 也可能是从 unmount 之后再次唤醒进入 mount
+             */
+            mount: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    var sideEffectsRebuildersAtBootstrapping, sideEffectsRebuildersAtMounting;
+                    return __generator(this, function (_a) {
+                        sideEffectsRebuildersAtBootstrapping = sideEffectsRebuilders.slice(0, bootstrappingFreers.length);
+                        sideEffectsRebuildersAtMounting = sideEffectsRebuilders.slice(bootstrappingFreers.length);
+                        // must rebuild the side effects which added at bootstrapping firstly to recovery to nature state
+                        if (sideEffectsRebuildersAtBootstrapping.length) {
+                            sideEffectsRebuildersAtBootstrapping.forEach(function (rebuild) { return rebuild(); });
+                        }
+                        /* ------------------------------------------ 因为有上下文依赖（window），以下代码执行顺序不能变 ------------------------------------------ */
+                        /* ------------------------------------------ 1. 启动/恢复 沙箱------------------------------------------ */
+                        sandbox.active();
+                        /* ------------------------------------------ 2. 开启全局变量补丁 ------------------------------------------*/
+                        // render 沙箱启动时开始劫持各类全局监听，尽量不要在应用初始化阶段有 事件监听/定时器 等副作用
+                        if (window.Proxy) {
+                            // 在不支持Proxy浏览器环境，比如IE11及以下，执行此行代码会导致切换应用时，执行异常，暂时还未查出原因，先临时这样处理
+                            mountingFreers.push.apply(mountingFreers, __spread(hijackAtMounting(appName, sandbox.sandbox)));
+                        }
+                        /* ------------------------------------------ 3. 重置一些初始化时的副作用 ------------------------------------------*/
+                        // 存在 rebuilder 则表明有些副作用需要重建
+                        if (sideEffectsRebuildersAtMounting.length) {
+                            sideEffectsRebuildersAtMounting.forEach(function (rebuild) { return rebuild(); });
+                        }
+                        // clean up rebuilders
+                        sideEffectsRebuilders = [];
+                        return [2 /*return*/];
+                    });
+                });
+            },
+            /**
+             * 恢复 global 状态，使其能回到应用加载之前的状态
+             */
+            unmount: function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        // record the rebuilders of window side effects (event listeners or timers)
+                        // note that the frees of mounting phase are one-off as it will be re-init at next mounting
+                        sideEffectsRebuilders = __spread(bootstrappingFreers, mountingFreers).map(function (free) { return free(); });
+                        sandbox.inactive();
+                        return [2 /*return*/];
+                    });
+                });
+            },
+        };
+    }
+
+    function assertElementExist$1(element, msg) {
+        if (!element) {
+            if (msg) {
+                throw new Error(msg);
+            }
+            throw new Error('[legions] element not existed!');
+        }
+    }
+    function execHooksChain(hooks, app, global) {
+        if (global === void 0) { global = window; }
+        if (hooks.length) {
+            return hooks.reduce(function (chain, hook) { return chain.then(function () { return hook(app, global); }); }, Promise.resolve());
+        }
+        return Promise.resolve();
+    }
+    function getAppWrapperGetter(appName, appInstanceId, useLegacyRender, strictStyleIsolation, scopedCSS, elementGetter) {
+        return function () {
+            if (useLegacyRender) {
+                if (strictStyleIsolation)
+                    throw new Error('[legions]: strictStyleIsolation can not be used with legacy render!');
+                if (scopedCSS)
+                    throw new Error('[legions]: experimentalStyleIsolation can not be used with legacy render!');
+                var appWrapper = document.getElementById(getWrapperId(appInstanceId));
+                assertElementExist$1(appWrapper, "[legions] Wrapper element for " + appName + " with instance " + appInstanceId + " is not existed!");
+                return appWrapper;
+            }
+            var element = elementGetter();
+            assertElementExist$1(element, "[legions] Wrapper element for " + appName + " with instance " + appInstanceId + " is not existed!");
+            if (strictStyleIsolation) {
+                return element.shadowRoot;
+            }
+            return element;
+        };
+    }
+    var rawAppendChild$1 = HTMLElement.prototype.appendChild;
+    var rawRemoveChild$1 = HTMLElement.prototype.removeChild;
+    function getRender(appName, appContent, legacyRender) {
+        var render = function (_a, phase) {
+            var element = _a.element, loading = _a.loading, container = _a.container;
+            if (legacyRender) {
+                //@ts-ignore
+                if (process.env.NODE_ENV !== 'production') {
+                    console.warn('[legions] Custom rendering function is deprecated, you can use the container element setting instead!');
+                }
+                return legacyRender({ loading: loading, appContent: element ? appContent : '' });
+            }
+            var containerElement = getContainer(container);
+            // The container might have be removed after micro app unmounted.
+            // Such as the micro app unmount lifecycle called by a react componentWillUnmount lifecycle, after micro app unmounted, the react component might also be removed
+            if (phase !== 'unmounted') {
+                var errorMsg = (function () {
+                    switch (phase) {
+                        case 'loading':
+                        case 'mounting':
+                            return "[legions] Target container with " + container + " not existed while " + appName + " " + phase + "!";
+                        case 'mounted':
+                            return "[legions] Target container with " + container + " not existed after " + appName + " " + phase + "!";
+                        default:
+                            return "[legions] Target container with " + container + " not existed while " + appName + " rendering!";
+                    }
+                })();
+                assertElementExist$1(containerElement, errorMsg);
+            }
+            if (containerElement && !containerElement.contains(element)) {
+                // clear the container
+                while (containerElement.firstChild) {
+                    rawRemoveChild$1.call(containerElement, containerElement.firstChild);
+                }
+                // append the element to container if it exist
+                if (element) {
+                    rawAppendChild$1.call(containerElement, element);
+                }
+            }
+            return undefined;
+        };
+        return render;
+    }
+    var supportShadowDOM = 
+    // @ts-ignore
+    document.head.attachShadow || document.head.createShadowRoot;
+    function createElement(appContent, strictStyleIsolation, scopedCSS, appName) {
+        var containerElement = document.createElement('div');
+        containerElement.innerHTML = appContent;
+        // appContent always wrapped with a singular div
+        var appElement = containerElement.firstChild;
+        if (strictStyleIsolation) {
+            if (!supportShadowDOM) {
+                console.warn('[legions]: As current browser not support shadow dom, your strictStyleIsolation configuration will be ignored!');
+            }
+            else {
+                var innerHTML = appElement.innerHTML;
+                appElement.innerHTML = '';
+                var shadow = void 0;
+                if (appElement.attachShadow) {
+                    shadow = appElement.attachShadow({ mode: 'open' });
+                }
+                else {
+                    // createShadowRoot was proposed in initial spec, which has then been deprecated
+                    shadow = appElement.createShadowRoot();
+                }
+                shadow.innerHTML = innerHTML;
+            }
+        }
+        if (scopedCSS) {
+            var attr = appElement.getAttribute(QiankunCSSRewriteAttr);
+            if (!attr) {
+                appElement.setAttribute(QiankunCSSRewriteAttr, appName);
+            }
+            var styleNodes = appElement.querySelectorAll('style') || [];
+            forEach__default['default'](styleNodes, function (stylesheetElement) {
+                process$1(appElement, stylesheetElement, appName);
+            });
+        }
+        return appElement;
+    }
+    function validateSingularMode(validate, app) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, typeof validate === 'function' ? validate(app) : !!validate];
+            });
+        });
+    }
+    function getLifecyclesFromExports(scriptExports, appName, global) {
+        if (validateExportLifecycle(scriptExports)) {
+            return scriptExports;
+        }
+        //@ts-ignore
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn("[legions] lifecycle not found from " + appName + " entry exports, fallback to get from window['" + appName + "']");
+        }
+        // fallback to global variable who named with ${appName} while module exports not found
+        var globalVariableExports = global[appName];
+        if (validateExportLifecycle(globalVariableExports)) {
+            return globalVariableExports;
+        }
+        throw new Error("[legions] You need to export lifecycle functions in " + appName + " entry");
+    }
+    var prevAppUnmountedDeferred;
+    function loadApp(app, configuration, lifeCycles) {
+        if (configuration === void 0) { configuration = {}; }
+        return __awaiter(this, void 0, void 0, function () {
+            var entry, appName, appInstanceId, markName, _a, singular, _b, sandbox, excludeAssetFilter, importEntryOpts, _c, template, execScripts, assetPublicPath, getExternalScripts, getScripts, appContent, strictStyleIsolation, scopedCSS, initialAppWrapperElement, initialContainer, legacyRender, render, global, mountSandbox, unmountSandbox, sandboxInstance, _d, _e, beforeUnmount, _f, afterUnmount, _g, afterMount, _h, beforeMount, _j, beforeLoad, scriptExports, _k, bootstrap, mount, unmount, update, _l, onGlobalStateChange, setGlobalState, offGlobalStateChange, syncAppWrapperElement2Sandbox, parcelConfigGetter;
+            var _this = this;
+            return __generator(this, function (_m) {
+                switch (_m.label) {
+                    case 0:
+                        entry = app.entry, appName = app.name;
+                        appInstanceId = appName + "_" + +new Date() + "_" + Math.floor(Math.random() * 1000);
+                        markName = "[legions] App " + appInstanceId + " Loading";
+                        //@ts-ignore
+                        if (process.env.NODE_ENV !== 'production') {
+                            performanceMark(markName);
+                        }
+                        _a = configuration.singular, singular = _a === void 0 ? false : _a, _b = configuration.sandbox, sandbox = _b === void 0 ? true : _b, excludeAssetFilter = configuration.excludeAssetFilter, importEntryOpts = __rest(configuration, ["singular", "sandbox", "excludeAssetFilter"]);
+                        return [4 /*yield*/, legionsImportHtmlEntry.importHTML(entry, importEntryOpts)];
+                    case 1:
+                        _c = _m.sent(), template = _c.template, execScripts = _c.execScripts, assetPublicPath = _c.assetPublicPath, getExternalScripts = _c.getExternalScripts, getScripts = _c.getScripts;
+                        new MicroApps$1().bootstrap({
+                            container: app['container'],
+                            entry: app.entry,
+                            name: appName
+                        }, {
+                            getExternalScripts: getExternalScripts,
+                            getScripts: getScripts
+                        });
+                        return [4 /*yield*/, validateSingularMode(singular, app)];
+                    case 2:
+                        if (!_m.sent()) return [3 /*break*/, 4];
+                        return [4 /*yield*/, (prevAppUnmountedDeferred && prevAppUnmountedDeferred.promise)];
+                    case 3:
+                        _m.sent();
+                        _m.label = 4;
+                    case 4:
+                        appContent = getDefaultTplWrapper(appInstanceId, appName)(template);
+                        strictStyleIsolation = typeof sandbox === 'object' && !!sandbox.strictStyleIsolation;
+                        scopedCSS = isEnableScopedCSS(sandbox);
+                        initialAppWrapperElement = createElement(appContent, strictStyleIsolation, scopedCSS, appName);
+                        initialContainer = 'container' in app ? app.container : undefined;
+                        legacyRender = 'render' in app ? app.render : undefined;
+                        render = getRender(appName, appContent, legacyRender);
+                        // 第一次加载设置应用可见区域 dom 结构
+                        // 确保每次应用加载前容器 dom 结构已经设置完毕
+                        render({
+                            element: initialAppWrapperElement,
+                            loading: true,
+                            container: initialContainer,
+                        }, 'loading');
+                        global = window;
+                        mountSandbox = function () { return Promise.resolve(); };
+                        unmountSandbox = function () { return Promise.resolve(); };
+                        if (sandbox) {
+                            sandboxInstance = createSandbox(appName
+                            // FIXME should use a strict sandbox logic while remount, see https://github.com/umijs/qiankun/issues/518
+                            );
+                            // 用沙箱的代理对象作为接下来使用的全局对象
+                            global = sandboxInstance.proxy;
+                            mountSandbox = sandboxInstance.mount;
+                            unmountSandbox = sandboxInstance.unmount;
+                        }
+                        _d = mergeWith__default['default']({}, getAddOns(global, assetPublicPath), lifeCycles, function (v1, v2) {
+                            return concat__default['default'](v1 !== null && v1 !== void 0 ? v1 : [], v2 !== null && v2 !== void 0 ? v2 : []);
+                        }), _e = _d.beforeUnmount, beforeUnmount = _e === void 0 ? [] : _e, _f = _d.afterUnmount, afterUnmount = _f === void 0 ? [] : _f, _g = _d.afterMount, afterMount = _g === void 0 ? [] : _g, _h = _d.beforeMount, beforeMount = _h === void 0 ? [] : _h, _j = _d.beforeLoad, beforeLoad = _j === void 0 ? [] : _j;
+                        return [4 /*yield*/, execHooksChain(toArray(beforeLoad), app, global)];
+                    case 5:
+                        _m.sent();
+                        return [4 /*yield*/, execScripts(global)];
+                    case 6:
+                        scriptExports = _m.sent();
+                        _k = getLifecyclesFromExports(scriptExports, appName, global), bootstrap = _k.bootstrap, mount = _k.mount, unmount = _k.unmount, update = _k.update;
+                        _l = getMicroAppStateActions(appInstanceId), onGlobalStateChange = _l.onGlobalStateChange, setGlobalState = _l.setGlobalState, offGlobalStateChange = _l.offGlobalStateChange;
+                        syncAppWrapperElement2Sandbox = function (element) {
+                            return (initialAppWrapperElement = element);
+                        };
+                        parcelConfigGetter = function (remountContainer) {
+                            if (remountContainer === void 0) { remountContainer = initialContainer; }
+                            var appWrapperElement = initialAppWrapperElement;
+                            var appWrapperGetter = getAppWrapperGetter(appName, appInstanceId, !!legacyRender, strictStyleIsolation, scopedCSS, function () { return appWrapperElement; });
+                            var parcelConfig = {
+                                name: appInstanceId,
+                                bootstrap: bootstrap,
+                                mount: [
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        var marks;
+                                        return __generator(this, function (_a) {
+                                            //@ts-ignore
+                                            if (process.env.NODE_ENV !== 'production') {
+                                                marks = performance.getEntriesByName(markName, 'mark');
+                                                // mark length is zero means the app is remounting
+                                                if (!marks.length) {
+                                                    performanceMark(markName);
+                                                }
+                                            }
+                                            return [2 /*return*/];
+                                        });
+                                    }); },
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0: return [4 /*yield*/, validateSingularMode(singular, app)];
+                                                case 1:
+                                                    if ((_a.sent()) &&
+                                                        prevAppUnmountedDeferred) {
+                                                        return [2 /*return*/, prevAppUnmountedDeferred.promise];
+                                                    }
+                                                    return [2 /*return*/, undefined];
+                                            }
+                                        });
+                                    }); },
+                                    // 添加 mount hook, 确保每次应用加载前容器 dom 结构已经设置完毕
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        var useNewContainer;
+                                        return __generator(this, function (_a) {
+                                            useNewContainer = remountContainer !== initialContainer;
+                                            if (useNewContainer || !appWrapperElement) {
+                                                // element will be destroyed after unmounted, we need to recreate it if it not exist
+                                                // or we try to remount into a new container
+                                                appWrapperElement = createElement(appContent, strictStyleIsolation, scopedCSS, appName);
+                                                syncAppWrapperElement2Sandbox(appWrapperElement);
+                                            }
+                                            render({
+                                                element: appWrapperElement,
+                                                loading: true,
+                                                container: remountContainer,
+                                            }, 'mounting');
+                                            return [2 /*return*/];
+                                        });
+                                    }); },
+                                    mountSandbox,
+                                    // exec the chain after rendering to keep the behavior with beforeLoad
+                                    function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                        return [2 /*return*/, execHooksChain(toArray(beforeMount), app, global)];
+                                    }); }); },
+                                    function (props) { return __awaiter(_this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            return [2 /*return*/, mount(__assign(__assign({}, props), { container: appWrapperGetter(), setGlobalState: setGlobalState,
+                                                    onGlobalStateChange: onGlobalStateChange }))];
+                                        });
+                                    }); },
+                                    // finish loading after app mounted
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            return [2 /*return*/, render({
+                                                    element: appWrapperElement,
+                                                    loading: false,
+                                                    container: remountContainer,
+                                                }, 'mounted')];
+                                        });
+                                    }); },
+                                    function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                        return [2 /*return*/, execHooksChain(toArray(afterMount), app, global)];
+                                    }); }); },
+                                    // initialize the unmount defer after app mounted and resolve the defer after it unmounted
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0: return [4 /*yield*/, validateSingularMode(singular, app)];
+                                                case 1:
+                                                    if (_a.sent()) {
+                                                        prevAppUnmountedDeferred = new Deferred();
+                                                    }
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    }); },
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        var measureName;
+                                        return __generator(this, function (_a) {
+                                            //@ts-ignore
+                                            if (process.env.NODE_ENV !== 'production') {
+                                                measureName = "[legions] App " + appInstanceId + " Loading Consuming";
+                                                performanceMeasure(measureName, markName);
+                                            }
+                                            return [2 /*return*/];
+                                        });
+                                    }); },
+                                ],
+                                unmount: [
+                                    function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                        return [2 /*return*/, execHooksChain(toArray(beforeUnmount), app, global)];
+                                    }); }); },
+                                    function (props) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                        return [2 /*return*/, unmount(__assign(__assign({}, props), { container: appWrapperGetter() }))];
+                                    }); }); },
+                                    unmountSandbox,
+                                    function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                        return [2 /*return*/, execHooksChain(toArray(afterUnmount), app, global)];
+                                    }); }); },
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            render({ element: null, loading: false, container: remountContainer }, 'unmounted');
+                                            offGlobalStateChange(appInstanceId);
+                                            // for gc
+                                            appWrapperElement = null;
+                                            syncAppWrapperElement2Sandbox(appWrapperElement);
+                                            return [2 /*return*/];
+                                        });
+                                    }); },
+                                    function () { return __awaiter(_this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0: return [4 /*yield*/, validateSingularMode(singular, app)];
+                                                case 1:
+                                                    if ((_a.sent()) &&
+                                                        prevAppUnmountedDeferred) {
+                                                        prevAppUnmountedDeferred.resolve();
+                                                    }
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    }); },
+                                ],
+                            };
+                            if (typeof update === 'function') {
+                                parcelConfig.update = update;
+                            }
+                            return parcelConfig;
+                        };
+                        return [2 /*return*/, parcelConfigGetter];
+                }
+            });
+        });
+    }
+
+    var frameworkConfiguration = {};
+    var frameworkStartedDefer = new Deferred();
+    var microApps$2 = [];
+    function registerMicroApps(apps, lifeCycles) {
+        var _this = this;
+        // Each app only needs to be registered once
+        var unregisteredApps = apps.filter(function (app) { return !microApps$2.some(function (registeredApp) { return registeredApp.name === app.name; }); });
+        microApps$2 = __spread(microApps$2, unregisteredApps);
+        unregisteredApps.forEach(function (app) {
+            var name = app.name, activeRule = app.activeRule, _a = app.loader, loader = _a === void 0 ? noop__default['default'] : _a, props = app.props, appConfig = __rest(app, ["name", "activeRule", "loader", "props"]);
+            singleSpa.registerApplication({
+                name: name,
+                app: function () { return __awaiter(_this, void 0, void 0, function () {
+                    var _a, mount, otherMicroAppConfigs;
+                    var _this = this;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                loader(true);
+                                return [4 /*yield*/, frameworkStartedDefer.promise];
+                            case 1:
+                                _b.sent();
+                                return [4 /*yield*/, loadApp(__assign({ name: name, props: props }, appConfig), frameworkConfiguration, lifeCycles)];
+                            case 2:
+                                _a = (_b.sent())(), mount = _a.mount, otherMicroAppConfigs = __rest(_a, ["mount"]);
+                                return [2 /*return*/, __assign({ mount: __spread([
+                                            function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                                return [2 /*return*/, loader(true)];
+                                            }); }); }
+                                        ], toArray(mount), [
+                                            function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                                return [2 /*return*/, loader(false)];
+                                            }); }); },
+                                        ]) }, otherMicroAppConfigs)];
+                        }
+                    });
+                }); },
+                activeWhen: activeRule,
+                customProps: props,
+            });
+        });
+    }
+    var appConfigPromiseGetterMap = new Map();
+    function loadMicroApp(app, configuration, lifeCycles) {
+        var _this = this;
+        var props = app.props, name = app.name;
+        var getContainerXpath = function (container) {
+            var containerElement = getContainer(container);
+            if (containerElement) {
+                return getXPathForElement(containerElement, document);
+            }
+            return undefined;
+        };
+        var wrapParcelConfigForRemount = function (config) {
+            return __assign(__assign({}, config), { 
+                // empty bootstrap hook which should not run twice while it calling from cached micro app
+                bootstrap: function () { return Promise.resolve(); } });
+        };
+        /**
+         * using name + container xpath as the micro app instance id,
+         * it means if you rendering a micro app to a dom which have been rendered before,
+         * the micro app would not load and evaluate its lifecycles again
+         */
+        var memorizedLoadingFn = function () { return __awaiter(_this, void 0, void 0, function () {
+            var $$cacheLifecycleByAppName, container, parcelConfigGetterPromise, _a, xpath, parcelConfigGetterPromise, _b, parcelConfigObjectGetterPromise, xpath;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        $$cacheLifecycleByAppName = (configuration !== null && configuration !== void 0 ? configuration : frameworkConfiguration).$$cacheLifecycleByAppName;
+                        container = 'container' in app ? app.container : undefined;
+                        if (!container) return [3 /*break*/, 4];
+                        if (!$$cacheLifecycleByAppName) return [3 /*break*/, 2];
+                        parcelConfigGetterPromise = appConfigPromiseGetterMap.get(name);
+                        if (!parcelConfigGetterPromise) return [3 /*break*/, 2];
+                        _a = wrapParcelConfigForRemount;
+                        return [4 /*yield*/, parcelConfigGetterPromise];
+                    case 1: return [2 /*return*/, _a.apply(void 0, [(_c.sent())(container)])];
+                    case 2:
+                        xpath = getContainerXpath(container);
+                        if (!xpath) return [3 /*break*/, 4];
+                        parcelConfigGetterPromise = appConfigPromiseGetterMap.get(name + "-" + xpath);
+                        if (!parcelConfigGetterPromise) return [3 /*break*/, 4];
+                        _b = wrapParcelConfigForRemount;
+                        return [4 /*yield*/, parcelConfigGetterPromise];
+                    case 3: return [2 /*return*/, _b.apply(void 0, [(_c.sent())(container)])];
+                    case 4:
+                        parcelConfigObjectGetterPromise = loadApp(app, configuration !== null && configuration !== void 0 ? configuration : frameworkConfiguration, lifeCycles);
+                        if (container) {
+                            if ($$cacheLifecycleByAppName) {
+                                appConfigPromiseGetterMap.set(name, parcelConfigObjectGetterPromise);
+                            }
+                            else {
+                                xpath = getContainerXpath(container);
+                                if (xpath)
+                                    appConfigPromiseGetterMap.set(name + "-" + xpath, parcelConfigObjectGetterPromise);
+                            }
+                        }
+                        return [4 /*yield*/, parcelConfigObjectGetterPromise];
+                    case 5: return [2 /*return*/, (_c.sent())(container)];
+                }
+            });
+        }); };
+        return singleSpa.mountRootParcel(memorizedLoadingFn, __assign({ domElement: document.createElement('div') }, props));
+    }
+    function start(opts) {
+        if (opts === void 0) { opts = {}; }
+        frameworkConfiguration = __assign({ prefetch: true, singular: true, sandbox: true }, opts);
+        var prefetch = frameworkConfiguration.prefetch, sandbox = frameworkConfiguration.sandbox, singular = frameworkConfiguration.singular, urlRerouteOnly = frameworkConfiguration.urlRerouteOnly, importEntryOpts = __rest(frameworkConfiguration, ["prefetch", "sandbox", "singular", "urlRerouteOnly"]);
+        if (prefetch) {
+            doPrefetchStrategy(microApps$2, prefetch, importEntryOpts);
+        }
+        if (sandbox) {
+            if (!window.Proxy) {
+                console.warn('[legions] Miss window.Proxy, proxySandbox will degenerate into snapshotSandbox');
+                frameworkConfiguration.sandbox =
+                    typeof sandbox === 'object'
+                        ? __assign(__assign({}, sandbox), { loose: true }) : { loose: true };
+                if (!singular) {
+                    console.warn('[legions] Setting singular as false may cause unexpected behavior while your browser not support window.Proxy');
+                }
+            }
+        }
+        singleSpa.start({ urlRerouteOnly: urlRerouteOnly });
+        frameworkStartedDefer.resolve();
+    }
+
+    function setDefaultMountApp(defaultAppLink) {
+        // can not use addEventListener once option for ie support
+        window.addEventListener('single-spa:no-app-change', function listener() {
+            var mountedApps = singleSpa.getMountedApps();
+            if (!mountedApps.length) {
+                singleSpa.navigateToUrl(defaultAppLink);
+            }
+            window.removeEventListener('single-spa:no-app-change', listener);
+        });
+    }
+
+    Object.defineProperty(exports, 'getMountedApps', {
+        enumerable: true,
+        get: function () {
+            return singleSpa.getMountedApps;
+        }
+    });
     exports.MicroApps = MicroApps;
-    exports.Sandbox = Sandbox;
+    exports.MountedMicroApps = MicroApps$1;
+    exports.loadMicroApp = loadMicroApp;
+    exports.registerMicroApps = registerMicroApps;
+    exports.setDefaultMountApp = setDefaultMountApp;
+    exports.start = start;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

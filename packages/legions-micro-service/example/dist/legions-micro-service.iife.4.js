@@ -10836,10 +10836,9 @@ var legionsMicroservice = (function (exports) {
 	  return value;
 	}
 
-	/* let PROXY = Proxy;
-	if (!window.Proxy) {
-	  window['Proxy'] = Proxy;
-	} */
+	/**
+	 * copy from https://www.npmjs.com/package/qiankun
+	 */
 
 	var activeSandboxCount = 0;
 	/**
@@ -11560,8 +11559,7 @@ var legionsMicroservice = (function (exports) {
 	}
 
 	/**
-	 * @author Hydrogen
-	 * @since 2020-3-8
+	 * copy from https://www.npmjs.com/package/qiankun
 	 */
 
 	function iter(obj, callbackFn) {
@@ -11741,7 +11739,6 @@ var legionsMicroservice = (function (exports) {
 	      if (strictStyleIsolation) throw new Error('[legions]: strictStyleIsolation can not be used with legacy render!');
 	      if (scopedCSS) throw new Error('[legions]: experimentalStyleIsolation can not be used with legacy render!');
 	      var appWrapper = document.getElementById(getWrapperId(appInstanceId));
-	      console.log(useLegacyRender, strictStyleIsolation, appInstanceId, appWrapper, 'appInstanceIdappInstanceIdappInstanceId');
 	      assertElementExist$1(appWrapper, "[legions] Wrapper element for " + appName + " with instance " + appInstanceId + " is not existed!");
 	      return appWrapper;
 	    }

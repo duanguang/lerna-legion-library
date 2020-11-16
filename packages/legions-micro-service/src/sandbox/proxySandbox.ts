@@ -3,10 +3,9 @@ import 'object-defineproperty-ie'; */
 import { nextTick, SandBoxType } from '../utils';
 import { documentAttachProxyMap, getTargetValue } from './common';
 import 'reflect-metadata';
-/* let PROXY = Proxy;
-if (!window.Proxy) {
-  window['Proxy'] = Proxy;
-} */
+/**
+ * copy from https://www.npmjs.com/package/qiankun
+ */
 let activeSandboxCount = 0;
 /**
  * fastest(at most time) unique array method

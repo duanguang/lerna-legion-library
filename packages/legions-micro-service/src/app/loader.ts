@@ -72,13 +72,6 @@ function getAppWrapperGetter(
         );
 
       const appWrapper = document.getElementById(getWrapperId(appInstanceId));
-      console.log(
-        useLegacyRender,
-        strictStyleIsolation,
-        appInstanceId,
-        appWrapper,
-        'appInstanceIdappInstanceIdappInstanceId'
-      );
       assertElementExist(
         appWrapper,
         `[legions] Wrapper element for ${appName} with instance ${appInstanceId} is not existed!`
@@ -117,7 +110,7 @@ function getRender(
   const render: ElementRender = ({ element, loading, container }, phase) => {
     if (legacyRender) {
       //@ts-ignore
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV !== 'production') {
         console.warn(
           '[legions] Custom rendering function is deprecated, you can use the container element setting instead!'
         );
@@ -228,7 +221,7 @@ function getLifecyclesFromExports(
     return scriptExports;
   }
   //@ts-ignore
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     console.warn(
       `[legions] lifecycle not found from ${appName} entry exports, fallback to get from window['${appName}']`
     );
@@ -382,7 +375,7 @@ export async function loadApp<T extends object>(
       mount: [
         async () => {
           //@ts-ignore
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV !== 'production') {
             const marks = performance.getEntriesByName(markName, 'mark');
             // mark length is zero means the app is remounting
             if (!marks.length) {
@@ -453,7 +446,7 @@ export async function loadApp<T extends object>(
         },
         async () => {
           //@ts-ignore
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV !== 'production') {
             const measureName = `[legions] App ${appInstanceId} Loading Consuming`;
             performanceMeasure(measureName, markName);
           }

@@ -1,26 +1,14 @@
 const path = require('path');
-const resolves = _path => path.join(process.cwd(), _path);
+const resolves = _path => path.join(process.cwd(),_path);
+const { entitys,all} =require('./script/entiy')
+const { babel,external,commonjs} =require('./script/rollupPlugin')
+const PACKAGE = process.env.PACKAGE;
 module.exports = {
-  external: [
-    /*  'legions-utils-tool/type.validation',
-    'legions-utils-tool/browser', */
-  ],
+  external: external[PACKAGE],
   rollupPlugin: {
-    /* babel: false, */
-    commonjs: {
-      namedExports: {
-        // 显式指出指定文件导出模块
-        'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
-          'importHTML',
-          'importEntry',
-          'execScripts',
-        ],
-        /*  'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
-          'importHTML',
-          'importEntry',
-        ], */
-      },
-    },
+  /* babel: false, */
+    ...babel[PACKAGE],
+    ...commonjs[PACKAGE],
     typescript: {
       include: ['*.ts+(|x)', '**/*.ts+(|x)', '**/*.js', '*.js'],
     },
@@ -30,16 +18,9 @@ module.exports = {
   },
   extendPlugins: [],
   entitys: [
-    {
-      name: 'umdprod',
-      input: resolves('src/index.ts'),
-      file: resolves('dist/legions-micro-service.iife.4.js'),
-      format: 'iife',
-      compress: false,
-      env: 'production',
-      banner: 'legions-micro-service',
-      outputName: 'legionsMicroservice',
-    },
+    ...(entitys.hasOwnProperty(process.env.PACKAGE)
+      ? entitys[process.env.PACKAGE]
+      : all),
     /* {
       name: 'umdprod',
       input: resolves('src/index.ts'),

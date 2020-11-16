@@ -1,5 +1,4 @@
 export declare class MicroApps {
-    importHTML: string;
     importHTMLOptions: {
         excludeFiles: string[];
         isMerge: boolean;
@@ -13,7 +12,6 @@ export declare class MicroApps {
        * @memberof MicroApps
        */
     constructor(options: {
-        importHTML?: string;
         excludeFiles?: string[];
         isMerge?: boolean;
     });

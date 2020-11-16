@@ -1,3 +1,6 @@
+/**
+ * copy from https://www.npmjs.com/package/qiankun
+ */
 import { ImportEntryOpts } from 'legions-import-html-entry';
 import { RegisterApplicationConfig, StartOpts, Parcel } from 'single-spa';
 declare global {

@@ -1,8 +1,7 @@
 import { SandBoxType } from '../utils';
 
 /**
- * @author Hydrogen
- * @since 2020-3-8
+ * copy from https://www.npmjs.com/package/qiankun
  */
 
 function iter(obj: object, callbackFn: (prop: any) => void) {

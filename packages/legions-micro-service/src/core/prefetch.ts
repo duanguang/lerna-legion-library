@@ -1,5 +1,5 @@
 import { getAppStatus, getMountedApps, NOT_LOADED } from 'single-spa';
-import { Entry, importHTML, ImportEntryOpts } from 'legions-import-html-entry';
+import {  importHTML, ImportEntryOpts } from 'legions-import-html-entry';
 import { AppMetadata, PrefetchStrategy } from '../interfaces';
 type RequestIdleCallbackHandle = any;
 type RequestIdleCallbackOptions = {
@@ -86,7 +86,7 @@ function prefetchAfterFirstMounted(
     );
 
     //@ts-ignore
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'production') {
       const mountedApps = getMountedApps();
       console.log(
         `[legions] prefetch starting after ${mountedApps} mounted...`,
@@ -104,8 +104,8 @@ export function prefetchImmediately(
   opts?: ImportEntryOpts
 ): void {
   //@ts-ignore
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[qiankun] prefetch starting for apps...', apps);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[legions] prefetch starting for apps...', apps);
   }
 
   apps.forEach(({ entry }) => prefetch(entry, opts));
