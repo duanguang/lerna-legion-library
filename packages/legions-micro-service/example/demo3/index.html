@@ -68,7 +68,7 @@
                     <li onclick="push('/react16')">React16</li>
                     <li onclick="push('/react16/todo')">React16-todo</li>
                     <li onclick="push('/react15')">React15</li>
-                    <li onclick="push('/groupmanage')">SCM</li>
+                    <li onclick="push('/scm-static/scm/groupManage')">SCM</li>
                     <!-- <li onclick="push('/vue')">Vue</li>
                     <li onclick="push('/vue3')">Vue3</li>
                     <li onclick="push('/angular9')">Angular9</li>
@@ -86,13 +86,13 @@
                 /* history.pushState(null, subapp, subapp) */
             }
             var script = document.createElement('script');
-            script.src = 'http://192.168.100.141:8080/dist/legions-micro-service.iife.4.js';
+            script.src = 'http://127.0.0.1:8080/dist/legions-micro-service.iife.4.js';
             document.getElementsByTagName('head')[0].appendChild(script)
             script.onload = script.onreadystatechange = function () {
                 if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
                     setTimeout(function () {
                         if (window['legionsMicroservice']) {
-                            var sourceUrl = 'http://192.168.100.141:8081/home/#/';
+                            var sourceUrl = 'http://127.0.0.1:8081/home/#/';
                             var appId = 'app';
                             var styleId = 'react-scm-style';
                             var options = {
@@ -144,18 +144,18 @@
                                     activeRule: '/demo3#/react15',
                                 },
                                 {
-                                    entry: 'http://192.168.100.141:8082/home',
+                                    entry: 'http://127.0.0.1:8082/home',
                                     name: 'react16-home',
                                     container: '#subapp-viewport',
                                     loader: render,
                                     activeRule: '/demo3#/react16',
                                 },
                                 {
-                                    entry: 'https://uat-scm.hoolinks.com//scm-static/scm/',
-                                    name: 'hoolinks-scm-web-scm',
+                                    entry: 'http://127.0.0.1:8083/scm',
+                                    name: 'hoolink-scm-web-scm',
                                     container: '#subapp-viewport',
                                     loader: render,
-                                    activeRule: '/demo3#/groupmanage',
+                                    activeRule: '/demo3#/scm-static/scm/groupManage',
                                 }
                             ])
                             legionsMicroservice.setDefaultMountApp('/demo3#/react16');
