@@ -1,5 +1,5 @@
 /**
-  *  legions-import-html-entry v0.0.1
+  *  legions-import-html-entry v0.0.5
   * (c) 2020 duanguang
   * @license MIT
   */
@@ -528,6 +528,148 @@ var legionsImportHTML = (function (exports) {
 	  }
 	};
 
+	// `IsArray` abstract operation
+	// https://tc39.github.io/ecma262/#sec-isarray
+	var isArray = Array.isArray || function isArray(arg) {
+	  return classofRaw(arg) == 'Array';
+	};
+
+	// `ToObject` abstract operation
+	// https://tc39.github.io/ecma262/#sec-toobject
+	var toObject = function (argument) {
+	  return Object(requireObjectCoercible(argument));
+	};
+
+	var createProperty = function (object, key, value) {
+	  var propertyKey = toPrimitive(key);
+	  if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
+	  else object[propertyKey] = value;
+	};
+
+	var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
+	  // Chrome 38 Symbol has incorrect toString conversion
+	  // eslint-disable-next-line no-undef
+	  return !String(Symbol());
+	});
+
+	var useSymbolAsUid = nativeSymbol
+	  // eslint-disable-next-line no-undef
+	  && !Symbol.sham
+	  // eslint-disable-next-line no-undef
+	  && typeof Symbol.iterator == 'symbol';
+
+	var WellKnownSymbolsStore = shared('wks');
+	var Symbol$1 = global_1.Symbol;
+	var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
+
+	var wellKnownSymbol = function (name) {
+	  if (!has(WellKnownSymbolsStore, name)) {
+	    if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
+	    else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
+	  } return WellKnownSymbolsStore[name];
+	};
+
+	var SPECIES = wellKnownSymbol('species');
+
+	// `ArraySpeciesCreate` abstract operation
+	// https://tc39.github.io/ecma262/#sec-arrayspeciescreate
+	var arraySpeciesCreate = function (originalArray, length) {
+	  var C;
+	  if (isArray(originalArray)) {
+	    C = originalArray.constructor;
+	    // cross-realm fallback
+	    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
+	    else if (isObject(C)) {
+	      C = C[SPECIES];
+	      if (C === null) C = undefined;
+	    }
+	  } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
+	};
+
+	var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
+
+	var process = global_1.process;
+	var versions = process && process.versions;
+	var v8 = versions && versions.v8;
+	var match, version;
+
+	if (v8) {
+	  match = v8.split('.');
+	  version = match[0] + match[1];
+	} else if (engineUserAgent) {
+	  match = engineUserAgent.match(/Edge\/(\d+)/);
+	  if (!match || match[1] >= 74) {
+	    match = engineUserAgent.match(/Chrome\/(\d+)/);
+	    if (match) version = match[1];
+	  }
+	}
+
+	var engineV8Version = version && +version;
+
+	var SPECIES$1 = wellKnownSymbol('species');
+
+	var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
+	  // We can't use this feature detection in V8 since it causes
+	  // deoptimization and serious performance degradation
+	  // https://github.com/zloirock/core-js/issues/677
+	  return engineV8Version >= 51 || !fails(function () {
+	    var array = [];
+	    var constructor = array.constructor = {};
+	    constructor[SPECIES$1] = function () {
+	      return { foo: 1 };
+	    };
+	    return array[METHOD_NAME](Boolean).foo !== 1;
+	  });
+	};
+
+	var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
+	var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
+	var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
+
+	// We can't use this feature detection in V8 since it causes
+	// deoptimization and serious performance degradation
+	// https://github.com/zloirock/core-js/issues/679
+	var IS_CONCAT_SPREADABLE_SUPPORT = engineV8Version >= 51 || !fails(function () {
+	  var array = [];
+	  array[IS_CONCAT_SPREADABLE] = false;
+	  return array.concat()[0] !== array;
+	});
+
+	var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('concat');
+
+	var isConcatSpreadable = function (O) {
+	  if (!isObject(O)) return false;
+	  var spreadable = O[IS_CONCAT_SPREADABLE];
+	  return spreadable !== undefined ? !!spreadable : isArray(O);
+	};
+
+	var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
+
+	// `Array.prototype.concat` method
+	// https://tc39.github.io/ecma262/#sec-array.prototype.concat
+	// with adding support of @@isConcatSpreadable and @@species
+	_export({ target: 'Array', proto: true, forced: FORCED }, {
+	  concat: function concat(arg) { // eslint-disable-line no-unused-vars
+	    var O = toObject(this);
+	    var A = arraySpeciesCreate(O, 0);
+	    var n = 0;
+	    var i, k, length, len, E;
+	    for (i = -1, length = arguments.length; i < length; i++) {
+	      E = i === -1 ? O : arguments[i];
+	      if (isConcatSpreadable(E)) {
+	        len = toLength(E.length);
+	        if (n + len > MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+	        for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
+	      } else {
+	        if (n >= MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+	        createProperty(A, n++, E);
+	      }
+	    }
+	    A.length = n;
+	    return A;
+	  }
+	});
+
 	var arrayMethodIsStrict = function (METHOD_NAME, argument) {
 	  var method = [][METHOD_NAME];
 	  return !!method && fails(function () {
@@ -581,40 +723,11 @@ var legionsImportHTML = (function (exports) {
 	  }
 	});
 
-	// `IsArray` abstract operation
-	// https://tc39.github.io/ecma262/#sec-isarray
-	var isArray = Array.isArray || function isArray(arg) {
-	  return classofRaw(arg) == 'Array';
-	};
-
 	// `Array.isArray` method
 	// https://tc39.github.io/ecma262/#sec-array.isarray
 	_export({ target: 'Array', stat: true }, {
 	  isArray: isArray
 	});
-
-	var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
-	  // Chrome 38 Symbol has incorrect toString conversion
-	  // eslint-disable-next-line no-undef
-	  return !String(Symbol());
-	});
-
-	var useSymbolAsUid = nativeSymbol
-	  // eslint-disable-next-line no-undef
-	  && !Symbol.sham
-	  // eslint-disable-next-line no-undef
-	  && typeof Symbol.iterator == 'symbol';
-
-	var WellKnownSymbolsStore = shared('wks');
-	var Symbol$1 = global_1.Symbol;
-	var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
-
-	var wellKnownSymbol = function (name) {
-	  if (!has(WellKnownSymbolsStore, name)) {
-	    if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
-	    else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
-	  } return WellKnownSymbolsStore[name];
-	};
 
 	// `Object.keys` method
 	// https://tc39.github.io/ecma262/#sec-object.keys
@@ -725,12 +838,6 @@ var legionsImportHTML = (function (exports) {
 	};
 
 	var iterators = {};
-
-	// `ToObject` abstract operation
-	// https://tc39.github.io/ecma262/#sec-toobject
-	var toObject = function (argument) {
-	  return Object(requireObjectCoercible(argument));
-	};
 
 	var correctPrototypeGetter = !fails(function () {
 	  function F() { /* empty */ }
@@ -1004,23 +1111,6 @@ var legionsImportHTML = (function (exports) {
 	  };
 	};
 
-	var SPECIES = wellKnownSymbol('species');
-
-	// `ArraySpeciesCreate` abstract operation
-	// https://tc39.github.io/ecma262/#sec-arrayspeciescreate
-	var arraySpeciesCreate = function (originalArray, length) {
-	  var C;
-	  if (isArray(originalArray)) {
-	    C = originalArray.constructor;
-	    // cross-realm fallback
-	    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
-	    else if (isObject(C)) {
-	      C = C[SPECIES];
-	      if (C === null) C = undefined;
-	    }
-	  } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
-	};
-
 	var push = [].push;
 
 	// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
@@ -1079,42 +1169,6 @@ var legionsImportHTML = (function (exports) {
 	  // `Array.prototype.findIndex` method
 	  // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
 	  findIndex: createMethod$1(6)
-	};
-
-	var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
-
-	var process = global_1.process;
-	var versions = process && process.versions;
-	var v8 = versions && versions.v8;
-	var match, version;
-
-	if (v8) {
-	  match = v8.split('.');
-	  version = match[0] + match[1];
-	} else if (engineUserAgent) {
-	  match = engineUserAgent.match(/Edge\/(\d+)/);
-	  if (!match || match[1] >= 74) {
-	    match = engineUserAgent.match(/Chrome\/(\d+)/);
-	    if (match) version = match[1];
-	  }
-	}
-
-	var engineV8Version = version && +version;
-
-	var SPECIES$1 = wellKnownSymbol('species');
-
-	var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
-	  // We can't use this feature detection in V8 since it causes
-	  // deoptimization and serious performance degradation
-	  // https://github.com/zloirock/core-js/issues/677
-	  return engineV8Version >= 51 || !fails(function () {
-	    var array = [];
-	    var constructor = array.constructor = {};
-	    constructor[SPECIES$1] = function () {
-	      return { foo: 1 };
-	    };
-	    return array[METHOD_NAME](Boolean).foo !== 1;
-	  });
 	};
 
 	var $map = arrayIteration.map;
@@ -1642,7 +1696,7 @@ var legionsImportHTML = (function (exports) {
 	var UNHANDLED = 2;
 	var Internal, OwnPromiseCapability, PromiseWrapper, nativeThen;
 
-	var FORCED = isForced_1(PROMISE, function () {
+	var FORCED$1 = isForced_1(PROMISE, function () {
 	  var GLOBAL_CORE_JS_PROMISE = inspectSource(PromiseConstructor) !== String(PromiseConstructor);
 	  if (!GLOBAL_CORE_JS_PROMISE) {
 	    // V8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
@@ -1666,7 +1720,7 @@ var legionsImportHTML = (function (exports) {
 	  return !(promise.then(function () { /* empty */ }) instanceof FakePromise);
 	});
 
-	var INCORRECT_ITERATION = FORCED || !checkCorrectnessOfIteration(function (iterable) {
+	var INCORRECT_ITERATION = FORCED$1 || !checkCorrectnessOfIteration(function (iterable) {
 	  PromiseConstructor.all(iterable)['catch'](function () { /* empty */ });
 	});
 
@@ -1812,7 +1866,7 @@ var legionsImportHTML = (function (exports) {
 	};
 
 	// constructor polyfill
-	if (FORCED) {
+	if (FORCED$1) {
 	  // 25.4.3.1 Promise(executor)
 	  PromiseConstructor = function Promise(executor) {
 	    anInstance(this, PromiseConstructor, PROMISE);
@@ -1893,7 +1947,7 @@ var legionsImportHTML = (function (exports) {
 	  }
 	}
 
-	_export({ global: true, wrap: true, forced: FORCED }, {
+	_export({ global: true, wrap: true, forced: FORCED$1 }, {
 	  Promise: PromiseConstructor
 	});
 
@@ -1903,7 +1957,7 @@ var legionsImportHTML = (function (exports) {
 	PromiseWrapper = getBuiltIn(PROMISE);
 
 	// statics
-	_export({ target: PROMISE, stat: true, forced: FORCED }, {
+	_export({ target: PROMISE, stat: true, forced: FORCED$1 }, {
 	  // `Promise.reject` method
 	  // https://tc39.github.io/ecma262/#sec-promise.reject
 	  reject: function reject(r) {
@@ -1913,7 +1967,7 @@ var legionsImportHTML = (function (exports) {
 	  }
 	});
 
-	_export({ target: PROMISE, stat: true, forced:  FORCED }, {
+	_export({ target: PROMISE, stat: true, forced:  FORCED$1 }, {
 	  // `Promise.resolve` method
 	  // https://tc39.github.io/ecma262/#sec-promise.resolve
 	  resolve: function resolve(x) {
@@ -2644,12 +2698,6 @@ var legionsImportHTML = (function (exports) {
 	    }
 	  } return T;
 	} : nativeAssign;
-
-	var createProperty = function (object, key, value) {
-	  var propertyKey = toPrimitive(key);
-	  if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
-	  else object[propertyKey] = value;
-	};
 
 	// `Array.from` method implementation
 	// https://tc39.github.io/ecma262/#sec-array.from
@@ -4302,7 +4350,7 @@ var legionsImportHTML = (function (exports) {
 
 	var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y;
 
-	var FORCED$1 = descriptors && isForced_1('RegExp', (!CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
+	var FORCED$2 = descriptors && isForced_1('RegExp', (!CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
 	  re2[MATCH$2] = false;
 	  // RegExp constructor can alter flags and IsRegExp works correct with @@match
 	  return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
@@ -4310,7 +4358,7 @@ var legionsImportHTML = (function (exports) {
 
 	// `RegExp` constructor
 	// https://tc39.github.io/ecma262/#sec-regexp-constructor
-	if (FORCED$1) {
+	if (FORCED$2) {
 	  var RegExpWrapper = function RegExp(pattern, flags) {
 	    var thisIsRegExp = this instanceof RegExpWrapper;
 	    var patternIsRegExp = isRegexp(pattern);
@@ -4611,11 +4659,11 @@ var legionsImportHTML = (function (exports) {
 	var STRICT_METHOD$4 = arrayMethodIsStrict('lastIndexOf');
 	// For preventing possible almost infinite loop in non-standard implementations, test the forward version of the method
 	var USES_TO_LENGTH$5 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
-	var FORCED$2 = NEGATIVE_ZERO$1 || !STRICT_METHOD$4 || !USES_TO_LENGTH$5;
+	var FORCED$3 = NEGATIVE_ZERO$1 || !STRICT_METHOD$4 || !USES_TO_LENGTH$5;
 
 	// `Array.prototype.lastIndexOf` method implementation
 	// https://tc39.github.io/ecma262/#sec-array.prototype.lastindexof
-	var arrayLastIndexOf = FORCED$2 ? function lastIndexOf(searchElement /* , fromIndex = @[*-1] */) {
+	var arrayLastIndexOf = FORCED$3 ? function lastIndexOf(searchElement /* , fromIndex = @[*-1] */) {
 	  // convert -0 to +0
 	  if (NEGATIVE_ZERO$1) return nativeLastIndexOf.apply(this, arguments) || 0;
 	  var O = toIndexedObject(this);
@@ -4645,11 +4693,11 @@ var legionsImportHTML = (function (exports) {
 
 
 	var $parseFloat = global_1.parseFloat;
-	var FORCED$3 = 1 / $parseFloat(whitespaces + '-0') !== -Infinity;
+	var FORCED$4 = 1 / $parseFloat(whitespaces + '-0') !== -Infinity;
 
 	// `parseFloat` method
 	// https://tc39.github.io/ecma262/#sec-parsefloat-string
-	var numberParseFloat = FORCED$3 ? function parseFloat(string) {
+	var numberParseFloat = FORCED$4 ? function parseFloat(string) {
 	  var trimmedString = trim(String(string));
 	  var result = $parseFloat(trimmedString);
 	  return result === 0 && trimmedString.charAt(0) == '-' ? -0 : result;
@@ -4795,7 +4843,7 @@ var legionsImportHTML = (function (exports) {
 	}
 
 	var ALL_SCRIPT_REGEX = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
-	var SCRIPT_TAG_REGEX = /<(script)[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]+((?!type=('|')text\/ng\x2Dtemplate\3)[\s\S])*?>[\s\S]*?<\/\1>/i;
+	var SCRIPT_TAG_REGEX = /<(script)\s+((?!type=('|')text\/ng-template\3).)*?>.*?<\/\1>/i;
 	var SCRIPT_SRC_REGEX = /.*\ssrc=('|")(\S+)\1.*/;
 	var SCRIPT_ENTRY_REGEX = /.*\sentry\s*.*/;
 	var SCRIPT_ASYNC_REGEX = /.*\sasync\s*.*/;
@@ -4816,7 +4864,7 @@ var legionsImportHTML = (function (exports) {
 	  var isIE = navigator.userAgent.indexOf('Trident') !== -1;
 
 	  if (isIE) {
-	    var reg = new RegExp('/' + "$");
+	    var reg = new RegExp('/' + '$');
 	    return reg.test(url) ? url.substr(0, url.length - 1) : url;
 	  }
 
@@ -4855,12 +4903,12 @@ var legionsImportHTML = (function (exports) {
 	  var entry = null;
 	  var template = tpl
 	  /*
-	  remove html comment first
-	  */
+	      remove html comment first
+	      */
 	  .replace(HTML_COMMENT_REGEX, '').replace(LINK_TAG_REGEX, function (match) {
 	    /*
-	    change the css link
-	    */
+	          change the css link
+	          */
 	    var styleType = !!match.match(STYLE_TYPE_REGEX);
 
 	    if (styleType) {
@@ -4885,10 +4933,10 @@ var legionsImportHTML = (function (exports) {
 	      }
 	    }
 	    /* var preloadOrPrefetchType = match.match(LINK_PRELOAD_OR_PREFETCH_REGEX) && match.match(LINK_HREF_REGEX);
-	    if (preloadOrPrefetchType) {
-	        var [, , linkHref] = match.match(LINK_HREF_REGEX);
-	        return genLinkReplaceSymbol(linkHref, true);
-	    } */
+	          if (preloadOrPrefetchType) {
+	              var [, , linkHref] = match.match(LINK_HREF_REGEX);
+	              return genLinkReplaceSymbol(linkHref, true);
+	          } */
 
 
 	    return match;
@@ -4904,8 +4952,8 @@ var legionsImportHTML = (function (exports) {
 
 	    if (SCRIPT_TAG_REGEX.test(match) && match.match(SCRIPT_SRC_REGEX)) {
 	      /*
-	      collect scripts and replace the ref
-	      */
+	              collect scripts and replace the ref
+	              */
 	      var matchedScriptEntry = match.match(SCRIPT_ENTRY_REGEX);
 	      var matchedScriptSrcMatch = match.match(SCRIPT_SRC_REGEX);
 	      var matchedScriptSrc = matchedScriptSrcMatch && matchedScriptSrcMatch[2];
@@ -5584,15 +5632,33 @@ var legionsImportHTML = (function (exports) {
 	  }
 	}
 
-	function getExecutableScript(scriptText, proxy) {
-	  window.proxy = proxy;
+	var isInlineCode = function isInlineCode(code) {
+	  return code.startsWith('<');
+	};
+
+	function getExecutableScript(scriptText, proxy, scriptSrc) {
+	  /* window.proxy = proxy; */
+	  var sourceUrl = isInlineCode(scriptSrc || '') ? '' : "//# sourceURL=".concat(scriptSrc, "\n"); // 通过这种方式获取全局 window，因为 script 也是在全局作用域下运行的，所以我们通过 window.proxy 绑定时也必须确保绑定到全局 window 上
+
 	  var isIE = window.ActiveXObject || 'ActiveXObject' in window;
 
 	  if (isIE) {
 	    return ';(function(window, self){;' + scriptText + '\n}).bind(window.proxy)(window.proxy, window.proxy);';
-	  }
+	  } // 通过这种方式获取全局 window，因为 script 也是在全局作用域下运行的，所以我们通过 window.proxy 绑定时也必须确保绑定到全局 window 上
+	  // 否则在嵌套场景下， window.proxy 设置的是内层应用的 window，而代码其实是在全局作用域运行的，会导致闭包里的 window.proxy 取的是最外层的微应用的 proxy
 
-	  return ';(function(window, self){with(window){;' + scriptText + '\n}}).bind(window.proxy)(window.proxy, window.proxy);';
+
+	  var globalWindow = (0, eval)('window');
+	  globalWindow.proxy = proxy;
+	  /* return strictGlobal
+	    ? ';(function(window, self){with(window){;' +
+	        scriptText +
+	        '\n}}).bind(window.proxy)(window.proxy, window.proxy);'
+	    : ';(function(window, self){;' +
+	        scriptText +
+	        '\n}).bind(window.proxy)(window.proxy, window.proxy);'; */
+
+	  return ";(function(window, self){with(window){;".concat(scriptText, "\n").concat(sourceUrl, "}}).bind(window.proxy)(window.proxy, window.proxy);");
 	}
 	/**
 	 * convert external css link to inline style for performance optimization
@@ -5647,13 +5713,37 @@ var legionsImportHTML = (function (exports) {
 	    }
 	  }));
 	}
+	/**
+	 *
+	 *
+	 * @param {*} entryMain 主JS脚本资源链接
+	 * @param {*} scripts ['JS脚本资源']
+	 * @param {*} [proxy=window]
+	 * @param {*} keys 模块URL ，一般是指入口资源链接
+	 * @returns
+	 */
+
 
 	function _execScripts(entryMain, scripts, proxy, keys) {
-	  return _getExternalScripts(scripts).then(function (scriptsText) {
+	  if (proxy === void 0) {
 	    proxy = window;
-	    window.proxy = proxy;
-	    var geval = eval;
+	  }
+
+	  return _getExternalScripts(scripts).then(function (scriptsText) {
+	    /* proxy = window; */
+	    //entryMain 主JS脚本资源链接
+	    window.proxy = proxy; //scriptsText=[{scripts:'JS资源URL',scriptsText:'JS资源代码字符‘}]
+
+	    /* var geval = eval; */
+
 	    var entry = [];
+	    var strictGlobal = false;
+
+	    var geval = function geval(inlineScript, scriptSrc) {
+	      var rawCode = inlineScript;
+	      var code = getExecutableScript(rawCode, proxy, strictGlobal);
+	      (0, eval)(code);
+	    };
 
 	    function isExcludeFile(scriptSrc) {
 	      if (excludeFilesCache[keys] && excludeFilesCache[keys].length) {
@@ -5686,9 +5776,7 @@ var legionsImportHTML = (function (exports) {
 	        entry.push(inlineScript);
 	      }
 
-	      noteGlobalProps();
-	      var exports = proxy[getGlobalProp()] || {};
-	      resolve(exports);
+	      noteGlobalProps(proxy);
 	    }
 
 	    function exec(scriptSrc, inlineScript, resolve) {
@@ -5701,7 +5789,11 @@ var legionsImportHTML = (function (exports) {
 	          if (isExcludeFile(scriptSrc)) {
 	            /* geval(''+inlineScript+'\n'); */
 	          } else {
-	            geval(getExecutableScript(inlineScript, proxy));
+	            /* geval(getExecutableScript(inlineScript, proxy)); */
+	            // 躺平坑在启用
+	            geval('' + inlineScript + '\n', scriptSrc);
+	            var exports = proxy[getGlobalProp(strictGlobal ? proxy : window)] || {};
+	            resolve(exports);
 	          }
 	        } catch (e) {
 	          console.error('error occurs while executing the entry ' + scriptSrc + '}');
@@ -5709,16 +5801,14 @@ var legionsImportHTML = (function (exports) {
 
 	          throw e;
 	        }
-
-	        var exports = proxy[getGlobalProp(proxy)] || {};
-	        resolve(exports);
 	      } else {
 	        if (typeof inlineScript === 'string') {
 	          try {
 	            if (isExcludeFile(scriptSrc)) {
 	              /* geval(''+inlineScript+'\n'); */
 	            } else {
-	              geval(getExecutableScript(inlineScript, proxy));
+	              /*  geval(getExecutableScript(inlineScript, proxy)); */
+	              geval('' + inlineScript + '\n', scriptSrc);
 	            }
 	            /* geval(';(function(window){;'+inlineScript+'\n}).bind(window.proxy)(window.proxy);'); */
 
@@ -5732,23 +5822,34 @@ var legionsImportHTML = (function (exports) {
 	      }
 	    }
 
-	    function collectExec() {
+	    function collectExec(resolve) {
 	      try {
 	        var isIE = window.ActiveXObject || 'ActiveXObject' in window;
 
 	        if (isIE) {
 	          if (IEVersion() < 11) {
-	            geval(getExecutableScript(entry.join(' '), proxy));
+	            /* geval(getExecutableScript(entry.join(' '), proxy)); */
+
 	            /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
 
 	            /* geval(';(function(window){;'+entry.join(' ')+'\n})(window.proxy);'); */
+	            geval(entry.join(' '));
 	          } else {
-	            geval(getExecutableScript(entry.join(' '), proxy));
+	            /* geval(getExecutableScript(entry.join(' '),proxy)); */
+	            geval(entry.join(' '));
 	            /* geval(';(function(window){;'+entry.join(' ')+'\n}).bind(window.proxy)(window.proxy);'); */
 	          }
+	          /* var exports = proxy[getGlobalProp(proxy)] || {}; */
+
+
+	          resolve(strictGlobal ? proxy : window);
 	        } else {
-	          /* compileCode(''+entry.join(' ')+'').bind(window.proxy)(window.proxy); */
-	          geval(getExecutableScript(entry.join(' '), proxy)); // geval(';(function(window){;'+entry.join(' ')+'\n})(window);');
+	          geval(entry.join(' '));
+	          /* geval(getExecutableScript(entry.join(' '), proxy)); */
+	          // geval(';(function(window){;'+entry.join(' ')+'\n})(window);');
+
+	          var exports = proxy[getGlobalProp(strictGlobal ? proxy : window)] || {};
+	          resolve(exports);
 	        }
 	      } catch (e) {
 	        console.error('error occurs while executing the entry ' + entry.join(' ') + '');
@@ -5763,7 +5864,7 @@ var legionsImportHTML = (function (exports) {
 
 	        if (isMergeCache[keys]) {
 	          // 收集需要合并执行的js代码
-	          collectInlineScript(scriptSrc, inlineScript, resolvePromise);
+	          collectInlineScript(scriptSrc, inlineScript);
 	          schedule(i + 1, resolvePromise);
 	        } else {
 	          exec(scriptSrc, inlineScript, resolvePromise);
@@ -5776,7 +5877,7 @@ var legionsImportHTML = (function (exports) {
 	        }
 	      } else {
 	        if (isMergeCache[keys]) {
-	          collectExec();
+	          collectExec(resolvePromise);
 	        }
 	      }
 	    }
@@ -5786,11 +5887,10 @@ var legionsImportHTML = (function (exports) {
 	    });
 	  });
 	}
-
 	function importHTML(url, options) {
 	  /* var getPublicPath = defaultGetPublicPath; */
 	  if (options && _typeof_1(options) === 'object') {
-	    isMergeCache[url] = true;
+	    isMergeCache[url] = false;
 
 	    if (options.excludeFiles !== undefined && Array.isArray(options.excludeFiles)) {
 	      excludeFilesCache[url] = options.excludeFiles; // 排除在沙箱之外的js文件列表
@@ -5890,6 +5990,8 @@ var legionsImportHTML = (function (exports) {
 	  }
 	}
 
+	exports.execScripts = _execScripts;
+	exports.fetch = fetch;
 	exports.importEntry = importEntry;
 	exports.importHTML = importHTML;
 

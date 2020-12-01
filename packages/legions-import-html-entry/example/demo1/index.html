@@ -5,6 +5,7 @@
         <meta charset="UTF-8" />
         <title>index</title>
         <style></style>
+        <script src="http://192.168.100.141:8081//common/js/vendor.dll.343a21b96feaa266733939926933d1e5.js"></script>
         <!--   <script src="../dist/legions-import-html-entry.iife.js"></script> -->
     </head>
 
@@ -14,8 +15,44 @@
         <a href="#material">material</a>
         <a href="#supplyOrder">supplyOrder</a>
         <script>
-            let script = document.createElement('script');
-            script.src = 'http://127.0.0.1:8080/dist/legions-import-html-entry.min.js';
+            var script = document.createElement('script');
+            var entrys={
+                                scm:{
+                                    entry:'http://localhost:8080/scm/scm/#/',
+                                    appName:'hoolink-scm-web-scm',
+                                    appRootId:'#react-scm',
+                                    experimentalStyleIsolation:true,
+                                },
+                                shippingOrder:{
+                                    entry:'http://localhost:8080/scm-shippingOrder/scm-shippingOrder/#/',
+                                    appName:'hoolink-scm-web-scm-shippingOrder',
+                                    appRootId:'#react-scm-shippingOrder',
+                                    experimentalStyleIsolation:true,
+                                },
+                                legions:{
+                                    entry:'http://localhost:8002/app/hoolinks-legion/home#/',// 
+                                    entry1:'http://localhost:8080/legions/home/#/',
+                                    appName:'hoolinks-legion-home',
+                                    appRootId:'#app-roc-id',
+                                    experimentalStyleIsolation:true,
+                                },
+                                react15:{
+                                    appName: 'react15-home',
+                                    entry: 'http://192.168.100.141:8081/home/#/',
+                                    appRootId: '#react15'
+                                },
+                                react16:{
+                                    appName: 'react16-home',
+                                    entry: 'http://192.168.100.141:8082/home',
+                                    appRootId: '#react16'
+                                },
+                                Lazyloading16:{
+                                    appName: 'react16-main',
+                                    entry: 'http://localhost:7100/',
+                                    appRootId: '#react16'
+                                },
+                            }
+            script.src = 'http://127.0.0.1:8083/dist/legions-import-html-entry.iife.js';
             /* script.src = 'https://hoolinks.com/static/common/plugins/import-html-entry.min.js'; */
             document.getElementsByTagName('head')[0].appendChild(script)
             /* document.body.appendChild(script); */
@@ -36,16 +73,15 @@
                         window['importHTML'] = window['legionsImportHTML'].importHTML
                     }
                 }
-                console.log(window.importHTML);
                 var mainApplication = {}
-                var url = 'https://uat-scm.hoolinks.com//scm-static/scm/'
-                window['importHTML'](url, {
-                    excludeFiles: [ ],
+                var url = 'http://localhost:8002/app/hoolinks-legion/home#/'
+                window['importHTML'](entrys.react15.entry, {
+                    excludeFiles: ['vendor.dll'],
                     /* isMerge: false, */
                 }).then(function (res) {
 
-                    if (!mainApplication[url]) {
-                        mainApplication[url] = {
+                    if (!mainApplication[entrys.react15.entry]) {
+                        mainApplication[entrys.react15.entry] = {
                             execScripts: res.execScripts,
                             getExternalScripts: res.getExternalScripts,
                             getExternalStyleSheets: res.getExternalStyleSheets,
@@ -53,17 +89,17 @@
                             //template:res.template
                         }
                     }
-                    console.log(mainApplication);
-                    if (mainApplication[url]) {
-                        mainApplication[url].execScripts().then(function (exports) {
+                    console.log(mainApplication,mainApplication[entrys.react15.entry]);
+                    if (mainApplication[entrys.react15.entry]) {
+                        mainApplication[entrys.react15.entry].execScripts().then(function (exports) {
                             console.log(exports, 'execScripts');
-                            mainApplication[url].perform = true
+                            mainApplication[entrys.react15.entry].perform = true
                         });
-                        mainApplication[url].getExternalScripts().then(exports => {
+                        mainApplication[entrys.react15.entry].getExternalScripts().then(exports => {
                             console.log(exports, 'getExternalScripts');
 
                         });
-                        mainApplication[url].getExternalStyleSheets().then(function (exports) {
+                        mainApplication[entrys.react15.entry].getExternalStyleSheets().then(function (exports) {
                             var headss = document.getElementsByTagName('head')[0].getElementsByTagName('style')[0]
                             /* headss.append(exports); */
                             headss.innerHTML = exports;

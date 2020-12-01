@@ -1,9 +1,13 @@
 const path = require('path');
 const resolves = _path => path.join(process.cwd(), _path);
+const { entitys,all} =require('./script/entiy')
+const { babel,external,commonjs} =require('./script/rollupPlugin')
+const PACKAGE = process.env.PACKAGE;
 module.exports = {
   external: [],
   rollupPlugin: {
-    babel: false,
+    ...babel[PACKAGE],
+    /* babel: false, */
     typescript: {
       include: ['*.ts+(|x)', '**/*.ts+(|x)', '**/*.js', '*.js'],
     },
@@ -13,25 +17,8 @@ module.exports = {
   },
   extendPlugins: [],
   entitys: [
-    /* {
-      name: 'iifeprod',
-      input: resolves('src/index.js'),
-      file: resolves('dist/legions-import-html-entry.iife.js'),
-      format: 'iife',
-      compress: false,
-      env: 'production',
-      banner: ' legions-import-html-entry',
-      outputName: 'legionsImportHTML',
-    }, */
-    {
-      name: 'umdprod',
-      input: resolves('src/index.js'),
-      file: resolves('lib/legions-import-html-entry.umd.js'),
-      format: 'umd',
-      compress: false,
-      //  env: 'production',
-      banner: ' legions-import-html-entry',
-      outputName: 'legionsImportHTML',
-    },
+    ...(entitys.hasOwnProperty(process.env.PACKAGE)
+      ? entitys[process.env.PACKAGE]
+      : all),
   ],
 };

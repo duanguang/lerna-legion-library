@@ -27,6 +27,9 @@ function getDomain(url) {
     return '';
   }
 }
+var isInlineCode = function isInlineCode(code) {
+  return code.startsWith('<');
+};
 function getExecutableScript(scriptText, proxy) {
   /* window.proxy = proxy; */
   var isIE = window.ActiveXObject || 'ActiveXObject' in window;
