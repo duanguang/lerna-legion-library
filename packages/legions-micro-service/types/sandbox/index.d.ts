@@ -1,4 +1,4 @@
-export declare function createSandbox(appName: string): {
+export declare function createSandbox(appName: string, elementGetter: () => HTMLElement | ShadowRoot, scopedCSS: boolean, excludeAssetFilter?: (url: string) => boolean): {
     proxy: Window;
     /**
      * 沙箱被 mount

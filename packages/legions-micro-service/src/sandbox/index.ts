@@ -17,7 +17,8 @@ import ProxySandbox from './proxySandbox';
  */
 import { hijackAtBootstrapping, hijackAtMounting } from '../hijackers';
 import SnapshotSandbox from './snapshotSandbox';
-export function createSandbox(appName: string) {
+import { patchAtBootstrapping, patchAtMounting } from './patchers';
+export function createSandbox(appName: string, elementGetter: () => HTMLElement | ShadowRoot,scopedCSS: boolean,excludeAssetFilter?: (url: string) => boolean) {
   let sandbox: ProxySandbox | SnapshotSandbox;
   if (window.Proxy) {
     sandbox = new ProxySandbox({ name: appName });
@@ -28,7 +29,8 @@ export function createSandbox(appName: string) {
   let mountingFreers: Freer[] = [];
 
   let sideEffectsRebuilders: Rebuilder[] = [];
-  const bootstrappingFreers = hijackAtBootstrapping(appName, sandbox.sandbox);
+  /* const bootstrappingFreers = hijackAtBootstrapping(appName, sandbox.sandbox); */ // 0.0.5 版本代码
+  const bootstrappingFreers = patchAtBootstrapping(appName,elementGetter,sandbox,scopedCSS,excludeAssetFilter);
   return {
     proxy: sandbox.sandbox,
 
@@ -58,7 +60,8 @@ export function createSandbox(appName: string) {
       // render 沙箱启动时开始劫持各类全局监听，尽量不要在应用初始化阶段有 事件监听/定时器 等副作用
       if (window.Proxy) {
         // 在不支持Proxy浏览器环境，比如IE11及以下，执行此行代码会导致切换应用时，执行异常，暂时还未查出原因，先临时这样处理
-        mountingFreers.push(...hijackAtMounting(appName, sandbox.sandbox));
+        /* mountingFreers.push(...hijackAtMounting(appName, sandbox.sandbox)); */// 0.0.5 版本代码
+        mountingFreers.push(...patchAtMounting(appName,elementGetter, sandbox,scopedCSS,excludeAssetFilter));
       }
 
       /* ------------------------------------------ 3. 重置一些初始化时的副作用 ------------------------------------------*/

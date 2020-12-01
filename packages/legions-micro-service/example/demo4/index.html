@@ -13,6 +13,7 @@
                 align-items: center;
             }
         </style>
+        <!-- <script src="http://192.168.100.141:8081//common/js/vendor.dll.343a21b96feaa266733939926933d1e5.js"></script> -->
     </head>
 
     <body>
@@ -22,7 +23,8 @@
 
         <div id="react15">react loading...</div>
         <div id="react16">vue loading...</div>
-        <div id="react17">vue loading...</div>
+        <div id="app-roc-id">vue loading...</div>
+        <!-- <div id="react17">vue loading...</div> -->
 
         <script>
             function push(subapp) {
@@ -36,6 +38,42 @@
                 if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
                     setTimeout(function () {
                         if (window['legionsMicroservice']) {
+                            const entrys={
+                                scm:{
+                                    entry:'http://localhost:8080/scm/scm/#/',
+                                    appName:'hoolink-scm-web-scm',
+                                    appRootId:'#react-scm',
+                                    experimentalStyleIsolation:true,
+                                },
+                                shippingOrder:{
+                                    entry:'http://localhost:8080/scm-shippingOrder/scm-shippingOrder/#/',
+                                    appName:'hoolink-scm-web-scm-shippingOrder',
+                                    appRootId:'#react-scm-shippingOrder',
+                                    experimentalStyleIsolation:true,
+                                },
+                                legions:{
+                                    entry:'http://localhost:8002/app/hoolinks-legion/home#/',// 
+                                    entry1:'http://localhost:8080/legions/home/#/',
+                                    appName:'hoolinks-legion-home',
+                                    appRootId:'#app-roc-id',
+                                    experimentalStyleIsolation:true,
+                                },
+                                react15:{
+                                    appName: 'react15-home',
+                                    entry: 'http://192.168.100.141:8081/home/#/',
+                                    appRootId: '#react15'
+                                },
+                                react16:{
+                                    appName: 'react16-home',
+                                    entry: 'http://192.168.100.141:8082/home',
+                                    appRootId: '#react16'
+                                },
+                                Lazyloading16:{
+                                    appName: 'react16-main',
+                                    entry: 'http://localhost:7100/',
+                                    appRootId: '#react16'
+                                },
+                            }
                             var sourceUrl = 'http://192.168.100.141:8081/home/#/';
                             var appId = 'app';
                             var styleId = 'react-scm-style';
@@ -48,13 +86,18 @@
 
                             function mount() {
                                 app = legionsMicroservice.loadMicroApp({
-                                    name: 'react15-home',
+                                   /*  name: 'react15-home',
                                     entry: 'http://192.168.100.141:8081/home/#/',
-                                    container: '#react15'
+                                    container: '#react15' */
+                                    name: entrys.react15.appName,
+                                entry: entrys.react15.entry,
+                                container: entrys.react15.appRootId,
                                 }, {
                                     sandbox: {
                                         experimentalStyleIsolation: true
-                                    }
+                                    },
+                                    /* excludeFiles: ['vendor.dll'], */
+                                    isMerge: false
                                 });
                             }
 
@@ -63,11 +106,15 @@
                             }
                             document.querySelector('#mount').addEventListener('click', mount);
                             document.querySelector('#unmount').addEventListener('click', unmount);
-                            legionsMicroservice.loadMicroApp({
-                                name: 'react16-home',
-                                entry: 'http://192.168.100.141:8082/home',
-                                container: '#react16'
-                            });
+                            /* legionsMicroservice.loadMicroApp({
+                                name: entrys.react16.appName,
+                                entry: entrys.react16.entry,
+                                container: entrys.react16.appRootId,
+                            },{
+                                    sandbox: {
+                                        experimentalStyleIsolation: true
+                                    }
+                                }); */
                             /* legionsMicroservice.start(); */
                             console.log(legionsMicroservice.MountedMicroApps.getStore());
                            

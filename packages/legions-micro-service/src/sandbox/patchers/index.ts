@@ -8,10 +8,11 @@ import hijackWindowListener from '../../hijackers/windowListener';
 /* import hijackDynamicAppend from './dynamicHeadAppend'; */
 import ProxySandbox from '../proxySandbox';
 import { SandBoxType } from '../../utils';
+import SnapshotSandbox from 'sandbox/snapshotSandbox';
 export function patchAtMounting(
   appName: string,
   elementGetter: () => HTMLElement | ShadowRoot,
-  sandbox: ProxySandbox,
+  sandbox: ProxySandbox | SnapshotSandbox,
   scopedCSS: boolean,
   excludeAssetFilter?: Function,
 ): Freer[] {
@@ -38,7 +39,7 @@ export function patchAtMounting(
 export function patchAtBootstrapping(
   appName: string,
   elementGetter: () => HTMLElement | ShadowRoot,
-  sandbox: ProxySandbox,
+  sandbox: ProxySandbox | SnapshotSandbox,
   scopedCSS: boolean,
   excludeAssetFilter?: Function,
 ): Freer[] {

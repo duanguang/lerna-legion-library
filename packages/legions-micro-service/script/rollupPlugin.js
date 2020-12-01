@@ -24,6 +24,7 @@ const commonjs = {
           'importHTML',
           'importEntry',
           'execScripts',
+          'fetch'
         ],
         /*  'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
       'importHTML',

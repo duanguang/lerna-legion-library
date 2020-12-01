@@ -313,12 +313,23 @@ export async function loadApp<T extends object>(
     'loading'
   );
 
+  const initialAppWrapperGetter = getAppWrapperGetter(
+    appName,
+    appInstanceId,
+    !!legacyRender,
+    strictStyleIsolation,
+    scopedCSS,
+    () => initialAppWrapperElement
+  );
   let global = window;
   let mountSandbox = () => Promise.resolve();
   let unmountSandbox = () => Promise.resolve();
   if (sandbox) {
     const sandboxInstance = createSandbox(
-      appName
+      appName,
+      initialAppWrapperGetter,
+      scopedCSS,
+      excludeAssetFilter,
       // FIXME should use a strict sandbox logic while remount, see https://github.com/umijs/qiankun/issues/518
     );
     // 用沙箱的代理对象作为接下来使用的全局对象
