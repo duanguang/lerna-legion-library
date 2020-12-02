@@ -35,6 +35,8 @@ export type LoadableApp<T extends object = {}> = AppMetadata & {
 export type RegistrableApp<T extends object = {}> = LoadableApp<T> & {
   loader?: (loading: boolean) => void;
   activeRule: RegisterApplicationConfig['activeWhen'];
+  /** 是否合并多文件js代码后在执行，默认false,不合并 */
+  isMerge?: boolean;
 };
 type legionsMicroServerSpecialOpts = {
   /**

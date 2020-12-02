@@ -92,7 +92,7 @@
                 if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
                     setTimeout(function () {
                         if (window['legionsMicroservice']) {
-                            var sourceUrl = 'http://127.0.0.1:8081/home/#/';
+                            var sourceUrl = 'http://localhost:8032/app/react15/home';
                             var appId = 'app';
                             var styleId = 'react-scm-style';
                             var options = {
@@ -149,16 +149,17 @@
                                     container: '#subapp-viewport',
                                     loader: render,
                                     activeRule: '/demo3#/react16',
+                                    isMerge:true,
                                 },
-                                {
+                                /* {
                                     entry: 'http://127.0.0.1:8083/scm',
                                     name: 'hoolink-scm-web-scm',
                                     container: '#subapp-viewport',
                                     loader: render,
                                     activeRule: '/demo3#/scm-static/scm/groupManage',
-                                }
+                                } */
                             ])
-                            legionsMicroservice.setDefaultMountApp('/demo3#/react16');
+                            legionsMicroservice.setDefaultMountApp('/demo3#/react15');
                             legionsMicroservice.start();
                             console.log(legionsMicroservice.MountedMicroApps.getStore());
                             /* new window.legionsMicroservice.MicroApps(options).mounted({

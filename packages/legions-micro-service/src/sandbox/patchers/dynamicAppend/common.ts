@@ -213,14 +213,14 @@ function getOverwrittenAppendChildOrInsertBefore(opts: {
           if (src) {
             execScripts(null, [src], proxy);
 
-            const dynamicScriptCommentElement = document.createComment(`dynamic script ${src} replaced by qiankun`);
+            const dynamicScriptCommentElement = document.createComment(`dynamic script ${src} replaced by legions`);
             dynamicScriptAttachedCommentMap.set(element, dynamicScriptCommentElement);
             return rawDOMAppendOrInsertBefore.call(mountDOM, dynamicScriptCommentElement, referenceNode);
           }
 
           // inline script never trigger the onload and onerror event
           execScripts(null, [`<script>${text}</script>`], proxy);
-          const dynamicInlineScriptCommentElement = document.createComment('dynamic inline script replaced by qiankun');
+          const dynamicInlineScriptCommentElement = document.createComment('dynamic inline script replaced by legions');
           dynamicScriptAttachedCommentMap.set(element, dynamicInlineScriptCommentElement);
           return rawDOMAppendOrInsertBefore.call(mountDOM, dynamicInlineScriptCommentElement, referenceNode);
         }

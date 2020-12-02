@@ -4057,13 +4057,11 @@ var legionsMicroservice = (function (exports) {
 	                      schedule(i + 1, resolvePromise);
 	                  }
 	                  else {
-						  exec(scriptSrc, inlineScript, resolvePromise);
-						  console.log(scriptSrc,i)
+	                      exec(scriptSrc, inlineScript, resolvePromise);
 	                      if (!entryMain && i === scripts.length - 1) {
 	                          resolvePromise();
 	                      }
 	                      else {
-							
 	                          schedule(i + 1, resolvePromise);
 	                      }
 	                  }
@@ -5128,23 +5126,23 @@ var legionsMicroservice = (function (exports) {
 
 	function prefetch(entry, opts) {
 	  var _this = this;
-
+	  
 	  if (!navigator.onLine || isSlowNetwork) {
 	    // Don't prefetch if in a slow network or offline
 	    return;
 	  }
-
+	  
 	  requestIdleCallback(function () {
+		
 	    return __awaiter(_this, void 0, void 0, function () {
 	      var _a, getExternalScripts, getExternalStyleSheets;
-
 	      return __generator(this, function (_b) {
 	        switch (_b.label) {
 	          case 0:
 	            return [4
 	            /*yield*/
 	            , legionsImportHtmlEntry_umd_1(entry, opts)];
-
+				
 	          case 1:
 	            _a = _b.sent(), getExternalScripts = _a.getExternalScripts, getExternalStyleSheets = _a.getExternalStyleSheets;
 	            requestIdleCallback(getExternalStyleSheets);
@@ -5163,7 +5161,7 @@ var legionsMicroservice = (function (exports) {
 	    var notLoadedApps = apps.filter(function (app) {
 	      return Ot(app.name) === l;
 	    }); //@ts-ignore
-
+		
 	    notLoadedApps.forEach(function (_a) {
 	      var entry = _a.entry;
 	      return prefetch(entry, opts);
@@ -5173,7 +5171,6 @@ var legionsMicroservice = (function (exports) {
 	}
 
 	function prefetchImmediately(apps, opts) {
-
 	  apps.forEach(function (_a) {
 	    var entry = _a.entry;
 	    return prefetch(entry, opts);
@@ -5185,7 +5182,6 @@ var legionsMicroservice = (function (exports) {
 	      return names.includes(app.name);
 	    });
 	  };
-
 	  if (Array.isArray(prefetchStrategy)) {
 	    prefetchAfterFirstMounted(appsName2Apps(prefetchStrategy), importEntryOpts);
 	  } else {
@@ -10221,6 +10217,22 @@ var legionsMicroservice = (function (exports) {
 	    }
 	  });
 	}
+
+	function initGlobalState(state) {
+	  if (state === void 0) {
+	    state = {};
+	  }
+
+	  if (state === globalState) {
+	    console.warn('[legions] state has not changed！');
+	  } else {
+	    var prevGlobalState = cloneDeep_1(globalState);
+	    globalState = cloneDeep_1(state);
+	    emitGlobal(globalState, prevGlobalState);
+	  }
+
+	  return getMicroAppStateActions("global-" + +new Date(), true);
+	}
 	function getMicroAppStateActions(id, isMaster) {
 	  return {
 	    /**
@@ -11388,14 +11400,14 @@ var legionsMicroservice = (function (exports) {
 
 	            if (src) {
 	              legionsImportHtmlEntry_umd_3(null, [src], proxy);
-	              var dynamicScriptCommentElement = document.createComment("dynamic script " + src + " replaced by qiankun");
+	              var dynamicScriptCommentElement = document.createComment("dynamic script " + src + " replaced by legions");
 	              dynamicScriptAttachedCommentMap.set(element, dynamicScriptCommentElement);
 	              return rawDOMAppendOrInsertBefore.call(mountDOM, dynamicScriptCommentElement, referenceNode);
 	            } // inline script never trigger the onload and onerror event
 
 
 	            legionsImportHtmlEntry_umd_3(null, ["<script>" + text + "</script>"], proxy);
-	            var dynamicInlineScriptCommentElement = document.createComment('dynamic inline script replaced by qiankun');
+	            var dynamicInlineScriptCommentElement = document.createComment('dynamic inline script replaced by legions');
 	            dynamicScriptAttachedCommentMap.set(element, dynamicInlineScriptCommentElement);
 	            return rawDOMAppendOrInsertBefore.call(mountDOM, dynamicInlineScriptCommentElement, referenceNode);
 	          }
@@ -12545,7 +12557,9 @@ var legionsMicroservice = (function (exports) {
 	        _a = app.loader,
 	        loader = _a === void 0 ? noop_1 : _a,
 	        props = app.props,
-	        appConfig = __rest(app, ["name", "activeRule", "loader", "props"]);
+	        _b = app.isMerge,
+	        isMerge = _b === void 0 ? false : _b,
+	        appConfig = __rest(app, ["name", "activeRule", "loader", "props", "isMerge"]);
 
 	    Pt({
 	      name: name,
@@ -12571,7 +12585,9 @@ var legionsMicroservice = (function (exports) {
 	                , loadApp(__assign({
 	                  name: name,
 	                  props: props
-	                }, appConfig), frameworkConfiguration, lifeCycles)];
+	                }, appConfig), __assign(__assign({}, frameworkConfiguration), {
+	                  isMerge: isMerge
+	                }), lifeCycles)];
 
 	              case 2:
 	                _a = _b.sent()(), mount = _a.mount, otherMicroAppConfigs = __rest(_a, ["mount"]);
@@ -12772,6 +12788,7 @@ var legionsMicroservice = (function (exports) {
 	exports.MicroApps = MicroApps;
 	exports.MountedMicroApps = MicroApps$1;
 	exports.getMountedApps = Et;
+	exports.initGlobalState = initGlobalState;
 	exports.loadMicroApp = loadMicroApp;
 	exports.registerMicroApps = registerMicroApps;
 	exports.setDefaultMountApp = setDefaultMountApp;

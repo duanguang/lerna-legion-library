@@ -40,9 +40,9 @@
                         if (window['legionsMicroservice']) {
                             const entrys={
                                 scm:{
-                                    entry:'http://localhost:8080/scm/scm/#/',
+                                    entry:'http://192.168.100.141:8080/scm/scm/#/',
                                     appName:'hoolink-scm-web-scm',
-                                    appRootId:'#react-scm',
+                                    appRootId:'#react-scms',
                                     experimentalStyleIsolation:true,
                                 },
                                 shippingOrder:{
@@ -60,7 +60,8 @@
                                 },
                                 react15:{
                                     appName: 'react15-home',
-                                    entry: 'http://192.168.100.141:8081/home/#/',
+                                    entry1: 'http://192.168.100.141:8081/home/#/',
+                                    entry: 'http://localhost:8032/app/react15/home',
                                     appRootId: '#react15'
                                 },
                                 react16:{
@@ -83,7 +84,16 @@
                             };
 
                             var app;
-
+                            const { onGlobalStateChange, setGlobalState } = legionsMicroservice.initGlobalState({
+                                user: 'legions',
+                            });
+                            onGlobalStateChange((value, prev) => console.log('[onGlobalStateChange - master]:', value, prev));
+                            setGlobalState({
+                                ignore: 'master',
+                                user: {
+                                    name: 'master',
+                                },
+                            });
                             function mount() {
                                 app = legionsMicroservice.loadMicroApp({
                                    /*  name: 'react15-home',
@@ -92,12 +102,41 @@
                                     name: entrys.react15.appName,
                                 entry: entrys.react15.entry,
                                 container: entrys.react15.appRootId,
+                                /* props:{
+                                        a:1
+                                    } */
                                 }, {
                                     sandbox: {
                                         experimentalStyleIsolation: true
                                     },
                                     /* excludeFiles: ['vendor.dll'], */
-                                    isMerge: false
+                                    isMerge: false,
+                                },{
+                                    beforeLoad: [
+                                    function (app) {
+                                        console.log('[LifeCycle] before load %c%s', 'color: green;', app.name);
+                                    },
+                                    ],
+                                    beforeMount: [
+                                    function (app) {
+                                        console.log('[LifeCycle] before mount %c%s', 'color: green;', app.name);
+                                    },
+                                    ],
+                                    afterMount: [
+                                    function (app) {
+                                        console.log('[LifeCycle] after mount %c%s', 'color: green;', app.name);
+                                    },
+                                    ],
+                                    beforeUnmount: [
+                                    function (app) {
+                                        console.log('[LifeCycle] before unmount %c%s', 'color: green;', app.name);
+                                    },
+                                    ],
+                                    afterUnmount: [
+                                    function (app) {
+                                        console.log('[LifeCycle] after unmount %c%s', 'color: green;', app.name);
+                                    },
+                                    ],
                                 });
                             }
 

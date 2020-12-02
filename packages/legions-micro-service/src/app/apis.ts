@@ -32,7 +32,7 @@ export function registerMicroApps<T extends object = {}>(
   microApps = [...microApps, ...unregisteredApps];
 
   unregisteredApps.forEach(app => {
-    const { name, activeRule, loader = noop, props, ...appConfig } = app;
+    const { name, activeRule, loader = noop, props,isMerge=false, ...appConfig } = app;
     registerApplication({
       name,
       app: async () => {
@@ -42,7 +42,7 @@ export function registerMicroApps<T extends object = {}>(
         const { mount, ...otherMicroAppConfigs } = (
           await loadApp(
             { name, props, ...appConfig },
-            frameworkConfiguration,
+            {...frameworkConfiguration,isMerge},
             lifeCycles
           )
         )();

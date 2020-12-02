@@ -1,5 +1,5 @@
 /**
-  *  legions-micro-service v0.0.5
+  *  legions-micro-service v0.0.6
   * (c) 2020 duanguang
   * @license MIT
   */
@@ -1019,6 +1019,18 @@
             }
         });
     }
+    function initGlobalState(state) {
+        if (state === void 0) { state = {}; }
+        if (state === globalState) {
+            console.warn('[legions] state has not changed！');
+        }
+        else {
+            var prevGlobalState = cloneDeep__default['default'](globalState);
+            globalState = cloneDeep__default['default'](state);
+            emitGlobal(globalState, prevGlobalState);
+        }
+        return getMicroAppStateActions("global-" + +new Date(), true);
+    }
     function getMicroAppStateActions(id, isMaster) {
         return {
             /**
@@ -1593,13 +1605,13 @@
                         var referenceNode = mountDOM.contains(refChild) ? refChild : null;
                         if (src) {
                             legionsImportHtmlEntry.execScripts(null, [src], proxy);
-                            var dynamicScriptCommentElement = document.createComment("dynamic script " + src + " replaced by qiankun");
+                            var dynamicScriptCommentElement = document.createComment("dynamic script " + src + " replaced by legions");
                             dynamicScriptAttachedCommentMap.set(element, dynamicScriptCommentElement);
                             return rawDOMAppendOrInsertBefore.call(mountDOM, dynamicScriptCommentElement, referenceNode);
                         }
                         // inline script never trigger the onload and onerror event
                         legionsImportHtmlEntry.execScripts(null, ["<script>" + text + "</script>"], proxy);
-                        var dynamicInlineScriptCommentElement = document.createComment('dynamic inline script replaced by qiankun');
+                        var dynamicInlineScriptCommentElement = document.createComment('dynamic inline script replaced by legions');
                         dynamicScriptAttachedCommentMap.set(element, dynamicInlineScriptCommentElement);
                         return rawDOMAppendOrInsertBefore.call(mountDOM, dynamicInlineScriptCommentElement, referenceNode);
                     }
@@ -2446,7 +2458,7 @@
         var unregisteredApps = apps.filter(function (app) { return !microApps$2.some(function (registeredApp) { return registeredApp.name === app.name; }); });
         microApps$2 = __spread(microApps$2, unregisteredApps);
         unregisteredApps.forEach(function (app) {
-            var name = app.name, activeRule = app.activeRule, _a = app.loader, loader = _a === void 0 ? noop__default['default'] : _a, props = app.props, appConfig = __rest(app, ["name", "activeRule", "loader", "props"]);
+            var name = app.name, activeRule = app.activeRule, _a = app.loader, loader = _a === void 0 ? noop__default['default'] : _a, props = app.props, _b = app.isMerge, isMerge = _b === void 0 ? false : _b, appConfig = __rest(app, ["name", "activeRule", "loader", "props", "isMerge"]);
             singleSpa.registerApplication({
                 name: name,
                 app: function () { return __awaiter(_this, void 0, void 0, function () {
@@ -2459,7 +2471,7 @@
                                 return [4 /*yield*/, frameworkStartedDefer.promise];
                             case 1:
                                 _b.sent();
-                                return [4 /*yield*/, loadApp(__assign({ name: name, props: props }, appConfig), frameworkConfiguration, lifeCycles)];
+                                return [4 /*yield*/, loadApp(__assign({ name: name, props: props }, appConfig), __assign(__assign({}, frameworkConfiguration), { isMerge: isMerge }), lifeCycles)];
                             case 2:
                                 _a = (_b.sent())(), mount = _a.mount, otherMicroAppConfigs = __rest(_a, ["mount"]);
                                 return [2 /*return*/, __assign({ mount: __spread([
@@ -2563,6 +2575,11 @@
         frameworkStartedDefer.resolve();
     }
 
+    var firstMountLogLabel = '[legions] first app mounted';
+    //@ts-ignore
+    if (process.env.NODE_ENV !== 'production') {
+        console.time(firstMountLogLabel);
+    }
     function setDefaultMountApp(defaultAppLink) {
         // can not use addEventListener once option for ie support
         window.addEventListener('single-spa:no-app-change', function listener() {
@@ -2573,17 +2590,59 @@
             window.removeEventListener('single-spa:no-app-change', listener);
         });
     }
+    function runAfterFirstMounted(effect) {
+        // can not use addEventListener once option for ie support
+        window.addEventListener('single-spa:first-mount', function listener() {
+            //@ts-ignore
+            if (process.env.NODE_ENV !== 'production') {
+                console.timeEnd(firstMountLogLabel);
+            }
+            effect();
+            window.removeEventListener('single-spa:first-mount', listener);
+        });
+    }
+    function runDefaultMountEffects(defaultAppLink) {
+        console.warn('[legions] runDefaultMountEffects will be removed in next version, please use setDefaultMountApp instead');
+        setDefaultMountApp(defaultAppLink);
+    }
 
+    function addGlobalUncaughtErrorHandler(errorHandler) {
+        window.addEventListener('error', errorHandler);
+        window.addEventListener('unhandledrejection', errorHandler);
+    }
+    function removeGlobalUncaughtErrorHandler(errorHandler) {
+        window.removeEventListener('error', errorHandler);
+        window.removeEventListener('unhandledrejection', errorHandler);
+    }
+
+    Object.defineProperty(exports, 'addErrorHandler', {
+        enumerable: true,
+        get: function () {
+            return singleSpa.addErrorHandler;
+        }
+    });
     Object.defineProperty(exports, 'getMountedApps', {
         enumerable: true,
         get: function () {
             return singleSpa.getMountedApps;
         }
     });
+    Object.defineProperty(exports, 'removeErrorHandler', {
+        enumerable: true,
+        get: function () {
+            return singleSpa.removeErrorHandler;
+        }
+    });
     exports.MicroApps = MicroApps;
     exports.MountedMicroApps = MicroApps$1;
+    exports.addGlobalUncaughtErrorHandler = addGlobalUncaughtErrorHandler;
+    exports.initGlobalState = initGlobalState;
     exports.loadMicroApp = loadMicroApp;
+    exports.prefetchApps = prefetchImmediately;
     exports.registerMicroApps = registerMicroApps;
+    exports.removeGlobalUncaughtErrorHandler = removeGlobalUncaughtErrorHandler;
+    exports.runAfterFirstMounted = runAfterFirstMounted;
+    exports.runDefaultMountEffects = runDefaultMountEffects;
     exports.setDefaultMountApp = setDefaultMountApp;
     exports.start = start;
 
