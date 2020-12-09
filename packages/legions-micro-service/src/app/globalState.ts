@@ -1,19 +1,37 @@
 import {
   MicroAppStateActions,
   OnGlobalStateChangeCallback,
+  IResource,
 } from '../interfaces';
 import cloneDeep from 'lodash/cloneDeep';
 let globalState: Record<string, any> = {};
-const deps: Record<string, OnGlobalStateChangeCallback> = {};
+const deps: Record<string,OnGlobalStateChangeCallback> = {};
+const events = {};
 
 // 触发全局监听
 function emitGlobal(
   state: Record<string, any>,
-  prevState: Record<string, any>
+  prevState: Record<string,any>,
+  event?: {
+    name: string;
+    scope: string;
+  }
 ) {
   Object.keys(deps).forEach((id: string) => {
     if (deps[id] instanceof Function) {
-      deps[id](cloneDeep(state), cloneDeep(prevState));
+      if (event) {
+        const types = events[event.scope];
+        if (types && Array.isArray(types)) {
+          types.forEach(function (type) {
+            if (type === id) {
+              deps[id](cloneDeep(state), cloneDeep(prevState),event);
+             }
+          })
+        }
+      }
+      /* else {
+        deps[id](cloneDeep(state), cloneDeep(prevState));
+      } */
     }
   });
 }
@@ -51,9 +69,12 @@ export function getMicroAppStateActions(
      * @param callback
      * @param fireImmediately
      */
-    onGlobalStateChange(
-      callback: OnGlobalStateChangeCallback,
-      fireImmediately?: boolean
+    onGlobalStateChange<IGlobalState=Record<string, any>>(
+      callback: OnGlobalStateChangeCallback<IGlobalState>,
+      options?: {
+        fireImmediately?: boolean,
+        eventScopes?:IResource[],
+      }
     ) {
       if (!(callback instanceof Function)) {
         console.error('[legions] callback must be function!');
@@ -64,9 +85,19 @@ export function getMicroAppStateActions(
           `[legions] '${id}' global listener already exists before this, new listener will overwrite it.`
         );
       }
+      //@ts-ignore
       deps[id] = callback;
+      if (options && Array.isArray(options.eventScopes)) {
+        options.eventScopes.forEach(function (eventScope) {
+          let types = events[eventScope.name];
+          if (!types) {
+            types = events[eventScope.name] = []; 
+          }
+          types.push(id);
+        })
+      }
       const cloneState = cloneDeep(globalState);
-      if (fireImmediately) {
+      if (options&&options.fireImmediately) {
         callback(cloneState, cloneState);
       }
     },
@@ -79,7 +110,10 @@ export function getMicroAppStateActions(
      *
      * @param state
      */
-    setGlobalState(state: Record<string, any> = {}) {
+    setGlobalState(state = {},event: {
+      name: string;
+      scope: string;
+    }) {
       if (state === globalState) {
         console.warn('[legions] state has not changed！');
         return false;
@@ -105,7 +139,7 @@ export function getMicroAppStateActions(
         console.warn('[legions] state has not changed！');
         return false;
       }
-      emitGlobal(globalState, prevGlobalState);
+      emitGlobal(globalState, prevGlobalState,event);
       return true;
     },
 

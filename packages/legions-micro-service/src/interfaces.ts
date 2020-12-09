@@ -86,16 +86,34 @@ export type Rebuilder = () => void;
 export type Freer = () => Rebuilder;
 export type Patcher = () => Freer;
 
-export type OnGlobalStateChangeCallback = (
-  state: Record<string, any>,
-  prevState: Record<string, any>
+export type OnGlobalStateChangeCallback<IGlobalState=Record<string, any>> = (
+  state: IGlobalState,
+  prevState: IGlobalState,
+  event?:IOperation
 ) => void;
+interface IOperation {
+  name: string;
+  scope: string;
+}
+export interface IResource {
+  created: IOperation;
+  events: string[];
+  name: string;
+  removed: IOperation;
+  updated: IOperation;
+}
 export type MicroAppStateActions = {
-  onGlobalStateChange: (
-    callback: OnGlobalStateChangeCallback,
-    fireImmediately?: boolean
+  onGlobalStateChange:  <IGlobalState=Record<string, any>>(
+    callback: OnGlobalStateChangeCallback<IGlobalState>,
+    options?: {
+      fireImmediately?: boolean,
+      eventScopes?:IResource[],
+    }
   ) => void;
-  setGlobalState: (state: Record<string, any>) => boolean;
+  setGlobalState: (state: Record<string, any>,event: {
+    name: string;
+    scope: string;
+  }) => boolean;
   offGlobalStateChange: () => boolean;
 };
 

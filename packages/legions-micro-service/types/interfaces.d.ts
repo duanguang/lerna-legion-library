@@ -65,10 +65,27 @@ export declare type MicroApp = Parcel;
 export declare type Rebuilder = () => void;
 export declare type Freer = () => Rebuilder;
 export declare type Patcher = () => Freer;
-export declare type OnGlobalStateChangeCallback = (state: Record<string, any>, prevState: Record<string, any>) => void;
+export declare type OnGlobalStateChangeCallback<IGlobalState = Record<string, any>> = (state: IGlobalState, prevState: IGlobalState, event?: IOperation) => void;
+interface IOperation {
+    name: string;
+    scope: string;
+}
+export interface IResource {
+    created: IOperation;
+    events: string[];
+    name: string;
+    removed: IOperation;
+    updated: IOperation;
+}
 export declare type MicroAppStateActions = {
-    onGlobalStateChange: (callback: OnGlobalStateChangeCallback, fireImmediately?: boolean) => void;
-    setGlobalState: (state: Record<string, any>) => boolean;
+    onGlobalStateChange: <IGlobalState = Record<string, any>>(callback: OnGlobalStateChangeCallback<IGlobalState>, options?: {
+        fireImmediately?: boolean;
+        eventScopes?: IResource[];
+    }) => void;
+    setGlobalState: (state: Record<string, any>, event: {
+        name: string;
+        scope: string;
+    }) => boolean;
     offGlobalStateChange: () => boolean;
 };
 export declare type Unpacked<T> = T extends (infer U)[] ? U : T extends (...args: any[]) => infer U ? U : T extends Promise<infer U> ? U : T;
