@@ -1,11 +1,11 @@
 {
   "name": "legions-report",
-  "version": "0.0.1",
-  "description": "日志上报",
+  "version": "0.0.2",
+  "description": "report message for  monitoring",
   "keywords": [
-    "container",
-    "IoC",
-    "node-IoC"
+    "report",
+    "logger",
+    "logger-report"
   ],
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
@@ -36,11 +36,12 @@
   "files": [
     "dist",
     "types/api",
-    "types/main"
+    "types",
+    "types/utils"
   ],
   "scripts": {
     "test": "jest",
-    "test1": "jest --watch /__tests__/legions-control-container.*.ts",
+    "test1": "jest --watch /__tests__/legions-report.*.ts",
     "build:c": "cross-env PACKAGE=commonjs legions-rpc rpc -c",
     "build:b": "cross-env PACKAGE=browser legions-rpc rpc -c",
     "build:main": "node build/build.main.js",
