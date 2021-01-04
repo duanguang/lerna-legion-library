@@ -1,6 +1,6 @@
 {
   "name": "legions-micro-service",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "微前端工具函数库",
   "keywords": [
     "Micro service",

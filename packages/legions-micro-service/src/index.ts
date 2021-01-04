@@ -3,7 +3,7 @@ import { MicroApps as MountedMicroApps } from './app/microApps';
 import { getMountedApps } from 'single-spa';
 import { start, registerMicroApps, loadMicroApp } from './app/apis';
 import { setDefaultMountApp,runDefaultMountEffects,runAfterFirstMounted } from './app/effects';
-import { initGlobalState } from './app/globalState';
+import { initGlobalState,getMicroAppStateActions } from './app/globalState';
 export { addErrorHandler,removeErrorHandler,addGlobalUncaughtErrorHandler,removeGlobalUncaughtErrorHandler } from './app/errorHandler';
 export { prefetchImmediately as prefetchApps } from './core/prefetch';
 export {
@@ -15,6 +15,7 @@ export {
   setDefaultMountApp,
   getMountedApps,
   initGlobalState,
+  getMicroAppStateActions,
   runDefaultMountEffects,
   runAfterFirstMounted,
 };

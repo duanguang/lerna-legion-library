@@ -54,6 +54,7 @@ function createFakeWindow(global: Window) {
    > A property cannot be reported as non-configurable, if it does not exists as an own property of the target object or if it exists as a configurable own property of the target object.
    */
   Object.getOwnPropertyNames(global)
+  // 遍历出 window 对象所有不可配置属性
     .filter(p => {
       const descriptor = Object.getOwnPropertyDescriptor(global, p);
       return !descriptor?.configurable;
@@ -79,7 +80,7 @@ function createFakeWindow(global: Window) {
           //@ts-ignore
           (process.env.NODE_ENV === 'test' &&
             (p === 'mockTop' || p === 'mockSafariTop'))
-        ) {
+        ) {// 将 top、parent、self、window 这几个属性由不可配置改为可配置
           descriptor.configurable = true;
           /*
            The descriptor of window.window/window.top/window.self in Safari/FF are accessor descriptors, we need to avoid adding a data descriptor while it was
@@ -88,12 +89,13 @@ function createFakeWindow(global: Window) {
             Chrome: Object.getOwnPropertyDescriptor(window, 'top') -> {value: Window, writable: false, enumerable: true, configurable: false}
            */
           if (!hasGetter) {
+            // 如果这几个属性没有 getter，则说明由 writeable 属性，将其设置为可写
             descriptor.writable = true;
           }
         }
-
+ // 如果存在 getter，则以该属性为 key，true 为 value 存入 propertiesWithGetter map
         if (hasGetter) propertiesWithGetter.set(p, true);
-
+     // 将属性和描述设置到 fakeWindow 对象，并且冻结属性描述符，不然有可能会被更改，比如 zone.js
         // freeze the descriptor to avoid being modified by zone.js
         // see https://github.com/angular/zone.js/blob/a5fe09b0fac27ac5df1fa746042f96f05ccb6a00/lib/browser/define-property.ts#L71
         rawObjectDefineProperty(fakeWindow, p, Object.freeze(descriptor));
@@ -187,7 +189,7 @@ export default class ProxySandbox {
       fakeWindow.hasOwnProperty(key) || rawWindow.hasOwnProperty(key);
     const sandbox = new window.Proxy(fakeWindow, {
       set(target: FakeWindow, p: PropertyKey, value: any): boolean {
-        if (self.sandboxRunning) {
+        if (self.sandboxRunning) {// 如果沙箱在运行，则更新属性值并记录被更改的属性
           // eslint-disable-next-line no-prototype-builtins
           if (variableWhiteList.indexOf(p) !== -1) {
             // @ts-ignore

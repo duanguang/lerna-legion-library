@@ -4,7 +4,7 @@ const browser = [
   {
     name: 'umdprod',
     input: resolves('src/index.ts'),
-    file: resolves('dist/legions-micro-service.iife.test.js'),
+    file: resolves('dist/legions-micro-service.iife.min.js'),
     format: 'iife',
     compress: false,
     env: 'production',
