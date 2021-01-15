@@ -14,7 +14,7 @@ let activeSandboxCount = 0;
 function uniq(array: PropertyKey[]) {
   return array.filter(function filter(this: PropertyKey[], element) {
     return element in this ? false : ((this as any)[element] = true);
-  }, {});
+  }, Object.create(null));
 }
 const unscopables = {
   undefined: true,

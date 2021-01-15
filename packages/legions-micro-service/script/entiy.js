@@ -1,3 +1,12 @@
+/*
+ * @Author: duanguang
+ * @Date: 2020-11-16 13:57:05
+ * @LastEditTime: 2021-01-05 13:47:22
+ * @LastEditors: duanguang
+ * @Description: 
+ * @FilePath: /lerna-legion-library/packages/legions-micro-service/script/entiy.js
+ * @「扫去窗上的尘埃，才可以看到窗外的美景。」
+ */
 const path = require('path');
 const resolves = _path => path.join(process.cwd(), _path);
 const browser = [

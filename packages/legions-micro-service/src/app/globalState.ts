@@ -18,7 +18,7 @@ function emitGlobal(
   }
 ) {
   Object.keys(deps).forEach((id: string) => {
-    if (deps[id] instanceof Function) {
+    if (typeof deps[id]==='function') {
       if (event) {
         const types = events[event.scope];
         if (types && Array.isArray(types)) {
@@ -76,7 +76,7 @@ export function getMicroAppStateActions(
         eventScopes?:IResource[],
       }
     ) {
-      if (!(callback instanceof Function)) {
+      if (!(typeof callback==='function')) {
         console.error('[legions] callback must be function!');
         return;
       }
