@@ -214,10 +214,11 @@ export default class ProxySandbox {
 
         if (p === 'top' || p === 'parent') {
           // if your master app in an iframe context, allow these props escape the sandbox
-          if (rawWindow === rawWindow.parent) {
+          /* if (rawWindow === rawWindow.parent) {
             return sandbox;
           }
-          return (rawWindow as any)[p];
+          return (rawWindow as any)[p]; */
+          return sandbox;
         }
         // proxy hasOwnProperty, in case of proxy.hasOwnProperty value represented as originalWindow.hasOwnProperty
         if (p === 'hasOwnProperty') {
