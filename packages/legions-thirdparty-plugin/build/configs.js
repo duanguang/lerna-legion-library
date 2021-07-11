@@ -126,6 +126,14 @@ const excel = {
     outputName: 'legionsThirdpartyExcelPlugin',
   },
 };
+const excelPro = {
+  iifeexcelProProd: {
+    input: resolves('src/excel-pro/index.ts'),
+    file: resolves('excel-pro/excel-pro.js'),
+    format: 'iife',
+    outputName: 'legionsThirdpartyExcelPlugin',
+  }
+}
 const mainEntity = {
   main,
   excel,
@@ -134,6 +142,7 @@ const mainEntity = {
   clipboard,
   dexie,
   focusOutside,
+  excelPro,
 };
 const entity = mainEntity.hasOwnProperty(process.env.PACKAGE)
   ? mainEntity[process.env.PACKAGE]
@@ -146,7 +155,7 @@ function genConfig(opts) {
   const config = {
     input: {
       input: opts.input,
-      external: [],
+      external: [/* 'exceljs' */],
       plugins: [
         replace({
           __VERSION__: version,
@@ -156,7 +165,18 @@ function genConfig(opts) {
           main: true,
           browser: true,
         }),
-        commonjs({}),
+        commonjs({
+          namedExports: {
+            // 显式指出指定文件导出模块
+            'node_modules/exceljs/lib/exceljs.browser.js': [
+              'Workbook',
+            ],
+            /*  'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
+          'importHTML',
+          'importEntry',
+        ], */
+          },
+        }),
         typescript({
           typescript: require('typescript'),
           include: ['*.ts+(|x)', '**/*.ts+(|x)'],
@@ -168,7 +188,7 @@ function genConfig(opts) {
           ],
           useTsconfigDeclarationDir: true,
         }),
-        buble(),
+        /* buble(),
         babel({
           runtimeHelpers: true,
           // 只转换源代码，不运行外部依赖
@@ -179,7 +199,7 @@ function genConfig(opts) {
             '@babel/plugin-transform-runtime',
             ['@babel/plugin-proposal-decorators', { legacy: true }],
           ],
-        }),
+        }), */
         opts.compress === true && uglify.uglify(),
       ],
     },
