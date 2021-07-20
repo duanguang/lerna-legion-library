@@ -273,6 +273,7 @@ export default class ProxySandbox {
         return undefined;
       },
       // trap to support iterator with sandbox
+      // @ts-ignore
       ownKeys(target: FakeWindow): PropertyKey[] {
         return uniq(Reflect.ownKeys(rawWindow).concat(Reflect.ownKeys(target)));
       },

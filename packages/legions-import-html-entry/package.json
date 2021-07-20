@@ -1,6 +1,6 @@
 {
   "name": "legions-import-html-entry",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Treats the index html as manifest and loads the assets(css,js), and get the entry script exports.",
   "keywords": [
     "html",

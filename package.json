@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "dependencies": {
-    
+    "tslib":"^2.3.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",

@@ -1,7 +1,7 @@
 /*
  * @Author: duanguang
  * @Date: 2020-11-16 13:57:05
- * @LastEditTime: 2021-01-05 13:47:22
+ * @LastEditTime: 2021-07-21 00:39:09
  * @LastEditors: duanguang
  * @Description: 
  * @FilePath: /lerna-legion-library/packages/legions-micro-service/script/entiy.js
@@ -11,7 +11,7 @@ const path = require('path');
 const resolves = _path => path.join(process.cwd(), _path);
 const browser = [
   {
-    name: 'umdprod',
+    name: 'iife',
     input: resolves('src/index.ts'),
     file: resolves('dist/legions-micro-service.iife.min.js'),
     format: 'iife',
@@ -23,11 +23,22 @@ const browser = [
 ];
 const umd = [
   {
-    name: 'umdprod',
+    name: 'umd',
     input: resolves('src/index.ts'),
-    file: resolves('dist/legions-micro-service.umd.js'),
+    file: resolves('umd/index.js'),
     format: 'umd',
     compress: true,
+    banner: ' legions-micro-service',
+    outputName: 'legionsMicroService',
+  },
+];
+const es = [
+  {
+    name: 'es',
+    input: resolves('src/index.ts'),
+    file: resolves('es/index.js'),
+    format: 'es',
+    /* compress: true, */
     banner: ' legions-micro-service',
     outputName: 'legionsMicroService',
   },
@@ -35,6 +46,7 @@ const umd = [
 const entitys = {
   browser,
   umd,
+  es,
 };
 let all = [];
 Object.keys(entitys).map(key => {

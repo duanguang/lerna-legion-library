@@ -41,7 +41,8 @@ class Deferred<T> {
   reject!: (reason?: any) => void;
 
   constructor() {
-    this.promise = new Promise((resolve, reject) => {
+    this.promise = new Promise((resolve,reject) => {
+      //@ts-ignore
       this.resolve = resolve;
       this.reject = reject;
     });

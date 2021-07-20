@@ -5333,10 +5333,10 @@ legions-rpc-cli@^0.0.8:
     typescript "^4.0.2"
     uglify-js "^3.1.2"
 
-legions-utils-tool@^0.0.9-rc.1:
-  version "0.0.9"
-  resolved "https://registry.nlark.com/legions-utils-tool/download/legions-utils-tool-0.0.9.tgz#a61db820d57164d262f09ced66d716e8c8fc7c2a"
-  integrity sha1-ph24INVxZNJi8JztZtcW6Mj8fCo=
+legions-utils-tool@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/legions-utils-tool/-/legions-utils-tool-0.0.11.tgz#83ff854f35cf602be37edfdea5d4fc3da97ae4ce"
+  integrity sha512-KP/P9OcO/+IGNoXTt4jRaHzkAL20u7Tjg2yU60vfYrwJ5Qf0FbY2MA5H/xE6GPgKftFkGUyUUNapA1YKobH9Sw==
   dependencies:
     javascript-state-machine "^3.1.0"
 
@@ -7407,10 +7407,10 @@ tslib@2.0.1:
   resolved "https://registry.nlark.com/tslib/download/tslib-2.0.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftslib%2Fdownload%2Ftslib-2.0.1.tgz#410eb0d113e5b6356490eec749603725b021b43e"
   integrity sha1-QQ6w0RPltjVkkO7HSWA3JbAhtD4=
 
-tslib@^2.0.3:
+tslib@^2.0.3, tslib@^2.3.0:
   version "2.3.0"
-  resolved "https://registry.nlark.com/tslib/download/tslib-2.3.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftslib%2Fdownload%2Ftslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
-  integrity sha1-gDuM2rPhK6WBpMpByIObuw2ssJ4=
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
 tunnel-agent@^0.6.0:
   version "0.6.0"

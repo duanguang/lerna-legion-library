@@ -1,6 +1,6 @@
 {
   "name": "legions-micro-service",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "微前端工具函数库",
   "keywords": [
     "Micro service",
@@ -9,13 +9,12 @@
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
   "license": "MIT",
-  "main": "dist/legions-micro-service.umd.js",
-  "module": "dist/legions-micro-service.umd.js",
+  "main": "es/index.js",
+  "module": "es/index.js",
   "typings": "types/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
-    "legions-utils-tool": "^0.0.9-rc.1",
-    "legions-import-html-entry":"^0.0.5",
+    "legions-import-html-entry":"^0.0.7",
     "reflect-metadata": "^0.1.13",
     "single-spa": "^5.6.1"
   },
@@ -37,8 +36,8 @@
     "test": "__tests__"
   },
   "files": [
-    "dist",
-    "types"
+    "types",
+    "es"
   ],
   "browserslist": [
     "> 1%",
@@ -50,7 +49,7 @@
     "test1": "jest --watch /__tests__/legions-micro-service.*.ts",
     "build:b": "cross-env PACKAGE=browser lrpc rpc -c",
     "build:umd": "cross-env PACKAGE=umd lrpc rpc -c",
-    "build:main": "node build/build.main.js",
+    "build:es": "cross-env PACKAGE=es lrpc rpc -c",
     "start:react15": "cd examples/react15 && yarn dev",
     "release": "bash build/release.sh"
   },
