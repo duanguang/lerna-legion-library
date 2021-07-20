@@ -1,5 +1,5 @@
 /**
-  *  legions-control-container v0.0.5
+  *  legions-control-container v0.0.6
   * (c) 2021 duanguang
   * @license MIT
   */

@@ -1,6 +1,6 @@
 {
   "name": "legions-import-html-entry",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Treats the index html as manifest and loads the assets(css,js), and get the entry script exports.",
   "keywords": [
     "html",
@@ -9,8 +9,8 @@
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
   "license": "MIT",
-  "main": "lib/legions-import-html-entry.umd.js",
-  "module": "lib/legions-import-html-entry.umd.js",
+  "main": "cjs/index.js",
+  "module": "es/index.js",
   "typings": "types/api/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
@@ -33,21 +33,22 @@
     "test": "__tests__"
   },
   "files": [
-    "lib",
-    "types/api",
-    "types/main"
+    "types",
+    "es",
+    "cjs"
   ],
   "browserslist": [
     "> 1%",
     "last 6 versions",
     "not ie <= 8"
-  ],  
+  ], 
   "scripts": {
     "test": "jest",
     "test1": "jest --watch /__tests__/legions-control-container.*.ts",
     "build": "cross-env PACKAGE=browser lrpc rpc -c",
     "build:umd": "cross-env PACKAGE=umd lrpc rpc -c",
-    "build:main": "node build/build.main.js",
+    "build:es": "cross-env PACKAGE=es lrpc rpc -c",
+    "build:cjs": "cross-env PACKAGE=cjs lrpc rpc -c",
     "release": "bash build/release.sh"
   },
   "gitHead": "1e80f0ebb53edb8e9ecaa46efa41e0442e9d1716"

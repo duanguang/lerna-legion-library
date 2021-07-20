@@ -1,4 +1,4 @@
-import processTpl, { genLinkReplaceSymbol } from './process-tpl';
+import processTpl,{ genLinkReplaceSymbol } from './process-tpl';
 import {
   getGlobalProp /* defaultGetPublicPath */,
   getInlineCode,
@@ -14,7 +14,7 @@ var embedHTMLCache = {};
 var isMergeCache = {};
 /* var fetch = window.fetch.bind(window); */
 import { fetch } from 'whatwg-fetch';
-import 'core-js/modules/es.string.starts-with';
+/* import 'core-js/modules/es.string.starts-with'; */
 export { fetch };
 function getDomain(url) {
   try {

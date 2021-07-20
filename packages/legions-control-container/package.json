@@ -1,6 +1,6 @@
 {
   "name": "legions-control-container",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "IoC 容器使用类构造函数来标识并注入其依赖项",
   "keywords": [
     "container",

@@ -4,7 +4,7 @@
  * @since 2018-09-03 15:04
  */
 import { getInlineCode } from './utils';
-import 'core-js/modules/es.string.ends-with';
+/* import 'core-js/modules/es.string.ends-with'; */
 var ALL_SCRIPT_REGEX = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 var SCRIPT_TAG_REGEX = /<(script)\s+((?!type=('|')text\/ng-template\3).)*?>.*?<\/\1>/i;
 var SCRIPT_SRC_REGEX = /.*\ssrc=('|")(\S+)\1.*/;

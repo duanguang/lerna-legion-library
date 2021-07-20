@@ -4,10 +4,9 @@ const { entitys,all} =require('./script/entiy')
 const { babel,external,commonjs} =require('./script/rollupPlugin')
 const PACKAGE = process.env.PACKAGE;
 module.exports = {
-  external: [],
+  external: [...external[PACKAGE]],
   rollupPlugin: {
     ...babel[PACKAGE],
-    /* babel: false, */
     typescript: {
       include: ['*.ts+(|x)', '**/*.ts+(|x)', '**/*.js', '*.js'],
     },
