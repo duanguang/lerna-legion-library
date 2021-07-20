@@ -10,12 +10,15 @@
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
   "license": "MIT",
-  "main": "dist/legions-control-container.umd.js",
-  "module": "dist/legions-control-container.umd.js",
-  "typings": "types/main/index.d.ts",
+  "main": "cjs/index.js",
+  "module": "es/indexjs",
+  "typings": "types/index.d.ts",
   "peerDependencies": {},
   "dependencies": {
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "inversify": "^5.0.1",
+    "inversify-binding-decorators": "^4.0.0",
+    "inversify-inject-decorators": "^3.1.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
@@ -34,9 +37,9 @@
     "test": "__tests__"
   },
   "files": [
-    "dist",
-    "types/api",
-    "types/main"
+    "es",
+    "cjs",
+    "types"
   ],
   "scripts": {
     "test": "jest",

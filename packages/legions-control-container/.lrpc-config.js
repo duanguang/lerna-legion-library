@@ -1,26 +1,25 @@
 const path = require('path');
 const resolves = _path => path.join(process.cwd(), _path);
 module.exports = {
-  external: ['reflect-metadata'],
+  external: ['reflect-metadata','inversify','inversify-binding-decorators','inversify-inject-decorators'],
   rollupPlugin: {
     babel: false,
   },
   extendPlugins: [],
   entitys: [
     {
-      name: 'umdprod',
+      name: 'es',
       input: resolves('src/index.ts'),
-      file: resolves('dist/legions-control-container.umd.prod.js'),
-      format: 'umd',
-      compress: true,
+      file: resolves('es/index.js'),
+      format: 'es',
       banner: ' legions-control-container',
       outputName: 'legionsControlContainer',
     },
     {
-      name: 'umd',
+      name: 'cjs',
       input: resolves('src/index.ts'),
-      file: resolves('dist/legions-control-container.umd.js'),
-      format: 'umd',
+      file: resolves('cjs/index.js'),
+      format: 'cjs',
       compress: false,
       banner: ' legions-control-container',
       outputName: 'legionsControlContainer',

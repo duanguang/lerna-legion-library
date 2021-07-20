@@ -45,7 +45,9 @@
     "noImplicitThis": true,
     "alwaysStrict": true
   },
-  "include": ["src/**/*", "__tests__/**/*"],
+  "include": ["src/**/*", 
+    // "__tests__/**/*"
+  ],
   "exclude": [
     "node_modules",
     "dist",
