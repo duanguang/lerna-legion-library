@@ -31,7 +31,7 @@ function buildEntry({
     output
 }) {
 
-    const isProd = /min\.js$/.test(output.file)
+    const isProd = /mi\.js$/.test(output.file)
     return rollup.rollup(input)
         .then(bundle => bundle.generate(output))
         .then(({

@@ -1,4 +1,3 @@
-import { IlegionsThirdpartyPlugin } from '../types/api';
 declare const ALL_SUITS: readonly ["excel", "html2canvas", "jsBarcode", "clipboard", "dexie", "focusOutside"];
 declare type SuitTuple = typeof ALL_SUITS;
 declare type TypePluginName = SuitTuple[number];
@@ -19,7 +18,7 @@ export declare class LegionsThirdpartyPlugin {
      * name参数为字符串数组时，使用场景为你的回调函数依赖多个插件值，这时才去使用，然而大多数情况我们是用不上，因此有需要就传数组
      */
     subscribe(name: IPlugin['name'] | IPlugin['name'][], callback: () => void): void;
-    get plugins(): IlegionsThirdpartyPlugin;
+    get plugins(): any;
 }
 export declare const legionsThirdpartyPlugin: LegionsThirdpartyPlugin;
 export { LegionsPluginsExecute, legionsPlugins, dynamicLoadingScript, findWindow, } from './legions.plugin.sdk/legions';

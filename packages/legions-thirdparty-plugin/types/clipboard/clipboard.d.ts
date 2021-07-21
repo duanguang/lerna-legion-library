@@ -1,11 +1,14 @@
-export = Clipboard;
-export = Clipboard;
+export = closest;
+export = closest;
 /**
- * @param {String|HTMLElement|HTMLCollection|NodeList} trigger
- * @param {Object} options
+ * Finds the closest parent that matches a selector.
+ *
+ * @param {Element} element
+ * @param {String} selector
+ * @return {Function}
  */
-declare function Clipboard(trigger: string | HTMLElement | HTMLCollection | NodeList, options: any): any;
-declare namespace Clipboard {
+declare function closest(element: Element, selector: string): Function;
+declare namespace closest {
     export { node, nodeList, string, fn, __esModule, ClipboardJS };
 }
 declare function node(value: any): boolean;

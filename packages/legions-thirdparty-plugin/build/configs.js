@@ -1,3 +1,12 @@
+/*
+ * @Author: duanguang
+ * @Date: 2020-09-30 16:20:29
+ * @LastEditTime: 2021-07-22 00:27:24
+ * @LastEditors: duanguang
+ * @Description: 
+ * @FilePath: /lerna-legion-library/packages/legions-thirdparty-plugin/build/configs.js
+ * 「扫去窗上的尘埃，才可以看到窗外的美景。」
+ */
 const resolve = require('rollup-plugin-node-resolve'); //告诉 Rollup 如何查找外部模块
 const path = require('path');
 const buble = require('rollup-plugin-buble');
@@ -41,96 +50,103 @@ const main = {
   }, */
 };
 const focusOutside = {
-  umdfocusOutsideDev: {
+  es: {
     input: resolves('src/focus-outside/index.ts'),
     file: resolves('focus-outside/index.js'),
-    format: 'umd',
+    format: 'es',
     compress: true,
     env: 'development',
   },
-  iifefocusOutsideProd: {
+  /* iifefocusOutsideProd: {
     input: resolves('src/focus-outside/index.ts'),
     file: resolves('release/focus-outside.min.js'),
     format: 'iife',
     env: 'production',
     outputName: 'legionsThirdpartyFocusOutsidePlugin',
-  },
+  }, */
 };
 const dexie = {
-  /* esmdexie: {
+  esmdexie: {
     input: resolves('src/dexie/index.ts'),
     file: resolves('dexie/index.js'),
-    format: 'umd',
-  }, */
-  iifedexieProd: {
+    format: 'es',
+    external:['dexie']
+  },
+ /*  iifedexieProd: {
     input: resolves('src/dexie/index.ts'),
     file: resolves('release/dexie.min.js'),
     format: 'iife',
     env: 'production',
     outputName: 'legionsThirdpartyDexiePlugin',
-  },
+  }, */
 };
 const clipboard = {
   esmclipboard: {
     input: resolves('src/clipboard/index.ts'),
     file: resolves('clipboard/index.js'),
-    format: 'umd',
+    format: 'es',
+    external:['clipboard']
   },
-  iifeclipboardProd: {
+  /* iifeclipboardProd: {
     input: resolves('src/clipboard/index.ts'),
     file: resolves('release/clipboard.min.js'),
     format: 'iife',
     env: 'production',
     outputName: 'legionsThirdpartyClipboardPlugin',
-  },
+  }, */
 };
 const jsbarcode = {
   esmjsbarcode: {
     input: resolves('src/jsbarcode/index.ts'),
     file: resolves('jsbarcode/index.js'),
-    format: 'umd',
+    format: 'es',
+    external:['jsbarcode']
   },
-  iifejsbarcodeProd: {
+  /* iifejsbarcodeProd: {
     input: resolves('src/jsbarcode/index.ts'),
     file: resolves('release/jsbarcode.min.js'),
     format: 'iife',
     env: 'production',
     outputName: 'legionsThirdpartyJsbarcodePlugin',
-  },
+  }, */
 };
 const html2canvas = {
-  /* esmhtml2canvas: {
+  esmhtml2canvas: {
     input: resolves('src/html2canvas/index.ts'),
     file: resolves('html2canvas/index.js'),
-    format: 'umd',
-  }, */
-  iifehtml2canvasProd: {
+    format: 'es',
+    external:['html2canvas']
+  },
+  /* iifehtml2canvasProd: {
     input: resolves('src/html2canvas/index.ts'),
     file: resolves('release/html2canvas.min.js'),
     format: 'iife',
     env: 'production',
     outputName: 'legionsThirdpartyHtml2canvasPlugin',
-  },
+  }, */
 };
 const excel = {
-  /* esmexcel: {
+  esmexcel: {
     input: resolves('src/excel/index.ts'),
     file: resolves('excel/index.js'),
-    format: 'umd',
-  }, */
-  iifeexcelProd: {
+    format: 'es',
+    external:['xlsx']
+  },
+  /* iifeexcelProd: {
     input: resolves('src/excel/index.ts'),
-    file: resolves('release/excel.min.js'),
+    file: resolves('release/excel.0.0.8.min.js'),
     format: 'iife',
+    compress:true,
     env: 'production',
     outputName: 'legionsThirdpartyExcelPlugin',
-  },
+  }, */
 };
 const excelPro = {
   iifeexcelProProd: {
     input: resolves('src/excel-pro/index.ts'),
     file: resolves('excel-pro/excel-pro.js'),
     format: 'iife',
+    compress:true,
     outputName: 'legionsThirdpartyExcelPlugin',
   }
 }
@@ -152,10 +168,11 @@ const configs = {
 };
 
 function genConfig(opts) {
+  const external= opts.external||[]
   const config = {
     input: {
       input: opts.input,
-      external: [/* 'exceljs' */],
+      external,
       plugins: [
         replace({
           __VERSION__: version,
