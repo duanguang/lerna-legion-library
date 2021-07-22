@@ -1,5 +1,6 @@
 import { IReport } from './report';
 import { ILegionsPluginDataOrigin } from './data.origin';
+import { findWindow } from '../utils/findWindow';
 interface IAppStore {
   apps: {
     appId: string;
@@ -225,56 +226,5 @@ export function LegionsPluginsExecute(
     },
   });
 }
-/** 查找window 变量值，优先查找父级元素，如果没有找到 */
-export function findWindow<T = {}>(name: string) {
-  let LegionstValue: T | null = null;
-  try {
-    LegionstValue = window.parent[name];
-  } catch (e) {
-    LegionstValue = null;
-  }
-  if (!LegionstValue) {
-    LegionstValue = window[name];
-  }
-  return LegionstValue;
-}
-/** 动态加载JS资源 */
-export function dynamicLoadingScript<T = {}>(options: {
-  /** 创建资源节点的唯一ID */
-  scriptId: string;
-  src: string;
-  /** 全局变量名称 */
-  library: string;
-  loaded?: (value: T | null) => void;
-}) {
-  if (options) {
-    const LegionstValue = findWindow(options.library);
-    const onload = function () {
-      let script = document.createElement('script');
-      script.src = options.src;
-      script.id = options.scriptId || 'legions-plugin-sdk';
-      const s = script;
-      if (!!document.getElementById(script.id)) {
-        //@ts-ignore
-        s = document.getElementById(script.id);
-      } else {
-        document.body.appendChild(script);
-      }
-      s.addEventListener('load', function () {
-        //@ts-ignore
-        if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
-          if (typeof options.loaded === 'function') {
-            // @ts-ignore
-            options.loaded(LegionstValue);
-          }
-        }
-      });
-    };
-    const sdkElemnet = document.getElementById(options.scriptId);
-    if (!sdkElemnet && !LegionstValue) {
-      onload();
-    } else if (sdkElemnet && !LegionstValue) {
-      console.warn('定义了相同节点ID,检查scriptId 值');
-    }
-  }
-}
+
+

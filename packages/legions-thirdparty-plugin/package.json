@@ -9,7 +9,7 @@
     "legions-thirdparty-plugin"
   ],
   "author": "duanguang <18520583569@163.com>",
-  "homepage": "",
+  "homepage": "https://github.com/duanguang/lerna-legion-library.git",
   "license": "MIT",
   "main": "dist/legions-thirdparty-plugin.umd.js",
   "typings": "types/index.d.ts",
@@ -67,7 +67,7 @@
     "not op_mini all"
   ],
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
+    "test": "jest",
     "build": "cross-env PACKAGE=excelPro npm run build:main",
     "build:excel": "cross-env PACKAGE=excel npm run build:main",
     "build:dexie": "cross-env PACKAGE=dexie npm run build:main",

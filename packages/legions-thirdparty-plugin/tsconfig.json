@@ -15,7 +15,7 @@
             "ES2015.Promise"
         ],
         "allowJs": true,
-        "isolatedModules": true,
+        "isolatedModules": false,
         "jsx": "react",
         "resolveJsonModule": true,
         "esModuleInterop": true,
