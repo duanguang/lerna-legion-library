@@ -2,7 +2,7 @@ import Dexie from 'dexie';
 export declare class DexieUtils {
     static dexies: {
         key: string;
-        db: Dexie;
+        db: InstanceType<typeof Dexie>;
         /**
          *
          * 打开状态
@@ -13,7 +13,7 @@ export declare class DexieUtils {
     }[];
     static getInstanceDexie(key: string): {
         key: string;
-        db: Dexie;
+        db: InstanceType<typeof Dexie>;
         store: string;
         openState: 'pending' | 'complete';
     };

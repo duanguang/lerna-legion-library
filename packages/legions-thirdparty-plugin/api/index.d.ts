@@ -1,6 +1,6 @@
 declare type TableColumnConfig<T> = ColumnProps<T>;
 import { JsBarcodeSpace } from './jsbarcode';
-import { IDexieUtils } from './dexie';
+import { DexieUtils } from '../types/dexies';
 import { IExportTableCsv } from './exportCsv';
 import { html2canvasOptions } from './html2canvas';
 interface ColumnProps<T> {
@@ -154,7 +154,7 @@ export interface IlegionsThirdpartyPlugin {
     ) => any;
     copyText: (text: string) => Promise<any>;
   };
-  dexie: IDexieUtils;
+  dexie: DexieUtils;
   focusOutside: {
     focusBind: (el: any, callback: any, className?: string) => void;
     focusUnbind: (target: any) => void;

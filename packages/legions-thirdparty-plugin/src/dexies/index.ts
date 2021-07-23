@@ -1,10 +1,9 @@
-//@ts-ignore
-import Dexie from 'dexie';
+import  Dexie from 'dexie';
 
 export class DexieUtils {
   static dexies: {
     key: string;
-    db: Dexie;
+    db: InstanceType<typeof Dexie>;
 
     /**
      *
@@ -19,7 +18,7 @@ export class DexieUtils {
     key: string
   ): {
     key: string;
-    db: Dexie;
+    db: InstanceType<typeof Dexie>;
     store: string;
     openState: 'pending' | 'complete';
   } {
@@ -59,6 +58,7 @@ export class DexieUtils {
       }
       if (schema && Array.isArray(schema)) {
         schema.map(item => {
+          // @ts-ignore
           db.version(1).stores(item);
         });
       }
@@ -83,6 +83,7 @@ export class DexieUtils {
         this.dexies.push({
           key,
           store,
+          // @ts-ignore
           db: null,
           openState: 'pending',
         });

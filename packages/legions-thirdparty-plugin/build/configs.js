@@ -1,7 +1,7 @@
 /*
  * @Author: duanguang
  * @Date: 2020-09-30 16:20:29
- * @LastEditTime: 2021-07-22 00:27:24
+ * @LastEditTime: 2021-07-24 01:01:51
  * @LastEditors: duanguang
  * @Description: 
  * @FilePath: /lerna-legion-library/packages/legions-thirdparty-plugin/build/configs.js
@@ -30,11 +30,11 @@ const resolves = _path => path.resolve(__dirname, '../', _path);
 4. iife -- 一个自动执行的功能，适合作为 <script>标签这样的。
 5. umd -- 通用模块定义，以amd, cjs, 和 iife 为一体。 */
 const main = {
-  umdDev: {
+  esDev: {
     input: resolves('src/index.ts'),
-    file: resolves('dist/legions-thirdparty-plugin.umd.js'),
-    format: 'umd',
-    compress: true,
+    file: resolves('dist/index.js'),
+    format: 'es',
+   /*  compress: true, */
     env: 'development',
   },
   /* iife: {
@@ -67,7 +67,7 @@ const focusOutside = {
 };
 const dexie = {
   esmdexie: {
-    input: resolves('src/dexie/index.ts'),
+    input: resolves('src/dexies/index.ts'),
     file: resolves('dexie/index.js'),
     format: 'es',
     external:['dexie']

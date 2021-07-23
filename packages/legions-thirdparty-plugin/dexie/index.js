@@ -112,6 +112,7 @@ var DexieUtils = /** @class */ (function () {
                             }
                             if (schema && Array.isArray(schema)) {
                                 schema.map(function (item) {
+                                    // @ts-ignore
                                     db.version(1).stores(item);
                                 });
                             }
@@ -142,6 +143,7 @@ var DexieUtils = /** @class */ (function () {
                 this.dexies.push({
                     key: key,
                     store: store,
+                    // @ts-ignore
                     db: null,
                     openState: 'pending',
                 });

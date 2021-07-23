@@ -107,15 +107,4 @@ export declare const legionsPlugins: (options?: {
  *
  */
 export declare function LegionsPluginsExecute(onExecute: (legions: IlegionsPlugin) => void): void;
-/** 查找window 变量值，优先查找父级元素，如果没有找到 */
-export declare function findWindow<T = {}>(name: string): T | null;
-/** 动态加载JS资源 */
-export declare function dynamicLoadingScript<T = {}>(options: {
-    /** 创建资源节点的唯一ID */
-    scriptId: string;
-    src: string;
-    /** 全局变量名称 */
-    library: string;
-    loaded?: (value: T | null) => void;
-}): void;
 export {};

@@ -1,8 +1,8 @@
 
-export { legionsThirdpartyPlugin } from './main'
+export { legionsThirdpartyPlugin,runScriptsSdk } from './main'
 export { findWindow } from './utils/findWindow'
-export {dynamicLoadingScript} from './utils/dynamicLoadingScript'
-export {
+export {dynamicLoadingScript,runDynamicScripts} from './utils/dynamicLoadingScript'
+/* export {
   LegionsPluginsExecute,
   legionsPlugins,
-} from './legions.plugin.sdk/legions';
+} from './legions.plugin.sdk/legions'; */

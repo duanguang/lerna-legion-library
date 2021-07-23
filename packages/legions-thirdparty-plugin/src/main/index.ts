@@ -1,18 +1,11 @@
 import { IlegionsThirdpartyPlugin } from '../../api';
 import { LEGIONS_THIRDPARTY_PLUGIN, PLUGINS, PROXY_LEGIONS_THIRPARTY_PLUGIN, TypePluginName,THIRDPARTY_PLUGINS } from './plugin.config';
 import { proxyGetters } from './utils';
-import { EventHub } from './EventHub';
+import { EventHub } from './eventHub';
 interface IPlugin {
   name: TypePluginName;
   url: string;
 }
-
-
-
-
-
-
-
 proxyGetters(PROXY_LEGIONS_THIRPARTY_PLUGIN, LEGIONS_THIRDPARTY_PLUGIN);
 function onLoadScript(plugin: IPlugin) {
   let id = `legions-${plugin.name}`;
@@ -126,3 +119,4 @@ export class LegionsThirdpartyPlugin {
   }
 }
 export const legionsThirdpartyPlugin = new LegionsThirdpartyPlugin();
+export const runScriptsSdk = legionsThirdpartyPlugin
