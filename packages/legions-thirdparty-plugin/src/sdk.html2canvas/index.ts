@@ -1,11 +1,10 @@
-//@ts-ignore
 import html2canvas from 'html2canvas';
 /**
  * covert canvas to image
  * and save the image file
  */
 
-export const Canvas2Image = (function () {
+export const canvas2Image = (function () {
   // check if support sth.
   const $support = (function () {
     const canvas = document.createElement('canvas'),

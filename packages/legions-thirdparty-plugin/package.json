@@ -70,6 +70,7 @@
     "test": "jest",
     "build": "cross-env PACKAGE=main npm run build:main",
     "build:excel": "cross-env PACKAGE=excel npm run build:main",
+    "build:xlsx": "cross-env PACKAGE=xlsx npm run build:main",
     "build:dexie": "cross-env PACKAGE=dexie npm run build:main",
     "build:clipboard": "cross-env PACKAGE=clipboard npm run build:main",
     "build:html2canvas": "cross-env PACKAGE=html2canvas npm run build:main",

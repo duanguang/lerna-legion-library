@@ -1,8 +1,8 @@
 import XLSX from 'xlsx';
-import ExportCsv from '../excel/export-csv';
-import Csv from '../excel/csv';
+import ExportCsv from './export-csv';
+import Csv from './csv';
 import invariant from '../utils/invariant';
-import { IExportTableCsv } from '../../types/api/exportCsv';
+import { IExportTableCsv } from '../../api/exportCsv';
 export declare type TableColumnConfig<T> = ColumnProps<T>;
 interface ColumnProps<T> {
   title?: string;

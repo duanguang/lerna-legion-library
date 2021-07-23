@@ -1,4 +1,4 @@
-import { IExportTableCsv } from '../../types/api/exportCsv';
+import { IExportTableCsv } from '../../api/exportCsv';
 export declare type TableColumnConfig<T> = ColumnProps<T>;
 interface ColumnProps<T> {
     title?: string;

@@ -1,7 +1,7 @@
 /*
  * @Author: duanguang
  * @Date: 2020-09-30 16:20:29
- * @LastEditTime: 2021-07-24 01:01:51
+ * @LastEditTime: 2021-07-24 01:58:34
  * @LastEditors: duanguang
  * @Description: 
  * @FilePath: /lerna-legion-library/packages/legions-thirdparty-plugin/build/configs.js
@@ -67,13 +67,13 @@ const focusOutside = {
 };
 const dexie = {
   esmdexie: {
-    input: resolves('src/dexies/index.ts'),
-    file: resolves('dexie/index.js'),
+    input: resolves('src/sdk.dexie/index.ts'),
+    file: resolves('sdk.dexie/index.js'),
     format: 'es',
     external:['dexie']
   },
  /*  iifedexieProd: {
-    input: resolves('src/dexie/index.ts'),
+    input: resolves('src/sdk.dexie/index.ts'),
     file: resolves('release/dexie.min.js'),
     format: 'iife',
     env: 'production',
@@ -82,13 +82,13 @@ const dexie = {
 };
 const clipboard = {
   esmclipboard: {
-    input: resolves('src/clipboard/index.ts'),
-    file: resolves('clipboard/index.js'),
+    input: resolves('src/sdk.clipboard/index.ts'),
+    file: resolves('sdk.clipboard/index.js'),
     format: 'es',
     external:['clipboard']
   },
   /* iifeclipboardProd: {
-    input: resolves('src/clipboard/index.ts'),
+    input: resolves('src/sdk.clipboard/index.ts'),
     file: resolves('release/clipboard.min.js'),
     format: 'iife',
     env: 'production',
@@ -97,13 +97,13 @@ const clipboard = {
 };
 const jsbarcode = {
   esmjsbarcode: {
-    input: resolves('src/jsbarcode/index.ts'),
-    file: resolves('jsbarcode/index.js'),
+    input: resolves('src/sdk.jsbarcode/index.ts'),
+    file: resolves('sdk.jsbarcode/index.js'),
     format: 'es',
     external:['jsbarcode']
   },
   /* iifejsbarcodeProd: {
-    input: resolves('src/jsbarcode/index.ts'),
+    input: resolves('src/sdk.jsbarcode/index.ts'),
     file: resolves('release/jsbarcode.min.js'),
     format: 'iife',
     env: 'production',
@@ -112,13 +112,13 @@ const jsbarcode = {
 };
 const html2canvas = {
   esmhtml2canvas: {
-    input: resolves('src/html2canvas/index.ts'),
-    file: resolves('html2canvas/index.js'),
+    input: resolves('src/sdk.html2canvas/index.ts'),
+    file: resolves('sdk.html2canvas/index.js'),
     format: 'es',
     external:['html2canvas']
   },
   /* iifehtml2canvasProd: {
-    input: resolves('src/html2canvas/index.ts'),
+    input: resolves('src/sdk.html2canvas/index.ts'),
     file: resolves('release/html2canvas.min.js'),
     format: 'iife',
     env: 'production',
@@ -127,13 +127,13 @@ const html2canvas = {
 };
 const excel = {
   esmexcel: {
-    input: resolves('src/excel/index.ts'),
-    file: resolves('excel/index.js'),
+    input: resolves('src/sdk.excel/index.ts'),
+    file: resolves('sdk.excel/index.js'),
     format: 'es',
-    external:['xlsx']
+    external:['exceljs']
   },
   /* iifeexcelProd: {
-    input: resolves('src/excel/index.ts'),
+    input: resolves('src/sdk.excel/index.ts'),
     file: resolves('release/excel.0.0.8.min.js'),
     format: 'iife',
     compress:true,
@@ -141,14 +141,20 @@ const excel = {
     outputName: 'legionsThirdpartyExcelPlugin',
   }, */
 };
-const excelPro = {
-  iifeexcelProProd: {
-    input: resolves('src/excel-pro/index.ts'),
-    file: resolves('excel-pro/excel-pro.js'),
+const xlsx = {
+  esmxlsx: {
+    input: resolves('src/sdk.xlsx/index.ts'),
+    file: resolves('sdk.xlsx/index.js'),
+    format: 'es',
+    external:['xlsx']
+  },
+  /* iifeexcelProProd: {
+    input: resolves('src/sdk.xlsx/index.ts'),
+    file: resolves('sdk.xlsx/index.js'),
     format: 'iife',
     compress:true,
-    outputName: 'legionsThirdpartyExcelPlugin',
-  }
+    outputName: 'legionsThirdpartyXlsxPlugin',
+  } */
 }
 const mainEntity = {
   main,
@@ -158,7 +164,7 @@ const mainEntity = {
   clipboard,
   dexie,
   focusOutside,
-  excelPro,
+  xlsx,
 };
 const entity = mainEntity.hasOwnProperty(process.env.PACKAGE)
   ? mainEntity[process.env.PACKAGE]

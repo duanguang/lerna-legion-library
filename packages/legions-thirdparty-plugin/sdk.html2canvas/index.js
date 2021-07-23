@@ -5,12 +5,11 @@
  */
 export { default as html2canvas } from 'html2canvas';
 
-//@ts-ignore
 /**
  * covert canvas to image
  * and save the image file
  */
-var Canvas2Image = (function () {
+var canvas2Image = (function () {
     // check if support sth.
     var $support = (function () {
         var canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
@@ -293,4 +292,4 @@ var Canvas2Image = (function () {
     };
 })();
 
-export { Canvas2Image };
+export { canvas2Image };

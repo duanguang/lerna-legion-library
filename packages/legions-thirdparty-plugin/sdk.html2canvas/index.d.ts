@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
  * covert canvas to image
  * and save the image file
  */
-export declare const Canvas2Image: {
+export declare const canvas2Image: {
     saveAsImage: (canvas: any, width: any, height: any, type: any) => void;
     saveAsPNG: (canvas: any, width: number, height: number) => void;
     saveAsJPEG: (canvas: any, width: number, height: number) => void;

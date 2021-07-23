@@ -1,5 +1,4 @@
 /* import Clipboard from './clipboard.min'; */
-// @ts-ignore
 import Clipboard from 'clipboard';
 /* import Clipboard from './clipboard' */
 export function copyText(text: string) {
