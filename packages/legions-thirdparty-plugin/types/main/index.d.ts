@@ -4,7 +4,7 @@ interface IPlugin {
     name: TypePluginName;
     url: string;
 }
-export declare class LegionsThirdpartyPlugin {
+export declare class ThirdpartyPlugin {
     use(plugin: IPlugin[] | IPlugin): void;
     /** 订阅某个插件数据,在有结果时，执行回调函数
      *
@@ -19,6 +19,5 @@ export declare class LegionsThirdpartyPlugin {
     subscribe(name: IPlugin['name'] | IPlugin['name'][], callback: () => void): void;
     get plugins(): IlegionsThirdpartyPlugin;
 }
-export declare const legionsThirdpartyPlugin: LegionsThirdpartyPlugin;
-export declare const runScriptsSdk: LegionsThirdpartyPlugin;
+export declare const runScriptsSdk: ThirdpartyPlugin;
 export {};

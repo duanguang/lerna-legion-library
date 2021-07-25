@@ -1,5 +1,5 @@
 /**
- * legions-thirdparty-plugin v0.0.8
+ * legions-thirdparty-plugin v0.0.9
  * (c) 2021 duanguang
  * @license MIT
  */
@@ -176,10 +176,10 @@ function onLoadScript(plugin) {
     }
 }
 var EventContainer = new EventHub();
-var LegionsThirdpartyPlugin = /** @class */ (function () {
-    function LegionsThirdpartyPlugin() {
+var ThirdpartyPlugin = /** @class */ (function () {
+    function ThirdpartyPlugin() {
     }
-    LegionsThirdpartyPlugin.prototype.use = function (plugin) {
+    ThirdpartyPlugin.prototype.use = function (plugin) {
         if (typeof plugin === 'object') {
             if (Array.isArray(plugin)) {
                 plugin.map(function (item) {
@@ -201,7 +201,7 @@ var LegionsThirdpartyPlugin = /** @class */ (function () {
      *
      * name参数为字符串数组时，使用场景为你的回调函数依赖多个插件值，这时才去使用，然而大多数情况我们是用不上，因此有需要就传数组
      */
-    LegionsThirdpartyPlugin.prototype.subscribe = function (name, callback) {
+    ThirdpartyPlugin.prototype.subscribe = function (name, callback) {
         if (typeof name === 'string') {
             if (LEGIONS_THIRDPARTY_PLUGIN[name]) {
                 callback();
@@ -235,17 +235,16 @@ var LegionsThirdpartyPlugin = /** @class */ (function () {
             }
         }
     };
-    Object.defineProperty(LegionsThirdpartyPlugin.prototype, "plugins", {
+    Object.defineProperty(ThirdpartyPlugin.prototype, "plugins", {
         get: function () {
             return PROXY_LEGIONS_THIRPARTY_PLUGIN;
         },
         enumerable: false,
         configurable: true
     });
-    return LegionsThirdpartyPlugin;
+    return ThirdpartyPlugin;
 }());
-var legionsThirdpartyPlugin = new LegionsThirdpartyPlugin();
-var runScriptsSdk = legionsThirdpartyPlugin;
+var runScriptsSdk = new ThirdpartyPlugin();
 
 /** 查找window 变量值，优先查找父级元素，如果没有找到 */
 function findWindow(name) {
@@ -400,4 +399,4 @@ function runDynamicScripts(options) {
         } }, props));
 }
 
-export { dynamicLoadingScript, findWindow, legionsThirdpartyPlugin, runDynamicScripts, runScriptsSdk };
+export { dynamicLoadingScript, findWindow, runDynamicScripts, runScriptsSdk };
