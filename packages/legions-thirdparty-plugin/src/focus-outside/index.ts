@@ -1,1 +1,1 @@
-export { focusBind, focusUnbind } from './base';
+export { focusBind, focusUnbind } from './utils';

@@ -1,7 +1,7 @@
 /*
  * @Author: duanguang
  * @Date: 2020-09-30 16:20:29
- * @LastEditTime: 2021-07-24 01:58:34
+ * @LastEditTime: 2021-07-25 15:29:13
  * @LastEditors: duanguang
  * @Description: 
  * @FilePath: /lerna-legion-library/packages/legions-thirdparty-plugin/build/configs.js
@@ -50,18 +50,21 @@ const main = {
   }, */
 };
 const focusOutside = {
-  es: {
+  esfocusOutside: {
     input: resolves('src/focus-outside/index.ts'),
     file: resolves('focus-outside/index.js'),
     format: 'es',
-    compress: true,
-    env: 'development',
+    external: [],
+    name:'focus-outside',
+    /* compress: true, */
+    env: 'development'
   },
   /* iifefocusOutsideProd: {
     input: resolves('src/focus-outside/index.ts'),
     file: resolves('release/focus-outside.min.js'),
     format: 'iife',
     env: 'production',
+    name:'focus-outside',
     outputName: 'legionsThirdpartyFocusOutsidePlugin',
   }, */
 };
@@ -70,12 +73,14 @@ const dexie = {
     input: resolves('src/sdk.dexie/index.ts'),
     file: resolves('sdk.dexie/index.js'),
     format: 'es',
+    name:'sdk.dexie',
     external:['dexie']
   },
  /*  iifedexieProd: {
     input: resolves('src/sdk.dexie/index.ts'),
     file: resolves('release/dexie.min.js'),
     format: 'iife',
+    name:'sdk.dexie',
     env: 'production',
     outputName: 'legionsThirdpartyDexiePlugin',
   }, */
@@ -85,6 +90,7 @@ const clipboard = {
     input: resolves('src/sdk.clipboard/index.ts'),
     file: resolves('sdk.clipboard/index.js'),
     format: 'es',
+    name:'sdk.clipboard',
     external:['clipboard']
   },
   /* iifeclipboardProd: {
@@ -92,6 +98,7 @@ const clipboard = {
     file: resolves('release/clipboard.min.js'),
     format: 'iife',
     env: 'production',
+    name:'sdk.clipboard',
     outputName: 'legionsThirdpartyClipboardPlugin',
   }, */
 };
@@ -100,6 +107,7 @@ const jsbarcode = {
     input: resolves('src/sdk.jsbarcode/index.ts'),
     file: resolves('sdk.jsbarcode/index.js'),
     format: 'es',
+    name:'sdk.jsbarcode',
     external:['jsbarcode']
   },
   /* iifejsbarcodeProd: {
@@ -107,6 +115,7 @@ const jsbarcode = {
     file: resolves('release/jsbarcode.min.js'),
     format: 'iife',
     env: 'production',
+    name:'sdk.jsbarcode',
     outputName: 'legionsThirdpartyJsbarcodePlugin',
   }, */
 };
@@ -115,6 +124,7 @@ const html2canvas = {
     input: resolves('src/sdk.html2canvas/index.ts'),
     file: resolves('sdk.html2canvas/index.js'),
     format: 'es',
+    name:'sdk.html2canvas',
     external:['html2canvas']
   },
   /* iifehtml2canvasProd: {
@@ -122,6 +132,7 @@ const html2canvas = {
     file: resolves('release/html2canvas.min.js'),
     format: 'iife',
     env: 'production',
+    name:'sdk.html2canvas',
     outputName: 'legionsThirdpartyHtml2canvasPlugin',
   }, */
 };
@@ -130,6 +141,7 @@ const excel = {
     input: resolves('src/sdk.excel/index.ts'),
     file: resolves('sdk.excel/index.js'),
     format: 'es',
+    name:'sdk.excel',
     external:['exceljs']
   },
   /* iifeexcelProd: {
@@ -138,6 +150,7 @@ const excel = {
     format: 'iife',
     compress:true,
     env: 'production',
+     name:'sdk.excel',
     outputName: 'legionsThirdpartyExcelPlugin',
   }, */
 };
@@ -146,6 +159,7 @@ const xlsx = {
     input: resolves('src/sdk.xlsx/index.ts'),
     file: resolves('sdk.xlsx/index.js'),
     format: 'es',
+    name:'sdk.xlsx',
     external:['xlsx']
   },
   /* iifeexcelProProd: {
@@ -153,6 +167,7 @@ const xlsx = {
     file: resolves('sdk.xlsx/index.js'),
     format: 'iife',
     compress:true,
+    name:'sdk.xlsx',
     outputName: 'legionsThirdpartyXlsxPlugin',
   } */
 }
@@ -174,7 +189,16 @@ const configs = {
 };
 
 function genConfig(opts) {
-  const external= opts.external||[]
+  const external = opts.external || []
+  let tsconfigOverride = {}
+  if (opts.tsconfigOverride) {
+    tsconfigOverride=opts.tsconfigOverride
+  } else if (opts.name) {
+    tsconfigOverride = {
+      tsconfigOverride:{ compilerOptions: { "declaration": true, declarationDir: `./${opts.name}` },input:[`src/${opts.name}/**/*`] }
+    }
+  }
+  console.log(tsconfigOverride);
   const config = {
     input: {
       input: opts.input,
@@ -202,13 +226,14 @@ function genConfig(opts) {
         }),
         typescript({
           typescript: require('typescript'),
-          include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+          // include: ['*.ts+(|x)', '**/*.ts+(|x)'],
           exclude: [
             'dist',
             'node_modules/**',
             '*.test.{js+(|x), ts+(|x)}',
             '**/*.test.{js+(|x), ts+(|x)}',
           ],
+          clean: true,
           useTsconfigDeclarationDir: true,
         }),
         /* buble(),
@@ -252,5 +277,4 @@ function mapValues(obj, fn) {
   });
   return res;
 }
-
 module.exports = mapValues(configs, genConfig);

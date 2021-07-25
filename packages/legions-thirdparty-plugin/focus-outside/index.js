@@ -1,1 +1,138 @@
-var els=[],elMap=new Map,defaultClass="focus-outside";function isNotFocusable(e){return isNaN(parseInt(e.getAttribute("tabindex")))}function setFocusable(e){e.setAttribute("tabindex","-1")}function getNode(t){return els.find(function(e){return e.contains(t)||e===t})}function addClass(e,t){var n=e.className.split(" ");-1<n.indexOf(t)||(n.push(t),e.className=n.join(" "))}function removeClass(e,t){var n=e.className.split(" "),t=n.indexOf(t);t<0||(n.splice(t,1),e.className=n.join(" "))}function focusinHandler(e){var t=getNode(e.target);t&&(t=(e=findNodeMap(elMap.entries(),t)||{}).el,e=e.nodeList,t&&clearTimeout(e.timerId))}function focusoutHandler(e){var t,n=getNode(e.target);n&&(e=(t=findNodeMap(elMap.entries(),n)||{}).el,n=t.key,t=t.nodeList,e&&(t.timerId=setTimeout(n,10)))}function findNodeMap(e,s){var i={};return elMap.forEach(function(e,t){var n=t,t=e,e=t.find(function(e){return e.node===s});e&&(i={key:n,nodeList:t,el:e})}),i}function focusBind(e,t,n){(n=void 0===n?"focus-outside":n)&&(defaultClass=n),els.indexOf(e)<0&&els.push(e),elMap.has(t)?elMap.get(t).push({node:e,oldTabIndex:e.getAttribute("tabindex")}):elMap.set(t,[{node:e,oldTabIndex:e.getAttribute("tabindex")}]),isNotFocusable(e)&&setFocusable(e),addClass(e,defaultClass),e.addEventListener("focusin",focusinHandler),e.addEventListener("focusout",focusoutHandler)}function focusUnbind(e){var t,n=findNodeMap(elMap.entries(),e)||{},s=n.el,i=n.key,a=n.nodeList;s&&(t=s.node,e=s.oldTabIndex,-1<(n=els.indexOf(t))&&els.splice(n),removeClass(t,defaultClass),e?t.setAttribute("tabindex",e):t.removeAttribute("tabindex"),t.removeEventListener("focusin",focusinHandler),t.removeEventListener("focusout",focusoutHandler),s=a.indexOf(s),-1<n&&a.splice(s,1),a.length||elMap.delete(i))}export{focusBind,focusUnbind};
+/**
+ * legions-thirdparty-plugin v0.0.8
+ * (c) 2021 duanguang
+ * @license MIT
+ */
+/* 此库引自社区开源
+ * @Author: txs1992
+ * @url: https://github.com/txs1992/focus-outside
+ * @Date: 2019-07-25 19:32:40
+ * @Last Modified by: duanguang
+ * @Last Modified time: 2020-09-10 14:30:51
+ */
+/* import Map from './map-shim'; */
+var els = [];
+var elMap = new Map();
+var defaultClass = 'focus-outside';
+function isNotFocusable(el) {
+    return isNaN(parseInt(el.getAttribute('tabindex')));
+}
+function setFocusable(el) {
+    el.setAttribute('tabindex', '-1');
+}
+function getNode(target) {
+    return els.find(function (el) { return el.contains(target) || el === target; });
+}
+function addClass(el, name) {
+    var classList = el.className.split(' ');
+    if (classList.indexOf(name) > -1)
+        return;
+    classList.push(name);
+    el.className = classList.join(' ');
+}
+function removeClass(el, name) {
+    var classList = el.className.split(' ');
+    var index = classList.indexOf(name);
+    if (index < 0)
+        return;
+    classList.splice(index, 1);
+    el.className = classList.join(' ');
+}
+function focusinHandler(_a) {
+    var target = _a.target;
+    var node = getNode(target);
+    if (!node)
+        return;
+    //@ts-ignore
+    var _b = findNodeMap(elMap.entries(), node) || {}, el = _b.el, nodeList = _b.nodeList;
+    if (!el)
+        return;
+    clearTimeout(nodeList.timerId);
+}
+function focusoutHandler(_a) {
+    var target = _a.target;
+    var node = getNode(target);
+    if (!node)
+        return;
+    //@ts-ignore
+    var _b = findNodeMap(elMap.entries(), node) || {}, el = _b.el, key = _b.key, nodeList = _b.nodeList;
+    if (!el)
+        return;
+    nodeList.timerId = setTimeout(key, 10);
+}
+function findNodeMap(entries, node) {
+    var result = {};
+    elMap.forEach(function (value, keys) {
+        //console.log(keys,value)
+        var key = keys;
+        var nodeList = value;
+        var el = nodeList.find(function (item) { return item.node === node; });
+        if (el) {
+            result = {
+                key: key,
+                nodeList: nodeList,
+                el: el,
+            };
+        }
+    });
+    return result;
+    /*   for (let i = 0; i < entries.length; i++) {
+      
+      const [key, nodeList] = entries[i]
+      const el = nodeList.find(item => item.node === node)
+      if (el) return { key, nodeList, el }
+    } */
+}
+function focusBind(el, callback, className) {
+    if (className === void 0) { className = 'focus-outside'; }
+    if (className)
+        defaultClass = className;
+    if (els.indexOf(el) < 0)
+        els.push(el);
+    if (elMap.has(callback)) {
+        var nodeList = elMap.get(callback);
+        nodeList.push({
+            node: el,
+            oldTabIndex: el.getAttribute('tabindex'),
+        });
+    }
+    else {
+        elMap.set(callback, [
+            {
+                node: el,
+                oldTabIndex: el.getAttribute('tabindex'),
+            },
+        ]);
+    }
+    if (isNotFocusable(el))
+        setFocusable(el);
+    addClass(el, defaultClass);
+    el.addEventListener('focusin', focusinHandler);
+    el.addEventListener('focusout', focusoutHandler);
+}
+function focusUnbind(target) {
+    //@ts-ignore
+    var _a = findNodeMap(elMap.entries(), target) || {}, el = _a.el, key = _a.key, nodeList = _a.nodeList;
+    if (!el)
+        return;
+    var node = el.node, oldTabIndex = el.oldTabIndex;
+    var index = els.indexOf(node);
+    if (index > -1)
+        els.splice(index);
+    removeClass(node, defaultClass);
+    if (oldTabIndex) {
+        node.setAttribute('tabindex', oldTabIndex);
+    }
+    else {
+        node.removeAttribute('tabindex');
+    }
+    node.removeEventListener('focusin', focusinHandler);
+    node.removeEventListener('focusout', focusoutHandler);
+    var nodeIndex = nodeList.indexOf(el);
+    if (index > -1)
+        nodeList.splice(nodeIndex, 1);
+    if (!nodeList.length)
+        elMap.delete(key);
+}
+
+export { focusBind, focusUnbind };

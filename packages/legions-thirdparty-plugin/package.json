@@ -68,6 +68,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "build:all":"yarn build:excel && yarn build:xlsx && yarn build:dexie && yarn build:clipboard && yarn build:html2canvas && yarn build:focusOutside && yarn build",
     "build": "cross-env PACKAGE=main npm run build:main",
     "build:excel": "cross-env PACKAGE=excel npm run build:main",
     "build:xlsx": "cross-env PACKAGE=xlsx npm run build:main",
@@ -76,8 +77,8 @@
     "build:html2canvas": "cross-env PACKAGE=html2canvas npm run build:main",
     "build:jsbarcode": "cross-env PACKAGE=jsbarcode npm run build:main",
     "build:focusOutside": "cross-env PACKAGE=focusOutside npm run build:main",
-    "build:main": "node build/build.main.js",
-    "release": "bash build/release.sh"
+    "build:main": "rimraf types && node build/build.main.js && yarn release",
+    "release": "bash script/build.sh"
   },
   "gitHead": "1e80f0ebb53edb8e9ecaa46efa41e0442e9d1716"
 }

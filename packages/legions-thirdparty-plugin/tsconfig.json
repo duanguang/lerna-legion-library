@@ -5,17 +5,20 @@
         /* "module": "es2015", */
         "outDir": "./dist",
         "target": "es5",
+        "module": "es2015",
         "moduleResolution": "node",
         "baseUrl": "./src",
         "lib": [
             "dom",
             "es5",
+            "es2015",
+            "es2016",
+            "es2017",
             "dom.iterable",
-            /* "esnext", */
-            "ES2015.Promise"
+            "esnext"
         ],
         "allowJs": true,
-        "isolatedModules": false,
+        /* "isolatedModules": true, */
         "jsx": "react",
         "resolveJsonModule": true,
         "esModuleInterop": true,
@@ -35,7 +38,10 @@
         "strictPropertyInitialization": true,
         /* "typeRoots": ["./types"], */
         "importHelpers": true,
-        "sourceMap": true,
+        "noEmitHelpers":false,
+        "noResolve":false,
+        "noEmit":true,
+        "sourceMap": false,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
         "noImplicitThis": true,
@@ -47,7 +53,5 @@
     "exclude": [
         "node_modules",
         "dist",
-        "src/lib/components/**/*.test.js",
-        "src/lib/components/**/*.test.ts",
     ]
 }
