@@ -1,9 +1,10 @@
 import { runScriptsSdk } from '../src';
+const prex ='https://gitee.com/duanguang/legion-library/raw/master/packages/legions-thirdparty-plugin/release'
 const clipboard =
-  'https://gitee.com/duanguang/legion-library/raw/master/packages/legions-thirdparty-plugin/release/clipboard.min.js';
+  `${prex}/clipboard.min.js`;
 describe('start Test urlParams Decorator',() => {
   jest.useFakeTimers();
-  it('对同个资源执行加载串行测试',done => {
+ /*  it('install clipboard',done => {
     runScriptsSdk.use([
       {
         name: 'clipboard',
@@ -11,9 +12,40 @@ describe('start Test urlParams Decorator',() => {
       },
     ]);
     runScriptsSdk.subscribe('clipboard',() => {
-       console.log(window.document.documentElement.outerHTML);
-       console.log(runScriptsSdk.plugins.clipboard.Clipboard);
+      // console.log(window.document.documentElement.outerHTML);
+      expect(runScriptsSdk.plugins.clipboard).not.toBeUndefined()
        done()
+    });
+  }); */
+  /* it('install dexie',done => {
+    const ulr =`${prex}/dexie.min.js`
+    runScriptsSdk.use([
+      {
+        name: 'dexie',
+        url: ulr,
+      },
+    ]);
+    runScriptsSdk.subscribe('dexie',() => {
+      console.log(window.document.documentElement.outerHTML);
+      const dexies = runScriptsSdk.plugins.dexie
+      expect(dexies).not.toBeUndefined()
+      done()
+    });
+  }); */
+  it('install xlsx',done => {
+    const ulr =`${prex}/xlsx.min.js`
+    runScriptsSdk.use([
+      {
+        name: 'xlsx',
+        url: ulr,
+      },
+    ]);
+    runScriptsSdk.subscribe('xlsx',() => {
+      console.log(window.document.documentElement.outerHTML);
+      const xlsx = runScriptsSdk.plugins.xlsx
+      console.log(xlsx)
+     /*  expect(xlsx).not.toBeUndefined() */
+      done()
     });
   });
 });

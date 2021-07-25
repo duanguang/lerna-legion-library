@@ -74,6 +74,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "test:sdk": "jest --watch ./__tests__/run-scripts-sdk.test",
     "build:all":"yarn build:excel && yarn build:xlsx && yarn build:dexie && yarn build:clipboard && yarn build:html2canvas && yarn build:focusOutside && yarn build",
     "build": "cross-env PACKAGE=main npm run build:main",
     "build:excel": "cross-env PACKAGE=excel npm run build:main",

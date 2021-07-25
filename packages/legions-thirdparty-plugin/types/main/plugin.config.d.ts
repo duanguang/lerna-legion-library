@@ -1,6 +1,6 @@
 import { IlegionsThirdpartyPlugin } from "../../api";
 /** 插件信息 */
-export declare const PLUGINS: readonly ["excel", "html2canvas", "jsBarcode", "clipboard", "dexie", "focusOutside"];
+export declare const PLUGINS: readonly ["excel", "xlsx", "html2canvas", "jsBarcode", "clipboard", "dexie", "focusOutside"];
 declare type SuitTuple = typeof PLUGINS;
 export declare type TypePluginName = SuitTuple[number];
 export declare const LEGIONS_THIRDPARTY_PLUGIN: IlegionsThirdpartyPlugin;
@@ -13,5 +13,6 @@ export declare const THIRDPARTY_PLUGINS: {
     clipboard: string;
     dexie: string;
     focusOutside: string;
+    xlsx: string;
 };
 export {};

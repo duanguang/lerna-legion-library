@@ -3,6 +3,7 @@ import { createObj } from "./utils";
 
 /** 插件信息 */
 export const PLUGINS = ['excel',
+'xlsx',
 'html2canvas',
 'jsBarcode',
 'clipboard',
@@ -20,4 +21,5 @@ export const THIRDPARTY_PLUGINS = {
   clipboard: 'legionsThirdpartyClipboardPlugin',
   dexie: 'legionsThirdpartyDexiePlugin',
   focusOutside: 'legionsThirdpartyFocusOutsidePlugin',
+  xlsx: 'legionsThirdpartyXlsxPlugin',
 };

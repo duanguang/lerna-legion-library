@@ -12,7 +12,7 @@ export interface IlegionsThirdpartyPlugin {
   html2canvas: ISdkhtml2canvas;
   jsBarcode: JsBarcode;
   clipboard: ISdkClipboard;
-  dexie: DexieUtils;
+  dexie:typeof DexieUtils;
   focusOutside: {
     focusBind:typeof focusBind;
     focusUnbind: typeof focusUnbind;

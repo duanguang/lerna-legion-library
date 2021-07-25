@@ -1,4 +1,4 @@
-import { legionsThirdpartyPlugin,runDynamicScripts } from '../src';
+import { runDynamicScripts } from '../src';
 const clipboard =
   'https://gitee.com/duanguang/legion-library/raw/master/packages/legions-thirdparty-plugin/release/clipboard.min.js';
 describe('start Test urlParams Decorator',() => {

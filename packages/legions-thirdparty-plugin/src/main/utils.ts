@@ -5,6 +5,8 @@ export function createObj(): IlegionsThirdpartyPlugin {
       //@ts-ignore
       excel: null,
       //@ts-ignore
+      xlsx: null,
+      //@ts-ignore
       html2canvas: null,
       //@ts-ignore
       jsBarcode: null,

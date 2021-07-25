@@ -29,6 +29,7 @@ function onLoadScript(plugin: IPlugin) {
       // tslint:disable-next-line: no-invalid-this
       //@ts-ignore
       if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
+       console.log(THIRDPARTY_PLUGINS[plugin.name]);
         if (window[THIRDPARTY_PLUGINS[plugin.name]]) {
           if (plugin.name === 'jsBarcode') {
             LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =

@@ -1,7 +1,7 @@
 /*
  * @Author: duanguang
  * @Date: 2020-09-30 16:20:29
- * @LastEditTime: 2021-07-25 15:29:13
+ * @LastEditTime: 2021-07-25 23:36:34
  * @LastEditors: duanguang
  * @Description: 
  * @FilePath: /lerna-legion-library/packages/legions-thirdparty-plugin/build/configs.js
@@ -162,14 +162,14 @@ const xlsx = {
     name:'sdk.xlsx',
     external:['xlsx']
   },
-  /* iifeexcelProProd: {
+  iifeexcelProProd: {
     input: resolves('src/sdk.xlsx/index.ts'),
-    file: resolves('sdk.xlsx/index.js'),
+    file: resolves('release/xlsx.min.js'),
     format: 'iife',
     compress:true,
     name:'sdk.xlsx',
     outputName: 'legionsThirdpartyXlsxPlugin',
-  } */
+  }
 }
 const mainEntity = {
   main,
