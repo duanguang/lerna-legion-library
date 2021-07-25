@@ -62,7 +62,7 @@ function onLoadScript(plugin: IPlugin) {
 }
 
 const EventContainer = new EventHub();
-export class LegionsThirdpartyPlugin {
+export class ThirdpartyPlugin {
   use(plugin: IPlugin[] | IPlugin) {
     if (typeof plugin === 'object') {
       if (Array.isArray(plugin)) {
@@ -118,5 +118,4 @@ export class LegionsThirdpartyPlugin {
     return PROXY_LEGIONS_THIRPARTY_PLUGIN;
   }
 }
-export const legionsThirdpartyPlugin = new LegionsThirdpartyPlugin();
-export const runScriptsSdk = legionsThirdpartyPlugin
+export const runScriptsSdk = new ThirdpartyPlugin();

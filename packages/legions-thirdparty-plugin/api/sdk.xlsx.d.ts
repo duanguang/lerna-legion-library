@@ -1,4 +1,4 @@
-import  {exportCsv,read,exportArrayToExcel,exportJsonToExcel,export_table_to_excel,export_array_to_excel,export_json_to_excel} from '../types/sdk.xlsx'
+import  {exportCsv,read,exportArrayToExcel,exportJsonToExcel,export_table_to_excel,export_array_to_excel,export_json_to_excel} from '../sdk.xlsx'
 export interface ISdkXlsx{
     export_table_to_excel: typeof export_table_to_excel
     export_array_to_excel: typeof export_array_to_excel

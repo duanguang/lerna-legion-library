@@ -11,7 +11,8 @@
   "author": "duanguang <18520583569@163.com>",
   "homepage": "https://github.com/duanguang/lerna-legion-library.git",
   "license": "MIT",
-  "main": "dist/legions-thirdparty-plugin.umd.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "typings": "types/index.d.ts",
   "dependencies": {
     "@types/jsbarcode":"^3.11.1",
@@ -56,9 +57,14 @@
   "files": [
     "dist",
     "types",
-    "clipboard",
+    "sdk.xlsx",
     "focus-outside",
-    "jsbarcode"
+    "sdk.jsbarcode",
+    "sdk.html2canvas",
+    "sdk.excel",
+    "sdk.dexie",
+    "sdk.clipboard",
+    "api"
   ],
   "browserslist": [
     ">0.2%",
