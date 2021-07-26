@@ -218,6 +218,9 @@ function genConfig(opts) {
             'node_modules/exceljs/lib/exceljs.browser.js': [
               'Workbook',
             ],
+            'node_modules/xlsx/dist/xlsx.min.js': [
+              'XLSX',
+            ],
             /*  'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [
           'importHTML',
           'importEntry',
@@ -226,7 +229,6 @@ function genConfig(opts) {
         }),
         typescript({
           typescript: require('typescript'),
-          // include: ['*.ts+(|x)', '**/*.ts+(|x)'],
           exclude: [
             'dist',
             'node_modules/**',

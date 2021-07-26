@@ -1,5 +1,5 @@
 module.exports = {
-    preset: 'ts-jest',
+  preset: 'ts-jest',
     // 测试目录
     roots: ['<rootDir>/__tests__'],
     // 对 ts tsx 文件使用 ts-jest 进行运行测试

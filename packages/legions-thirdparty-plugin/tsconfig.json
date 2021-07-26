@@ -17,6 +17,9 @@
             "dom.iterable",
             "esnext"
         ],
+        "paths": {
+            "xlsx": ["node_modules/xlsx/dist/xlsx.min.js"] // 此处映射是相对于"baseUrl"
+          },
         "allowJs": true,
         /* "isolatedModules": true, */
         "jsx": "react",

@@ -4,6 +4,8 @@ const clipboard =
   `${prex}/clipboard.min.js`;
 describe('start Test urlParams Decorator',() => {
   jest.useFakeTimers();
+  beforeEach(() => {
+  });
  /*  it('install clipboard',done => {
     runScriptsSdk.use([
       {
@@ -33,18 +35,18 @@ describe('start Test urlParams Decorator',() => {
     });
   }); */
   it('install xlsx',done => {
-    const ulr =`${prex}/xlsx.min.js`
+    const ulr =`${prex}/xlsx.0.0.8.min.js`
     runScriptsSdk.use([
       {
         name: 'xlsx',
         url: ulr,
       },
     ]);
+    console.log(window.document.documentElement.outerHTML);
     runScriptsSdk.subscribe('xlsx',() => {
       console.log(window.document.documentElement.outerHTML);
       const xlsx = runScriptsSdk.plugins.xlsx
       console.log(xlsx)
-     /*  expect(xlsx).not.toBeUndefined() */
       done()
     });
   });

@@ -22,14 +22,16 @@ function onLoadScript(plugin: IPlugin) {
     let script = document.createElement('script');
     script.id = id;
     const version = Date.parse(new Date().toString());
-    script.src = `${plugin.url}?v=${version}`;
+    script.src = `${plugin.url}`;
     document.body.appendChild(script);
+    
     // @ts-ignore
     script.onload = script.onreadystatechange = function () {
       // tslint:disable-next-line: no-invalid-this
+      console.log(script.src);
       //@ts-ignore
       if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
-       console.log(THIRDPARTY_PLUGINS[plugin.name]);
+       
         if (window[THIRDPARTY_PLUGINS[plugin.name]]) {
           if (plugin.name === 'jsBarcode') {
             LEGIONS_THIRDPARTY_PLUGIN[plugin.name] =
