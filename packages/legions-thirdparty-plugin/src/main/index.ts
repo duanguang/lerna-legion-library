@@ -24,11 +24,9 @@ function onLoadScript(plugin: IPlugin) {
     const version = Date.parse(new Date().toString());
     script.src = `${plugin.url}`;
     document.body.appendChild(script);
-    
     // @ts-ignore
     script.onload = script.onreadystatechange = function () {
       // tslint:disable-next-line: no-invalid-this
-      console.log(script.src);
       //@ts-ignore
       if (!this.readyState || /^(loaded|complete)$/.test(this.readyState)) {
        
