@@ -35,7 +35,7 @@ describe('start Test urlParams Decorator',() => {
     });
   }); */
   it('install xlsx',done => {
-    const ulr =`${prex}/xlsx.0.0.8.min.js`
+    const ulr =`${prex}/xlsx.min.js`
     runScriptsSdk.use([
       {
         name: 'xlsx',

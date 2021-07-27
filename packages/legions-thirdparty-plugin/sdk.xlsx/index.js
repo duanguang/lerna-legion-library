@@ -3,7 +3,7 @@
  * (c) 2021 duanguang
  * @license MIT
  */
-import XLSX from 'xlsx';
+import XLSX from 'xlsx/xlsx.mini';
 
 function has (browser) {
     const ua = navigator.userAgent;

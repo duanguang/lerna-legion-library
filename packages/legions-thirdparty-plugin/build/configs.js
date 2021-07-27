@@ -1,7 +1,7 @@
 /*
  * @Author: duanguang
  * @Date: 2020-09-30 16:20:29
- * @LastEditTime: 2021-07-25 23:36:34
+ * @LastEditTime: 2021-07-27 22:16:49
  * @LastEditors: duanguang
  * @Description: 
  * @FilePath: /lerna-legion-library/packages/legions-thirdparty-plugin/build/configs.js
@@ -160,7 +160,7 @@ const xlsx = {
     file: resolves('sdk.xlsx/index.js'),
     format: 'es',
     name:'sdk.xlsx',
-    external:['xlsx']
+    external:['xlsx/xlsx.mini']
   },
   iifeexcelProProd: {
     input: resolves('src/sdk.xlsx/index.ts'),
@@ -218,7 +218,7 @@ function genConfig(opts) {
             'node_modules/exceljs/lib/exceljs.browser.js': [
               'Workbook',
             ],
-            'node_modules/xlsx/dist/xlsx.min.js': [
+            'node_modules/xlsx/dist/xlsx.mini.js': [
               'XLSX',
             ],
             /*  'node_modules/legions-import-html-entry/lib/legions-import-html-entry.umd.js': [

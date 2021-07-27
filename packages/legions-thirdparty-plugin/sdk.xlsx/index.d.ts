@@ -64,7 +64,7 @@ declare const export_json_to_excel: ({ data, key, title, filename, autoWidth, }:
 declare const export_array_to_excel: ({ key, data, title, filename, autoWidth, }: IExcelProps) => void;
 declare const read: (data: any, type: 'buffer' | 'base64' | 'string' | 'binary' | 'array' | 'file') => {
     header: never[];
-    results: unknown[];
+    results: any;
 };
 /**
  * 将数据导出为 .csv 文件，不适应复杂表格的excel 文件生成 说明
