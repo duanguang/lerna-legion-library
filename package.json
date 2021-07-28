@@ -1,7 +1,9 @@
 {
   "name": "legion-library",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "precommit": "node -v"
+  },
   "workspaces": [
     "packages/*"
   ],
