@@ -2,7 +2,8 @@
   "name": "legion-library",
   "private": true,
   "scripts": {
-    "precommit": "node -v"
+    "precommit": "node -v",
+    "plugin:test": "lerna run --scope=legions-thirdparty-plugin test:sdk"
   },
   "husky": {
     "hooks": {
